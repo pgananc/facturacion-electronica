@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -24,6 +25,11 @@ public class ComprobanteVenta {
 	private String tipoComprobante;
 
 	@Column(name = "fecha_generacion")
-	LocalDateTime fechaGeneracion;
+	private LocalDateTime fechaGeneracion;
+
+	@PrePersist
+	public void preInsertar() {
+		fechaGeneracion = LocalDateTime.now();
+	}
 
 }
