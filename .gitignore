@@ -24,3 +24,15 @@ facturacion-electronica-app/.settings/
 facturacion-electronica-app/.project
 facturacion-electronica-app/.idea
 facturacion-electronica-app/bin/
+
+#IGNORE ECLIPSE RESOURCES PROJECTS
+**/.project
+**/.settings/
+**/target/
+/.pmd
+**/.classpath
+**/.metadata/
+**/.sass-cache
+**/.tern-project
+/.checkstyle
+/.eclipse-pmd
