@@ -4,6 +4,7 @@
 /.classpath
 /.project
 /.idea
+/.factorypath
 
 #Maven
 target/
@@ -28,6 +29,7 @@ facturacion-electronica-app/bin/
 #IGNORE ECLIPSE RESOURCES PROJECTS
 **/.project
 **/.settings/
+**/.factorypath
 **/target/
 /.pmd
 **/.classpath
