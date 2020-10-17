@@ -1,0 +1,26 @@
+#exclusiones propias
+/target/
+/.settings/
+/.classpath
+/.project
+/.idea
+
+#Maven
+target/
+
+#idea
+.idea
+*.iml
+
+#exclusiones propias
+/bin
+facturacion-electronica/target/
+facturacion-electronica/.settings/
+facturacion-electronica/.project
+facturacion-electronica/.idea
+facturacion-electronica/bin/
+facturacion-electronica-app/target/
+facturacion-electronica-app/.settings/
+facturacion-electronica-app/.project
+facturacion-electronica-app/.idea
+facturacion-electronica-app/bin/
