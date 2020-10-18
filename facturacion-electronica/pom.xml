@@ -8,12 +8,12 @@
 		<version>2.3.4.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>facturacion.electronica</groupId>
-	<artifactId>facturacion-electronica</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<groupId>com.wallparisoft</groupId>
+	<artifactId>facturacion-electronica-servicios</artifactId>
+	<version>1.0</version>
 	<packaging>war</packaging>
-	<name>facturacion-electronica</name>
-	<description>Facturación electrónica</description>
+	<name>facturacion-electronica-servicios</name>
+	<description>Facturación electrónica servicios</description>
 
 	<properties>
 		<java.version>1.8</java.version>
