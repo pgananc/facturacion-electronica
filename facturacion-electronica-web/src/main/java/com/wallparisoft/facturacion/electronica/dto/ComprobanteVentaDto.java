@@ -1,4 +1,4 @@
-package com.facturacion.electronica.dto;
+package com.wallparisoft.facturacion.electronica.dto;
 
 import java.time.LocalDateTime;
 

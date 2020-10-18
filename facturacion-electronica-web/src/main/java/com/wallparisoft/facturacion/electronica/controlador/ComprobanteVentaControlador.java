@@ -1,4 +1,4 @@
-package com.facturacion.electronica.controlador;
+package com.wallparisoft.facturacion.electronica.controlador;
 
 import java.io.Serializable;
 import java.util.List;
@@ -9,7 +9,7 @@ import javax.inject.Named;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import com.facturacion.electronica.dto.ComprobanteVentaDto;
+import com.wallparisoft.facturacion.electronica.dto.ComprobanteVentaDto;
 
 @ViewScoped
 @Named
@@ -29,6 +29,7 @@ public class ComprobanteVentaControlador implements Serializable {
 		System.out.println(response.getStatusCode());
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void buscar() {
 		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity<List> response = restTemplate.getForEntity("http://localhost:8180/comprobante-venta",
