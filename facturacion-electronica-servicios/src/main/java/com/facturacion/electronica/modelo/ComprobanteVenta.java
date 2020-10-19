@@ -29,7 +29,7 @@ public class ComprobanteVenta {
 	@ManyToOne
 	@JoinColumn(name = "id_empresa", referencedColumnName = "id_empresa")
 	private Empresa empresa;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "id_forma_pago", referencedColumnName = "id_forma_pago")
 	private FormaPago formaPago;
@@ -37,7 +37,6 @@ public class ComprobanteVenta {
 	@ManyToOne
 	@JoinColumn(name = "id_cliente", referencedColumnName = "id_cliente")
 	private Cliente cliente;
-	
 
 	@Column(name = "fecha_creacion", nullable = false)
 	private LocalDateTime fechaCreacion;
@@ -79,7 +78,7 @@ public class ComprobanteVenta {
 	private BigDecimal subtotalIce;
 
 	@Column(name = "estado")
-	private BigDecimal estado;
+	private String estado;
 
 	@PrePersist
 	public void preInsertar() {
