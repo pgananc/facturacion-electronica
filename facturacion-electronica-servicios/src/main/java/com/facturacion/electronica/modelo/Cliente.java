@@ -46,6 +46,9 @@ public class Cliente {
 	@OneToMany(mappedBy = "cliente")
 	private List<ComprobanteVenta> comprobanteVenta;
 
+	@OneToMany(mappedBy = "cliente")
+	private List<ClienteMedioContacto> clienteMedioContactos;
+
 	@PrePersist
 	public void preInsertar() {
 		fechaCreacion = LocalDateTime.now();

@@ -40,6 +40,9 @@ public class MedioContacto {
 	@OneToMany(mappedBy = "medioContacto")
 	private List<EmpresaMedioContacto> empresaMedioContactos;
 
+	@OneToMany(mappedBy = "medioContacto")
+	private List<ClienteMedioContacto> clienteMedioContactos;
+
 	@PrePersist
 	public void preInsertar() {
 		fechaCreacion = LocalDateTime.now();
