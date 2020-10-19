@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "forma_pago")
+@Table(name = "producto_tipo_impuesto")
 @Data
 public class ProductoTipoImpuesto {
 
