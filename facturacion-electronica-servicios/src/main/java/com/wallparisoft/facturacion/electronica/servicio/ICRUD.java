@@ -1,4 +1,4 @@
-package com.facturacion.electronica.servicio;
+package com.wallparisoft.facturacion.electronica.servicio;
 
 
 import java.util.List;

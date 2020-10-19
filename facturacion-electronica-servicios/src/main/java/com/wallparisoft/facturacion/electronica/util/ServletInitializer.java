@@ -1,4 +1,4 @@
-package com.facturacion.electronica;
+package com.wallparisoft.facturacion.electronica.util;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;

@@ -1,4 +1,4 @@
-package com.facturacion.electronica.modelo;
+package com.wallparisoft.facturacion.electronica.modelo;
 
 import java.time.LocalDateTime;
 

@@ -1,4 +1,4 @@
-package com.facturacion.electronica.modelo;
+package com.wallparisoft.facturacion.electronica.modelo;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

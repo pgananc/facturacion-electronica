@@ -1,4 +1,4 @@
-package com.facturacion.electronica.modelo;
+package com.wallparisoft.facturacion.electronica.modelo;
 
 import java.time.LocalDateTime;
 
@@ -16,18 +16,18 @@ import javax.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "empresa_medio_contacto")
+@Table(name = "cliente_medio_contacto")
 @Data
-public class EmpresaMedioContacto {
+public class ClienteMedioContacto {
 	@Id
-	@SequenceGenerator(sequenceName = "empresa_medio_contacto_seq", name = "empresa_medio_contacto_seq", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "empresa_medio_contacto_seq")
-	@Column(name = "id_empresa_medio_contacto")
-	private Long idEmpresaMedioContacto;
+	@SequenceGenerator(sequenceName = "cliente_medio_contacto_seq", name = "cliente_medio_contacto_seq", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cliente_medio_contacto_seq")
+	@Column(name = "id_cliente_medio_contacto")
+	private Long idClientMedioContacto;
 
 	@ManyToOne
-	@JoinColumn(name = "id_empresa", referencedColumnName = "id_empresa")
-	private Empresa empresa;
+	@JoinColumn(name = "id_cliente", referencedColumnName = "id_cliente")
+	private Cliente cliente;
 
 	@ManyToOne
 	@JoinColumn(name = "id_medio_contacto", referencedColumnName = "id_medio_contacto")
