@@ -16,26 +16,20 @@ import javax.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "cliente")
+@Table(name = "medio_contacto")
 @Data
-public class Cliente {
+public class MedioContacto {
 	@Id
-	@SequenceGenerator(sequenceName = "cliente_seq", name = "cliente_seq", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cliente_seq")
-	@Column(name = "id_cliente")
-	private Long idCliente;
+	@SequenceGenerator(sequenceName = "medio_contacto_seq", name = "medio_contacto_seq", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "medio_contacto_seq")
+	@Column(name = "id_medio_contacto")
+	private Long idMedioContacto;
 
-	@Column(name = "tipo_identificacion", nullable = false, length = 3)
-	private String tipoIdentificacion;
+	@Column(name = "tipo_medio_contacto", nullable = false, length = 3)
+	private String tipoMedioContacto;
 
-	@Column(name = "identificacion", nullable = false, length = 13)
-	private String identificacion;
-
-	@Column(name = "nombre")
-	private String nombre;
-
-	@Column(name = "tipo_cliente")
-	private String tipoCliente;
+	@Column(name = "valor")
+	private String valor;
 
 	@Column(name = "estado", nullable = false)
 	private String estado;
@@ -43,8 +37,8 @@ public class Cliente {
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;
 
-	@OneToMany(mappedBy = "cliente")
-	private List<ComprobanteVenta> comprobanteVenta;
+	@OneToMany(mappedBy = "medioContacto")
+	private List<EmpresaMedioContacto> empresaMedioContactos;
 
 	@PrePersist
 	public void preInsertar() {

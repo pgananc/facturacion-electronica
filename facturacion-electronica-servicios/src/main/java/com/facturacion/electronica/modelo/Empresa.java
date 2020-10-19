@@ -21,7 +21,7 @@ import lombok.Data;
 public class Empresa {
 	@Id
 	@SequenceGenerator(sequenceName = "empresa_seq", name = "empresa_seq", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "empresa_seq")
 	@Column(name = "id_empresa")
 	private Long idEmpresa;
 
@@ -54,6 +54,9 @@ public class Empresa {
 
 	@OneToMany(mappedBy = "empresa")
 	private List<ComprobanteVenta> comprobanteVenta;
+	
+	@OneToMany(mappedBy = "empresa")
+	private List<EmpresaMedioContacto> empresaMedioContactos;
 
 	@PrePersist
 	public void preInsertar() {

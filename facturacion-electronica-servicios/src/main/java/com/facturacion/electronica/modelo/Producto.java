@@ -1,5 +1,6 @@
 package com.facturacion.electronica.modelo;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,35 +17,41 @@ import javax.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "cliente")
+@Table(name = "producto")
 @Data
-public class Cliente {
+public class Producto {
 	@Id
-	@SequenceGenerator(sequenceName = "cliente_seq", name = "cliente_seq", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cliente_seq")
-	@Column(name = "id_cliente")
-	private Long idCliente;
+	@SequenceGenerator(sequenceName = "producto_seq", name = "producto_seq", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "producto_seq")
+	@Column(name = "id_producto")
+	private Long idProducto;
 
-	@Column(name = "tipo_identificacion", nullable = false, length = 3)
-	private String tipoIdentificacion;
+	@Column(name = "codigo_principal")
+	private String codigoPrincipal;
 
-	@Column(name = "identificacion", nullable = false, length = 13)
-	private String identificacion;
+	@Column(name = "codigo_auxiliar")
+	private String codigoAuxiliar;
+
+	@Column(name = "tipo_producto")
+	private String tipoProducto;
 
 	@Column(name = "nombre")
 	private String nombre;
 
-	@Column(name = "tipo_cliente")
-	private String tipoCliente;
+	@Column(name = "descripcion")
+	private String descripcion;
+
+	@Column(name = "valor_unitario")
+	private BigDecimal valorUnitario;
+
+	@Column(name = "descuento")
+	private BigDecimal descuento;
 
 	@Column(name = "estado", nullable = false)
 	private String estado;
 
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;
-
-	@OneToMany(mappedBy = "cliente")
-	private List<ComprobanteVenta> comprobanteVenta;
 
 	@PrePersist
 	public void preInsertar() {
