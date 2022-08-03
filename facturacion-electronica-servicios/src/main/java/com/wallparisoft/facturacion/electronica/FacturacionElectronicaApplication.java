@@ -1,4 +1,4 @@
-package com.wallparisoft.facturacion.electronica.util;
+package com.wallparisoft.facturacion.electronica;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
