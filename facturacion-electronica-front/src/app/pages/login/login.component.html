@@ -1,0 +1,41 @@
+<form #loginForm="ngForm">
+  <div class="inputGroup inputGroup2" style="text-align: center">
+    <label for="login">Login</label>
+  </div>
+  <div class="inputGroup inputGroup1">
+    <label for="userName">User</label>
+    <input
+      type="text"
+      id="userName"
+      name="userName"
+      [(ngModel)]="userName"
+      class="userName"
+      maxlength="256"
+      required
+    />
+
+    <span class="indicator"></span>
+  </div>
+  <div class="inputGroup inputGroup2">
+    <label for="password">Password</label>
+    <input
+      type="password"
+      id="password"
+      name="password"
+      [(ngModel)]="password"
+      class="password"
+      required
+      minlength="8"
+      maxlength="16"
+    />
+  </div>
+  <div class="inputGroup inputGroup3">
+    <button id="login" type="button" (click)="login()">
+      Sign into your account
+      <i class="fa fa-sign-in" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <mat-card *ngIf="message">{{ message }}</mat-card>
+  <mat-card *ngIf="error">{{ error }}</mat-card>
+</form>
