@@ -1,4 +1,4 @@
-package com.wallparisoft.facturacion.electronica.controlador;
+package com.wallparisoft.ebill.customer.controller;
 
 import java.net.URI;
 import java.util.List;
@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.wallparisoft.facturacion.electronica.modelo.ComprobanteVenta;
-import com.wallparisoft.facturacion.electronica.servicio.IComprobanteVentaServicio;
+import com.wallparisoft.ebill.customer.entity.ComprobanteVenta;
+import com.wallparisoft.ebill.customer.service.IComprobanteVentaServicio;
 
 @RestController
 @RequestMapping("/comprobante-venta")

@@ -1,9 +1,9 @@
-package com.facturacion.electronica;
+package com.wallparisoft.ebill.product;
 
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class FacturacionElectronicaApplicationTests {
+class EBillProductApplicationTests {
 
 //	@Test
 //	void contextLoads() {

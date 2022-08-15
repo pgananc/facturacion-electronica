@@ -1,4 +1,4 @@
-package com.wallparisoft.facturacion.electronica.modelo;
+package com.wallparisoft.ebill.customer.entity;
 
 import java.time.LocalDateTime;
 

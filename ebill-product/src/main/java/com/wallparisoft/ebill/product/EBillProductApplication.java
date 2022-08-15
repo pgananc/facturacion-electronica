@@ -1,4 +1,4 @@
-package com.wallparisoft.facturacion.electronica;
+package com.wallparisoft.ebill.product;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

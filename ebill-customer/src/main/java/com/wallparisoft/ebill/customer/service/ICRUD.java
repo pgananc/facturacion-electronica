@@ -1,4 +1,4 @@
-package com.wallparisoft.facturacion.electronica.servicio;
+package com.wallparisoft.ebill.customer.service;
 
 
 import java.util.List;

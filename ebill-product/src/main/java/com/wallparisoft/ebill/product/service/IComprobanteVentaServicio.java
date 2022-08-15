@@ -1,6 +1,6 @@
-package com.wallparisoft.facturacion.electronica.servicio;
+package com.wallparisoft.ebill.product.service;
 
-import com.wallparisoft.facturacion.electronica.modelo.ComprobanteVenta;
+import com.wallparisoft.ebill.product.entity.ComprobanteVenta;
 
 public interface IComprobanteVentaServicio extends ICRUD<ComprobanteVenta> {
 

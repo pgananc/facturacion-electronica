@@ -1,13 +1,13 @@
-package com.wallparisoft.facturacion.electronica;
+package com.wallparisoft;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class FacturacionElectronicaApplication {
+public class EBillCustomerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(FacturacionElectronicaApplication.class, args);
+		SpringApplication.run(EBillCustomerApplication.class, args);
 	}
 
 }
