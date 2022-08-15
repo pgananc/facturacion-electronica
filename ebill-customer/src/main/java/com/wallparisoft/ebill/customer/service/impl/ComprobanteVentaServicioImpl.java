@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.wallparisoft.ebill.customer.entity.ComprobanteVenta;
-import com.wallparisoft.ebill.customer.repo.IComprobanteVentaRepo;
+import com.wallparisoft.ebill.customer.repository.IComprobanteVentaRepo;
 import com.wallparisoft.ebill.customer.service.IComprobanteVentaServicio;
 
 @Service

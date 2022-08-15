@@ -1,8 +1,7 @@
-package com.wallparisoft.facturacion.electronica.repo;
+package com.wallparisoft.ebillbilling.repository;
 
+import com.wallparisoft.ebillbilling.entity.ComprobanteVenta;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.wallparisoft.facturacion.electronica.modelo.ComprobanteVenta;
 
 public interface IComprobanteVentaRepo extends JpaRepository<ComprobanteVenta, Long> {
 

@@ -1,13 +1,13 @@
-package com.wallparisoft.facturacion.electronica.servicio.impl;
+package com.wallparisoft.ebillbilling.service.impl;
 
+import com.wallparisoft.ebillbilling.service.IComprobanteVentaServicio;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.wallparisoft.facturacion.electronica.modelo.ComprobanteVenta;
-import com.wallparisoft.facturacion.electronica.repo.IComprobanteVentaRepo;
-import com.wallparisoft.facturacion.electronica.servicio.IComprobanteVentaServicio;
+import com.wallparisoft.ebillbilling.entity.ComprobanteVenta;
+import com.wallparisoft.ebillbilling.repository.IComprobanteVentaRepo;
 
 @Service
 public class ComprobanteVentaServicioImpl implements IComprobanteVentaServicio {

@@ -1,7 +1,7 @@
 package com.wallparisoft.ebill.product.service.impl;
 
 import com.wallparisoft.ebill.product.entity.ComprobanteVenta;
-import com.wallparisoft.ebill.product.repo.IComprobanteVentaRepo;
+import com.wallparisoft.ebill.product.repository.IComprobanteVentaRepo;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
