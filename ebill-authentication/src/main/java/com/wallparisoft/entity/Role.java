@@ -1,4 +1,4 @@
-package com.wallparisoft.model;
+package com.wallparisoft.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,13 +12,13 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "rol")
-public class Rol {
+@Table(name = "roles")
+public class Role {
 
 	@Id
 	@SequenceGenerator(sequenceName = "rol_seq", name = "rol_seq", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rol_seq")
-	private Long idRol;
+	private Long idRole;
 
 	@Column(name = "name")
 	private String name;

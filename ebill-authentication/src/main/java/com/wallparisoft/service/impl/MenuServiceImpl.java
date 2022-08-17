@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.wallparisoft.model.Menu;
+import com.wallparisoft.entity.Menu;
 import com.wallparisoft.repository.IMenuRepository;
 import com.wallparisoft.service.IMenuService;
 

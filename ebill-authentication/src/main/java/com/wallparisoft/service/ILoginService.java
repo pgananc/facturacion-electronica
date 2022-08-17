@@ -1,6 +1,6 @@
 package com.wallparisoft.service;
 
-import com.wallparisoft.model.User;
+import com.wallparisoft.entity.User;
 
 public interface ILoginService {
 	

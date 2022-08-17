@@ -1,4 +1,4 @@
-package com.wallparisoft.model;
+package com.wallparisoft.entity;
 
 import java.util.List;
 
@@ -15,27 +15,28 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.Data;
+
 @Data
 @Entity
 @Table(name = "users")
 public class User {
 
-	@Id
-	@SequenceGenerator(sequenceName = "user_seq", name = "user_seq", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
-	private Long idUser;
+  @Id
+  @SequenceGenerator(sequenceName = "user_seq", name = "user_seq", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
+  private Long idUser;
 
-	@Column(name = "username", nullable = false, unique = true)
-	private String username;
+  @Column(name = "username", nullable = false, unique = true)
+  private String username;
 
-	@Column(name = "password", nullable = false)
-	private String password;
+  @Column(name = "password", nullable = false)
+  private String password;
 
-	@Column(name = "enabled", nullable = false)
-	private boolean enabled;
+  @Column(name = "enabled", nullable = false)
+  private boolean enabled;
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "user_rol", joinColumns = @JoinColumn(name = "id_user", referencedColumnName = "idUser"), inverseJoinColumns = @JoinColumn(name = "id_rol", referencedColumnName = "idRol"))
-	private List<Rol> roles;
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "id_user", referencedColumnName = "idUser"), inverseJoinColumns = @JoinColumn(name = "id_role", referencedColumnName = "idRole"))
+  private List<Role> roles;
 
 }

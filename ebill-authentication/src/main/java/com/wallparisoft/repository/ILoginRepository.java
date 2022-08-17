@@ -1,10 +1,10 @@
 package com.wallparisoft.repository;
 
+
+import com.wallparisoft.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
-import com.wallparisoft.model.User;
 
 public interface ILoginRepository extends JpaRepository<User, Long> {
 

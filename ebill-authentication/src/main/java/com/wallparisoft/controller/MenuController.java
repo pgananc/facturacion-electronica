@@ -11,21 +11,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wallparisoft.model.Menu;
+import com.wallparisoft.entity.Menu;
 import com.wallparisoft.service.IMenuService;
 
 @RestController
 @RequestMapping("/menus")
 public class MenuController {
 
-	@Autowired
-	private IMenuService service;
+  @Autowired
+  private IMenuService service;
 
-	@GetMapping(value = "/{userName}")
-	public ResponseEntity<List<Menu>> listar(@PathVariable String userName) {
-		List<Menu> menus = new ArrayList<>();
-		menus = service.findMenuByUsername(userName);
-		return new ResponseEntity<List<Menu>>(menus, HttpStatus.OK);
-	}
+  @GetMapping(value = "/{userName}")
+  public ResponseEntity<List<Menu>> getMenus(@PathVariable String userName) {
+    List<Menu> menus = new ArrayList<>();
+    menus = service.findMenuByUsername(userName);
+    return new ResponseEntity<List<Menu>>(menus, HttpStatus.OK);
+  }
 
 }

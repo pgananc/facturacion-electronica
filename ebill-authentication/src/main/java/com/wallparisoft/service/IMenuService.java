@@ -2,7 +2,7 @@ package com.wallparisoft.service;
 
 import java.util.List;
 
-import com.wallparisoft.model.Menu;
+import com.wallparisoft.entity.Menu;
 
 public interface IMenuService{
 	
