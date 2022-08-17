@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class EBillAuthenticationApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(LoginAuthApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(EBillAuthenticationApplication.class, args);
+  }
 
 }
