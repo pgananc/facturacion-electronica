@@ -1,5 +1,7 @@
 package com.wallparisoft.ebill.customer.service;
 
-public interface IComprobanteVentaServicio extends ICRUD<ComprobanteVenta> {
+import com.wallparisoft.ebill.customer.entity.Company;
+
+public interface ICompanyService extends ICRUD<Company> {
 
 }

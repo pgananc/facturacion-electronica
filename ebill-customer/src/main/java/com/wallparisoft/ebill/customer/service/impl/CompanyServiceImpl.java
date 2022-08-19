@@ -2,44 +2,37 @@ package com.wallparisoft.ebill.customer.service.impl;
 
 import java.util.List;
 
+import com.wallparisoft.ebill.customer.entity.Company;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.wallparisoft.ebill.customer.repository.IComprobanteVentaRepo;
+import com.wallparisoft.ebill.customer.repository.ICompanyRepo;
 import com.wallparisoft.ebill.customer.service.ICompanyService;
 
 @Service
-public class ComprobanteVentaServicioImpl implements ICompanyService {
+public class CompanyServiceImpl implements ICompanyService {
 
 	@Autowired
-	private IComprobanteVentaRepo repo;
+	private ICompanyRepo repo;
+
 
 	@Override
-	public ComprobanteVenta registrar(ComprobanteVenta obj) {
-		return repo.save(obj);
-	}
-
-	@Override
-	public ComprobanteVenta modificar(ComprobanteVenta obj) {
-		// TODO Auto-generated method stub
+	public Company save(Company entity) {
 		return null;
 	}
 
 	@Override
-	public List<ComprobanteVenta> listar() {
-		return repo.findAll();
-	}
-
-	@Override
-	public ComprobanteVenta leerPorId(Integer id) {
-		// TODO Auto-generated method stub
+	public Company update(Company entity, Long id) {
 		return null;
 	}
 
 	@Override
-	public boolean eliminar(Integer id) {
-		// TODO Auto-generated method stub
-		return false;
+	public List<Company> findAll() {
+		return null;
 	}
 
+	@Override
+	public Company findById(Long id) {
+		return null;
+	}
 }

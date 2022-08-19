@@ -18,29 +18,29 @@ import lombok.Data;
 @Entity
 @Table(name = "company_contact")
 @Data
-public class ContactCompany {
+public class CompanyContact {
 	@Id
-	@SequenceGenerator(sequenceName = "empresa_medio_contacto_seq", name = "empresa_medio_contacto_seq", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "empresa_medio_contacto_seq")
-	@Column(name = "id_empresa_medio_contacto")
-	private Long idEmpresaMedioContacto;
+	@SequenceGenerator(sequenceName = "company_contact_seq", name = "company_contact_seq", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "company_contact_seq")
+	@Column(name = "id_company_contact")
+	private Long idCompanyContact;
 
 	@ManyToOne
-	@JoinColumn(name = "id_empresa", referencedColumnName = "id_empresa")
-	private Company empresa;
+	@JoinColumn(name = "id_company", referencedColumnName = "id_company")
+	private Company company;
 
 	@ManyToOne
-	@JoinColumn(name = "id_medio_contacto", referencedColumnName = "id_medio_contacto")
-	private Contact medioContacto;
+	@JoinColumn(name = "id_contact", referencedColumnName = "id_contact")
+	private Contact contact;
 
-	@Column(name = "estado", nullable = false)
-	private String estado;
+	@Column(name = "status", nullable = false)
+	private Boolean status;
 
-	@Column(name = "fecha_creacion")
-	private LocalDateTime fechaCreacion;
+	@Column(name = "creation_date")
+	private LocalDateTime creationDate;
 
 	@PrePersist
 	public void preInsertar() {
-		fechaCreacion = LocalDateTime.now();
+		creationDate = LocalDateTime.now();
 	}
 }
