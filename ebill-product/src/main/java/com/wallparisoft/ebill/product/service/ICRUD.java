@@ -5,10 +5,12 @@ import java.util.List;
 
 public interface ICRUD<T> {
 
-	T registrar(T obj);
-	T modificar(T obj);
-	List<T> listar();
-	T leerPorId(Integer id);
-	boolean eliminar(Integer id);
+	T save(T entity);
+
+	T update(T entity, Long id);
+
+	List<T> findAll();
+
+	T findById(Long id);
 }
 
