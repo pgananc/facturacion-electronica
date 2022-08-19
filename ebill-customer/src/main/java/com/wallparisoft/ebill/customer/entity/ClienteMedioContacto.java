@@ -31,7 +31,7 @@ public class ClienteMedioContacto {
 
 	@ManyToOne
 	@JoinColumn(name = "id_medio_contacto", referencedColumnName = "id_medio_contacto")
-	private MedioContacto medioContacto;
+	private Contact medioContacto;
 
 	@Column(name = "estado", nullable = false)
 	private String estado;
