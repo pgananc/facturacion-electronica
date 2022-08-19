@@ -5,12 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.wallparisoft.ebill.customer.entity.ComprobanteVenta;
 import com.wallparisoft.ebill.customer.repository.IComprobanteVentaRepo;
-import com.wallparisoft.ebill.customer.service.IComprobanteVentaServicio;
+import com.wallparisoft.ebill.customer.service.ICompanyService;
 
 @Service
-public class ComprobanteVentaServicioImpl implements IComprobanteVentaServicio {
+public class ComprobanteVentaServicioImpl implements ICompanyService {
 
 	@Autowired
 	private IComprobanteVentaRepo repo;

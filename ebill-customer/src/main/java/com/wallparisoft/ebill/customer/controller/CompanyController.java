@@ -14,15 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.wallparisoft.ebill.customer.entity.ComprobanteVenta;
-import com.wallparisoft.ebill.customer.service.IComprobanteVentaServicio;
+import com.wallparisoft.ebill.customer.service.ICompanyService;
 
 @RestController
 @RequestMapping("/comprobante-venta")
 public class ComprobanteVentaController {
 
 	@Autowired
-	private IComprobanteVentaServicio comprobanteVentaServicio;
+	private ICompanyService comprobanteVentaServicio;
 
 	@GetMapping
 	public ResponseEntity<List<ComprobanteVenta>> listar() {

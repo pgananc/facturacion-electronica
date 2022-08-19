@@ -16,9 +16,9 @@ import javax.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "empresa_medio_contacto")
+@Table(name = "company_contact")
 @Data
-public class EmpresaMedioContacto {
+public class ContactCompany {
 	@Id
 	@SequenceGenerator(sequenceName = "empresa_medio_contacto_seq", name = "empresa_medio_contacto_seq", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "empresa_medio_contacto_seq")
@@ -27,7 +27,7 @@ public class EmpresaMedioContacto {
 
 	@ManyToOne
 	@JoinColumn(name = "id_empresa", referencedColumnName = "id_empresa")
-	private Empresa empresa;
+	private Company empresa;
 
 	@ManyToOne
 	@JoinColumn(name = "id_medio_contacto", referencedColumnName = "id_medio_contacto")
