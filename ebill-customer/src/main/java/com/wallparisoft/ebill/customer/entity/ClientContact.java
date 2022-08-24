@@ -35,7 +35,7 @@ public class ClientContact {
   private Contact contact;
 
   @Column(name = "status", nullable = false)
-  private String status;
+  private Boolean status;
 
   @Column(name = "creation_date")
   private LocalDateTime creationDate;

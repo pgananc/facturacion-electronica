@@ -17,7 +17,7 @@ public class Client {
     private Long idClient;
 
     @Column(name = "id_type", nullable = false, length = 3)
-    private String id_type;
+    private Integer idType;
 
     @Column(name = "identification", nullable = false, length = 13)
     private String identification;
@@ -29,7 +29,7 @@ public class Client {
     private String clientType;
 
     @Column(name = "status", nullable = false)
-    private String status;
+    private Boolean status;
 
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
