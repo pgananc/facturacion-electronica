@@ -32,7 +32,7 @@ public class ClientController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> save(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         clientService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
