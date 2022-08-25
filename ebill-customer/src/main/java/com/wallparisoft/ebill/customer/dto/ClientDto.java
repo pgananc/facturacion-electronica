@@ -6,6 +6,7 @@ import java.util.List;
 @Data
 public class ClientDto {
 
+    private Long idClient;
     private Integer idType;
     private String identification;
     private String name;

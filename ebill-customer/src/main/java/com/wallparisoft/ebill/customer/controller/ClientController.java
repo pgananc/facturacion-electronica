@@ -36,4 +36,18 @@ public class ClientController {
         clientService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping
+    public ResponseEntity<List<ClientDto>> findClientsActiveAndContactActive() {
+        List<ClientDto> clients= clientService.findClientsActiveAndContactActive();
+        return new ResponseEntity<>(clients,HttpStatus.OK);
+    }
+
+    @PutMapping
+    public ResponseEntity<ClientDto> update(@Validated @RequestBody ClientDto clientDto) {
+        Client client = mapstructMapper.convertClientDtoToClient(clientDto);
+        List<Contact> contacts = mapstructMapper.convertContactDtoListToContactList(clientDto.getContacts());
+        clientService.updateClientAndContact(client, contacts);
+        return new ResponseEntity<>(clientDto, HttpStatus.OK);
+    }
 }

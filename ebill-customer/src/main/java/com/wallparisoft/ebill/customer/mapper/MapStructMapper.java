@@ -15,4 +15,9 @@ public interface MapStructMapper {
     Contact convertContactDtoToContact(ContactDto contactDto);
 
     List<Contact> convertContactDtoListToContactList(List<ContactDto> list);
+
+    ClientDto convertClientToClientDto(Client client);
+
+    ContactDto convertContactToContactDto(Contact contact);
+    List<ContactDto> convertContactListToContactDtoList(List<Contact> list);
 }
