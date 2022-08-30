@@ -1,6 +1,7 @@
 package com.wallparisoft.ebill.customer.service;
 
 import com.wallparisoft.ebill.customer.dto.ClientDto;
+import com.wallparisoft.ebill.customer.dto.ContactDto;
 import com.wallparisoft.ebill.customer.entity.Client;
 import com.wallparisoft.ebill.customer.entity.Contact;
 
@@ -9,10 +10,10 @@ import java.util.List;
 
 public interface IClientService extends ICRUD<Client> {
 
-    void saveClientAndContact(Client client, List<Contact> contacts);
+    void saveClientAndContact(ClientDto clientDto);
 
 
-    public void updateClientAndContact(Client client, List<Contact> contacts);
+    public void updateClientAndContact(ClientDto clientDto);
 
     void delete(Long id);
 

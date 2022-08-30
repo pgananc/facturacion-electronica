@@ -83,14 +83,16 @@ public class ClientServiceImpl implements IClientService {
 
     @Transactional
     @Override
-    public void saveClientAndContact(Client client, List<Contact> contacts) {
+    public void saveClientAndContact(ClientDto clientDto) {
+        Client client = mapstructMapper.convertClientDtoToClient(clientDto);
+        List<Contact> contacts = mapstructMapper.convertContactDtoListToContactList(clientDto.getContacts());
         Client clientSave = save(client);
         contacts.forEach(x -> {
             Contact contact = contactRepo.save(x);
-            ClientContact clientContact = new ClientContact();
-            clientContact.setClient(clientSave);
-            clientContact.setContact(contact);
-            clientContact.setStatus(contact.getStatus());
+            ClientContact clientContact = ClientContact.builder()
+                    .client(clientSave)
+                    .contact(contact)
+                    .status(contact.isStatus()).build();
             clientContactRepo.save(clientContact);
 
         });
@@ -98,15 +100,18 @@ public class ClientServiceImpl implements IClientService {
 
     @Transactional
     @Override
-    public void updateClientAndContact(Client client, List<Contact> contacts) {
-        Client clientSave = findById(client.getIdClient());
+    public void updateClientAndContact(ClientDto clientDto) {
+        Client clientSave = findById(clientDto.getIdClient());
+        Client client = mapstructMapper.convertClientDtoToClient(clientDto);
+        List<Contact> contacts = mapstructMapper.convertContactDtoListToContactList(clientDto.getContacts());
+
         client.setCreationDate(clientSave.getCreationDate());
         save(client);
         contacts.forEach(x -> {
             Optional<ClientContact> clientContactOptional = clientContactRepo.findByIdClientAndIdContact(client.getIdClient(), x.getIdContact());
             if (clientContactOptional.isPresent()) {
                 ClientContact clientContact = clientContactOptional.get();
-                clientContact.setStatus(x.getStatus());
+                clientContact.setStatus(x.isStatus());
                 clientContactRepo.save(clientContact);
                 x.setCreationDate(clientContact.getCreationDate());
                 contactRepo.save(x);

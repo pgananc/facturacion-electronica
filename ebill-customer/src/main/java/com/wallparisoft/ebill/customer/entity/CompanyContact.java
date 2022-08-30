@@ -13,11 +13,15 @@ import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "company_contact")
 @Data
+@Builder
 public class CompanyContact {
 	@Id
 	@SequenceGenerator(sequenceName = "company_contact_seq", name = "company_contact_seq", allocationSize = 1)
@@ -34,7 +38,7 @@ public class CompanyContact {
 	private Contact contact;
 
 	@Column(name = "status", nullable = false)
-	private Boolean status;
+	private boolean status;
 
 	@Column(name = "creation_date")
 	private LocalDateTime creationDate;

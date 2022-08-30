@@ -17,14 +17,14 @@ public class MapStructMapperImpl implements MapStructMapper {
             return null;
         }
 
-        Client client = new Client();
-        client.setIdClient(clientDto.getIdClient());
-        client.setClientType(clientDto.getClientType());
-        client.setName(clientDto.getName());
-        client.setIdentification(clientDto.getIdentification());
-        client.setStatus(clientDto.getStatus());
-        client.setIdType(clientDto.getIdType());
-        client.setIdCompany(clientDto.getIdCompany());
+        Client client = Client.builder().idClient(clientDto.getIdClient()).
+                clientType(clientDto.getClientType()).
+                name(clientDto.getName()).
+                identification(clientDto.getIdentification()).
+                status(clientDto.getStatus()).
+                idType(clientDto.getIdType()).
+                idCompany(clientDto.getIdCompany()).
+                build();
         return client;
     }
 
@@ -33,11 +33,11 @@ public class MapStructMapperImpl implements MapStructMapper {
         if (contactDto == null) {
             return null;
         }
-        Contact contact = new Contact();
-        contact.setIdContact(contactDto.getIdContact());
-        contact.setContactType(contactDto.getContactType());
-        contact.setStatus(contactDto.getStatus());
-        contact.setValue(contactDto.getValue());
+        Contact contact = Contact.builder()
+                .idContact(contactDto.getIdContact()).
+                contactType(contactDto.getContactType()).
+                status(contactDto.getStatus()).
+                value(contactDto.getValue()).build();
         return contact;
     }
 
@@ -61,7 +61,7 @@ public class MapStructMapperImpl implements MapStructMapper {
         clientDto.setClientType(client.getClientType());
         clientDto.setName(client.getName());
         clientDto.setIdentification(client.getIdentification());
-        clientDto.setStatus(client.getStatus());
+        clientDto.setStatus(client.isStatus());
         clientDto.setIdType(client.getIdType());
         clientDto.setIdCompany(client.getIdCompany());
         return clientDto;
@@ -75,7 +75,7 @@ public class MapStructMapperImpl implements MapStructMapper {
         ContactDto contactDto = new ContactDto();
         contactDto.setIdContact(contact.getIdContact());
         contactDto.setContactType(contact.getContactType());
-        contactDto.setStatus(contact.getStatus());
+        contactDto.setStatus(contact.isStatus());
         contactDto.setValue(contact.getValue());
         return contactDto;
     }

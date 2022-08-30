@@ -9,11 +9,16 @@ import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "contact")
 @Data
+@Builder
 public class Contact {
 
   @Id
@@ -29,7 +34,7 @@ public class Contact {
   private String value;
 
   @Column(name = "status", nullable = false)
-  private Boolean status;
+  private boolean status;
 
   @Column(name = "creation_date")
   private LocalDateTime creationDate;

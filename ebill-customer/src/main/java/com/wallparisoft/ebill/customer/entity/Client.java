@@ -1,12 +1,16 @@
 package com.wallparisoft.ebill.customer.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "client")
+@Builder
 @Data
 public class Client {
 
@@ -29,7 +33,7 @@ public class Client {
     private String clientType;
 
     @Column(name = "status", nullable = false)
-    private Boolean status;
+    private boolean status;
 
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
