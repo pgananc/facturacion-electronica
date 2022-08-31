@@ -4,6 +4,7 @@ import com.wallparisoft.ebill.customer.dto.ClientDto;
 import com.wallparisoft.ebill.customer.dto.ContactDto;
 import com.wallparisoft.ebill.customer.entity.Client;
 import com.wallparisoft.ebill.customer.entity.Contact;
+import com.wallparisoft.ebill.customer.response.ClientDtoResponse;
 
 import javax.transaction.Transactional;
 import java.util.List;

@@ -11,6 +11,7 @@ import com.wallparisoft.ebill.customer.repository.IClientContactRepo;
 import com.wallparisoft.ebill.customer.repository.IClientRepo;
 import com.wallparisoft.ebill.customer.repository.ICompanyContactRepo;
 import com.wallparisoft.ebill.customer.repository.IContactRepo;
+import com.wallparisoft.ebill.customer.response.ClientDtoResponse;
 import com.wallparisoft.ebill.customer.service.IClientContactService;
 import com.wallparisoft.ebill.customer.service.IClientService;
 

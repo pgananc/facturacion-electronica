@@ -1,5 +1,6 @@
 package com.wallparisoft.ebill.customer.exception;
 
+import com.wallparisoft.ebill.customer.response.BasicResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,28 +24,33 @@ import java.time.LocalDateTime;
 public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
-	public final ResponseEntity<ExceptionResponse> manejarTodasExcepciones(ModelNotFoundException ex,
+	public final ResponseEntity<BasicResponse> handleAllException(Exception ex,
 			WebRequest request) {
-
-		ExceptionResponse er = ExceptionResponse.builder().timestamp(LocalDateTime.now()).message(ex.getMessage())
-				.details(request.getDescription(false)).build();
-		return new ResponseEntity<ExceptionResponse>(er, HttpStatus.INTERNAL_SERVER_ERROR);
+		BasicResponse basicResponse= BasicResponse.builder()
+				.code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+				.status(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
+				.message(ex.getMessage()).build();
+		return new ResponseEntity<BasicResponse>(basicResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler(ModelNotFoundException.class)
-	public final ResponseEntity<ExceptionResponse> manejarModeloException(ModelNotFoundException ex,
+	public final ResponseEntity<BasicResponse> handleModelNotFoundException(ModelNotFoundException ex,
 			WebRequest request) {
-		ExceptionResponse er = ExceptionResponse.builder().timestamp(LocalDateTime.now()).message(ex.getMessage())
-				.details(request.getDescription(false)).build();
-		return new ResponseEntity<ExceptionResponse>(er, HttpStatus.NOT_FOUND);
+		BasicResponse basicResponse= BasicResponse.builder()
+				.code(HttpStatus.NOT_FOUND.value())
+				.status(HttpStatus.NOT_FOUND.getReasonPhrase())
+				.message(ex.getMessage()).build();
+		return new ResponseEntity<BasicResponse>(basicResponse, HttpStatus.NOT_FOUND);
 	}
 
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		ExceptionResponse er = ExceptionResponse.builder().timestamp(LocalDateTime.now()).message(ex.getMessage())
-				.details(request.getDescription(false)).build();
-		return new ResponseEntity<Object>(er, HttpStatus.BAD_REQUEST);
+		BasicResponse basicResponse= BasicResponse.builder()
+				.code(HttpStatus.BAD_REQUEST.value())
+				.status(HttpStatus.BAD_REQUEST.getReasonPhrase())
+				.message(ex.getMessage()).build();
+		return new ResponseEntity<Object>(basicResponse, HttpStatus.BAD_REQUEST);
 	}
 
 }

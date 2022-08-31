@@ -21,6 +21,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "client_contact")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class ClientContact {
 
