@@ -9,11 +9,18 @@ import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "contact")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Contact {
 
   @Id
