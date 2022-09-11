@@ -32,7 +32,7 @@ public class ClientController {
     public ResponseEntity<BasicResponse> delete(@PathVariable("id") Long id) {
         clientService.delete(id);
         BasicResponse response = BasicResponse.builder().status("OK").build();
-        return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping

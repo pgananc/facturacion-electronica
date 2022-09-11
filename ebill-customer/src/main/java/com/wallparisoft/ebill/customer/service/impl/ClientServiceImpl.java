@@ -6,24 +6,19 @@ import com.wallparisoft.ebill.customer.entity.Client;
 import com.wallparisoft.ebill.customer.entity.ClientContact;
 import com.wallparisoft.ebill.customer.entity.Contact;
 import com.wallparisoft.ebill.customer.exception.ModelNotFoundException;
-import com.wallparisoft.ebill.customer.mapper.MapStructMapper;
+import com.wallparisoft.ebill.customer.mapper.ClientMapper;
+import com.wallparisoft.ebill.customer.mapper.ContactMapper;
 import com.wallparisoft.ebill.customer.repository.IClientContactRepo;
 import com.wallparisoft.ebill.customer.repository.IClientRepo;
-import com.wallparisoft.ebill.customer.repository.ICompanyContactRepo;
 import com.wallparisoft.ebill.customer.repository.IContactRepo;
-import com.wallparisoft.ebill.customer.response.ClientDtoResponse;
-import com.wallparisoft.ebill.customer.service.IClientContactService;
 import com.wallparisoft.ebill.customer.service.IClientService;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import com.wallparisoft.ebill.customer.service.IContactService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ClientServiceImpl implements IClientService {
@@ -36,8 +31,9 @@ public class ClientServiceImpl implements IClientService {
     private IContactRepo contactRepo;
 
     @Autowired
-    private MapStructMapper mapstructMapper;
-
+    private ClientMapper clientMapper;
+    @Autowired
+    private ContactMapper contactMapper;
 
     @Override
     public Client save(Client entity) {
@@ -73,9 +69,9 @@ public class ClientServiceImpl implements IClientService {
         List<ClientDto> clientDtoList = new ArrayList<>();
         List<Client> clients = this.clientRepo.findClientsActive();
         clients.parallelStream().forEach(x -> {
-            ClientDto clientDto = mapstructMapper.convertClientToClientDto(x);
+            ClientDto clientDto = clientMapper.convertClientToClientDto(x);
             List<Contact> contacts = contactRepo.findClientContactActiveByIdClient(x.getIdClient());
-            List<ContactDto> contactsDto = mapstructMapper.convertContactListToContactDtoList(contacts);
+            List<ContactDto> contactsDto = contactMapper.convertContactListToContactDtoList(contacts);
             clientDto.setContacts(contactsDto);
             clientDtoList.add(clientDto);
         });
@@ -85,8 +81,8 @@ public class ClientServiceImpl implements IClientService {
     @Transactional
     @Override
     public void saveClientAndContact(ClientDto clientDto) {
-        Client client = mapstructMapper.convertClientDtoToClient(clientDto);
-        List<Contact> contacts = mapstructMapper.convertContactDtoListToContactList(clientDto.getContacts());
+        Client client = clientMapper.convertClientDtoToClient(clientDto);
+        List<Contact> contacts = contactMapper.convertContactDtoListToContactList(clientDto.getContacts());
         Client clientSave = save(client);
         contacts.forEach(x -> {
             Contact contact = contactRepo.save(x);
@@ -103,8 +99,8 @@ public class ClientServiceImpl implements IClientService {
     @Override
     public void updateClientAndContact(ClientDto clientDto) {
         Client clientSave = findById(clientDto.getIdClient());
-        Client client = mapstructMapper.convertClientDtoToClient(clientDto);
-        List<Contact> contacts = mapstructMapper.convertContactDtoListToContactList(clientDto.getContacts());
+        Client client = clientMapper.convertClientDtoToClient(clientDto);
+        List<Contact> contacts = contactMapper.convertContactDtoListToContactList(clientDto.getContacts());
 
         client.setCreationDate(clientSave.getCreationDate());
         save(client);
