@@ -12,11 +12,17 @@ import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "product")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Product {
 
   @Id
@@ -41,10 +47,10 @@ public class Product {
   private String description;
 
   @Column(name = "unit_price")
-  private BigDecimal unitPrice;
+  private Double unitPrice;
 
   @Column(name = "discount")
-  private BigDecimal discount;
+  private Double discount;
 
   @Column(name = "status", nullable = false)
   private boolean status;

@@ -5,24 +5,30 @@ import static com.wallparisoft.ebill.product.util.EventType.RESPONSE;
 import static com.wallparisoft.ebill.product.util.Level.LEVEL_001;
 import static lombok.AccessLevel.PRIVATE;
 
+import com.fasterxml.jackson.databind.JsonSerializable;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.wallparisoft.ebill.product.dto.ProductDto;
 import com.wallparisoft.ebill.product.entity.Product;
+import com.wallparisoft.ebill.product.response.ProductResponse;
 import com.wallparisoft.ebill.product.service.IProductService;
 import com.wallparisoft.ebill.product.util.EventLog;
-import java.net.URI;
-import java.util.List;
+import javax.validation.Valid;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
+import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @RequestMapping("api/product")
@@ -31,10 +37,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class ProductController {
 
   @Autowired
-  private IProductService productService;
+  IProductService productService;
 
   @GetMapping
-  public ResponseEntity<List<Product>> getAll() {
+  @ResponseStatus(HttpStatus.OK)
+  public ProductResponse getAll() {
     StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
     log.debug(EventLog.builder()
         .service(traceElement.getClassName())
@@ -42,19 +49,40 @@ public class ProductController {
         .eventType(REQUEST.name())
         .level(LEVEL_001.name())
         .build());
-    List<Product> products = productService.findAll();
+    ProductResponse response = productService.getAllProducts();
     log.debug(EventLog.builder()
         .service(traceElement.getClassName())
         .method(traceElement.getMethodName())
-        .information(products)
+        .information(response.getProductDtos())
         .eventType(RESPONSE.name())
         .level(LEVEL_001.name())
         .build());
-    return new ResponseEntity<>(products, HttpStatus.OK);
+    return response;
+  }
+
+  @GetMapping("/{status}")
+  @ResponseStatus(HttpStatus.OK)
+  public ProductResponse getAllByStatus(@PathVariable("status") boolean status) {
+    StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+    log.debug(EventLog.builder()
+        .service(traceElement.getClassName())
+        .method(traceElement.getMethodName())
+        .eventType(REQUEST.name())
+        .level(LEVEL_001.name())
+        .build());
+    ProductResponse response = productService.getProductsByStatus(status);
+    log.debug(EventLog.builder()
+        .service(traceElement.getClassName())
+        .method(traceElement.getMethodName())
+        .information(response.getProductDtos())
+        .eventType(RESPONSE.name())
+        .level(LEVEL_001.name())
+        .build());
+    return response;
   }
 
   @PostMapping
-  public ResponseEntity<Object> register(@Validated @RequestBody Product product) {
+  public ProductResponse register(@Valid @RequestBody ProductDto product) {
     StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
     log.debug(EventLog.builder()
         .service(traceElement.getClassName())
@@ -63,21 +91,19 @@ public class ProductController {
         .eventType(REQUEST.name())
         .level(LEVEL_001.name())
         .build());
-    Product productCreated = productService.save(product);
-    URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-        .buildAndExpand(productCreated.getIdProduct()).toUri();
+    ProductResponse response = productService.createProduct(product);
     log.debug(EventLog.builder()
         .service(traceElement.getClassName())
         .method(traceElement.getMethodName())
-        .information(productCreated)
+        .information(response.getProductDto())
         .eventType(RESPONSE.name())
         .level(LEVEL_001.name())
         .build());
-    return ResponseEntity.created(location).build();
+    return response;
   }
 
-  @DeleteMapping
-  public ResponseEntity<Object> delete(@Validated @RequestBody Long id) {
+  @DeleteMapping("/{id}")
+  public ProductResponse delete(@PathVariable("id") Long id) {
     StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
     log.debug(EventLog.builder()
         .service(traceElement.getClassName())
@@ -86,18 +112,35 @@ public class ProductController {
         .eventType(REQUEST.name())
         .level(LEVEL_001.name())
         .build());
-    Product product = productService.findById(id);
-    product.setStatus(false);
-    Product productDeleted = productService.update(product, id);
-    URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-        .buildAndExpand(productDeleted.getIdProduct()).toUri();
+    ProductResponse response = productService.delete(id);
     log.debug(EventLog.builder()
         .service(traceElement.getClassName())
         .method(traceElement.getMethodName())
-        .information(productDeleted)
+        .information(response.getProductDto())
         .eventType(RESPONSE.name())
         .level(LEVEL_001.name())
         .build());
-    return ResponseEntity.created(location).build();
+    return response;
+  }
+
+  @PatchMapping("/{idProduct}")
+  public ProductResponse updateProduct(@Valid @RequestBody ProductDto product, @PathVariable Long idProduct) {
+    StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+    log.debug(EventLog.builder()
+        .service(traceElement.getClassName())
+        .method(traceElement.getMethodName())
+        .information("ID product: ".concat(idProduct.toString()).concat(", Object product: ").concat(product.toString()))
+        .eventType(REQUEST.name())
+        .level(LEVEL_001.name())
+        .build());
+    ProductResponse response = productService.updateProduct(product, idProduct);
+    log.debug(EventLog.builder()
+        .service(traceElement.getClassName())
+        .method(traceElement.getMethodName())
+        .information(response.getProductDto())
+        .eventType(RESPONSE.name())
+        .level(LEVEL_001.name())
+        .build());
+    return response;
   }
 }
