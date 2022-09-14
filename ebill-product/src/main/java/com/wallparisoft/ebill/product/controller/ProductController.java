@@ -5,20 +5,15 @@ import static com.wallparisoft.ebill.product.util.EventType.RESPONSE;
 import static com.wallparisoft.ebill.product.util.Level.LEVEL_001;
 import static lombok.AccessLevel.PRIVATE;
 
-import com.fasterxml.jackson.databind.JsonSerializable;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.wallparisoft.ebill.product.dto.ProductDto;
-import com.wallparisoft.ebill.product.entity.Product;
 import com.wallparisoft.ebill.product.response.ProductResponse;
 import com.wallparisoft.ebill.product.service.IProductService;
 import com.wallparisoft.ebill.product.util.EventLog;
 import javax.validation.Valid;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
-import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -26,7 +21,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 

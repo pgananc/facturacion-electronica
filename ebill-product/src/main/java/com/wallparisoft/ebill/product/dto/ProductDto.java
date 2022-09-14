@@ -20,6 +20,7 @@ public class ProductDto {
 
   int idProduct;
   @NotEmpty
+  @NotNull
   String mainCode;
   @NotEmpty
   @NotNull
@@ -28,7 +29,7 @@ public class ProductDto {
   String productType;
   @NotEmpty
   String name;
-  @NotEmpty
+  @NotNull
   String description;
   double unitPrice;
   double discount;
