@@ -12,47 +12,54 @@ import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "product")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Product {
-    @Id
-    @SequenceGenerator(sequenceName = "product_seq", name = "product_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_seq")
-    @Column(name = "id_product")
-    private Long idProduct;
 
-    @Column(name = "main_code")
-    private String mainCode;
+  @Id
+  @SequenceGenerator(sequenceName = "product_seq", name = "product_seq", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_seq")
+  @Column(name = "id_product")
+  private Long idProduct;
 
-    @Column(name = "auxiliar_code")
-    private String auxiliarCode;
+  @Column(name = "main_code")
+  private String mainCode;
 
-    @Column(name = "product_type")
-    private String productType;
+  @Column(name = "auxiliar_code")
+  private String auxiliarCode;
 
-    @Column(name = "name")
-    private String name;
+  @Column(name = "product_type")
+  private String productType;
 
-    @Column(name = "description")
-    private String description;
+  @Column(name = "name")
+  private String name;
 
-    @Column(name = "unit_price")
-    private BigDecimal unitPrice;
+  @Column(name = "description")
+  private String description;
 
-    @Column(name = "discount")
-    private BigDecimal discount;
+  @Column(name = "unit_price")
+  private Double unitPrice;
 
-    @Column(name = "status", nullable = false)
-    private Boolean status;
+  @Column(name = "discount")
+  private Double discount;
 
-    @Column(name = "creation_date")
-    private LocalDateTime creationDate;
+  @Column(name = "status", nullable = false)
+  private boolean status;
 
-    @PrePersist
-    public void preInsertar() {
-        creationDate = LocalDateTime.now();
-    }
+  @Column(name = "creation_date")
+  private LocalDateTime creationDate;
+
+  @PrePersist
+  public void preInsert() {
+    creationDate = LocalDateTime.now();
+  }
 }
