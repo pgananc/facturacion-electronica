@@ -58,11 +58,6 @@ public class Company {
 	@Column(name = "creation_date")
 	private LocalDateTime creationDate;
 
-
-	
-	@OneToMany(mappedBy = "company")
-	private List<CompanyContact> empresaMedioContactos;
-
 	@PrePersist
 	public void preInsertar() {
 		creationDate = LocalDateTime.now();
