@@ -10,7 +10,7 @@ public interface ICompanyService extends ICRUD<Company> {
     void saveCompanyAndContact(CompanyDto companyDto);
 
 
-    public void updateCompanyAndContact(CompanyDto companyDto);
+    public void updateCompanyAndContact(CompanyDto companyDto, Long idCompany);
 
     void delete(Long id);
 

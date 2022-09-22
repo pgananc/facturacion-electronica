@@ -5,13 +5,13 @@ import com.wallparisoft.ebill.customer.dto.ContactDto;
 import com.wallparisoft.ebill.customer.entity.Client;
 import com.wallparisoft.ebill.customer.entity.ClientContact;
 import com.wallparisoft.ebill.customer.entity.Contact;
-import com.wallparisoft.ebill.customer.exception.ModelNotFoundException;
 import com.wallparisoft.ebill.customer.mapper.ClientMapper;
 import com.wallparisoft.ebill.customer.mapper.ContactMapper;
 import com.wallparisoft.ebill.customer.repository.IClientContactRepo;
 import com.wallparisoft.ebill.customer.repository.IClientRepo;
 import com.wallparisoft.ebill.customer.repository.IContactRepo;
 import com.wallparisoft.ebill.customer.service.IClientService;
+import com.wallparisoft.ebill.utils.exception.ModelNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -97,8 +97,8 @@ public class ClientServiceImpl implements IClientService {
 
     @Transactional
     @Override
-    public void updateClientAndContact(ClientDto clientDto) {
-        Client clientSave = findById(clientDto.getIdClient());
+    public void updateClientAndContact(ClientDto clientDto, Long idClient) {
+        Client clientSave = findById(idClient);
         Client client = clientMapper.convertClientDtoToClient(clientDto);
         List<Contact> contacts = contactMapper.convertContactDtoListToContactList(clientDto.getContacts());
 

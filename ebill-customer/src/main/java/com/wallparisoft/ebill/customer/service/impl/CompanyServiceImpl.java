@@ -4,16 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.wallparisoft.ebill.customer.dto.ClientDto;
 import com.wallparisoft.ebill.customer.dto.CompanyDto;
 import com.wallparisoft.ebill.customer.dto.ContactDto;
 import com.wallparisoft.ebill.customer.entity.*;
-import com.wallparisoft.ebill.customer.exception.ModelNotFoundException;
-import com.wallparisoft.ebill.customer.mapper.ClientMapper;
 import com.wallparisoft.ebill.customer.mapper.CompanyMapper;
 import com.wallparisoft.ebill.customer.mapper.ContactMapper;
 import com.wallparisoft.ebill.customer.repository.ICompanyContactRepo;
 import com.wallparisoft.ebill.customer.repository.IContactRepo;
+import com.wallparisoft.ebill.utils.exception.ModelNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -75,8 +73,8 @@ public class CompanyServiceImpl implements ICompanyService {
 	}
 
 	@Override
-	public void updateCompanyAndContact(CompanyDto companyDto) {
-		Company companySave = findById(companyDto.getIdCompany());
+	public void updateCompanyAndContact(CompanyDto companyDto, Long idCompany) {
+		Company companySave = findById(idCompany);
 		Company company = companyMapper.convertCompanyDtoToCompany(companyDto);
 		List<Contact> contacts = contactMapper.convertContactDtoListToContactList(companyDto.getContacts());
 

@@ -1,61 +1,128 @@
 package com.wallparisoft.ebill.customer.controller;
 
-import java.net.URI;
 import java.util.List;
 
-import com.wallparisoft.ebill.customer.dto.ClientDto;
 import com.wallparisoft.ebill.customer.dto.CompanyDto;
-import com.wallparisoft.ebill.customer.entity.Company;
-import com.wallparisoft.ebill.customer.response.BasicResponse;
-import com.wallparisoft.ebill.customer.response.ClientDtoResponse;
 import com.wallparisoft.ebill.customer.response.CompanyDtoResponse;
+import com.wallparisoft.ebill.utils.log.EventLog;
+import com.wallparisoft.ebill.utils.response.BasicResponse;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.wallparisoft.ebill.customer.service.ICompanyService;
 
 import javax.validation.Valid;
 
+import static com.wallparisoft.ebill.utils.log.EventType.REQUEST;
+import static com.wallparisoft.ebill.utils.log.EventType.RESPONSE;
+import static com.wallparisoft.ebill.utils.log.Level.LEVEL_001;
+import static lombok.AccessLevel.PRIVATE;
+
 @RestController
 @RequestMapping("/api/company")
+@FieldDefaults(level = PRIVATE)
+@Log4j2
 public class CompanyController {
 
 	@Autowired
-	private ICompanyService companyService;
+	ICompanyService companyService;
 
 	@PostMapping
 	public ResponseEntity<BasicResponse> save(@Valid @RequestBody CompanyDto companyDto) {
+		StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+		log.debug(EventLog.builder()
+				.service(traceElement.getClassName())
+				.method(traceElement.getMethodName())
+				.eventType(REQUEST.name())
+				.level(LEVEL_001.name())
+				.build());
 		companyService.saveCompanyAndContact(companyDto);
-		BasicResponse response = BasicResponse.builder().status("OK").build();
+		BasicResponse response = getBasicResponse();
+		log.debug(EventLog.builder()
+				.service(traceElement.getClassName())
+				.method(traceElement.getMethodName())
+				.information(response.getMessage())
+				.eventType(RESPONSE.name())
+				.level(LEVEL_001.name())
+				.build());
 		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<BasicResponse> delete(@PathVariable("id") Long id) {
+		StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+		log.debug(EventLog.builder()
+				.service(traceElement.getClassName())
+				.method(traceElement.getMethodName())
+				.information(id)
+				.eventType(REQUEST.name())
+				.level(LEVEL_001.name())
+				.build());
 		companyService.delete(id);
-		BasicResponse response = BasicResponse.builder().status("OK").build();
+		BasicResponse response = getBasicResponse();
+		log.debug(EventLog.builder()
+				.service(traceElement.getClassName())
+				.method(traceElement.getMethodName())
+				.information(response.getMessage())
+				.eventType(RESPONSE.name())
+				.level(LEVEL_001.name())
+				.build());
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	@GetMapping
 	public ResponseEntity<CompanyDtoResponse> findCompaniesActiveAndContactActive() {
+		StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+		log.debug(EventLog.builder()
+				.service(traceElement.getClassName())
+				.method(traceElement.getMethodName())
+				.eventType(REQUEST.name())
+				.level(LEVEL_001.name())
+				.build());
 		List<CompanyDto> companies = companyService.findCompaniesActiveAndContactActive();
 		CompanyDtoResponse response = CompanyDtoResponse.builder()
-				.status("OK")
+				.status(HttpStatus.OK.getReasonPhrase())
 				.companyDtos(companies)
 				.build();
+		log.debug(EventLog.builder()
+				.service(traceElement.getClassName())
+				.method(traceElement.getMethodName())
+				.information(response.getCompanyDtos())
+				.eventType(RESPONSE.name())
+				.level(LEVEL_001.name())
+				.build());
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	@PutMapping
-	public ResponseEntity<BasicResponse> update(@Valid @RequestBody CompanyDto companyDto) {
-		companyService.updateCompanyAndContact(companyDto);
-		BasicResponse response = BasicResponse.builder().status("OK").build();
+	@PatchMapping("/{idCompany}")
+	public ResponseEntity<BasicResponse> update(@Valid @RequestBody CompanyDto companyDto, @PathVariable Long idCompany) {
+		StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+		log.debug(EventLog.builder()
+				.service(traceElement.getClassName())
+				.method(traceElement.getMethodName())
+				.information("ID client: ".concat(idCompany.toString()).concat(", Object company: ").concat(companyDto.toString()))
+				.eventType(REQUEST.name())
+				.level(LEVEL_001.name())
+				.build());
+		companyService.updateCompanyAndContact(companyDto,idCompany);
+		BasicResponse response = getBasicResponse();
+		log.debug(EventLog.builder()
+				.service(traceElement.getClassName())
+				.method(traceElement.getMethodName())
+				.information(response.getMessage())
+				.eventType(RESPONSE.name())
+				.level(LEVEL_001.name())
+				.build());
 		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	private static BasicResponse getBasicResponse() {
+		BasicResponse response = BasicResponse.builder().status(HttpStatus.OK.getReasonPhrase()).build();
+		return response;
 	}
 
 }
