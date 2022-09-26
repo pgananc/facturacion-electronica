@@ -14,7 +14,7 @@ public interface IClientService extends ICRUD<Client> {
     void saveClientAndContact(ClientDto clientDto);
 
 
-    public void updateClientAndContact(ClientDto clientDto);
+    public void updateClientAndContact(ClientDto clientDto, Long idClient);
 
     void delete(Long id);
 

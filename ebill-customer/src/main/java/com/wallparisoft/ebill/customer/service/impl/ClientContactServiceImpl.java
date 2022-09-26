@@ -1,9 +1,9 @@
 package com.wallparisoft.ebill.customer.service.impl;
 
 import com.wallparisoft.ebill.customer.entity.ClientContact;
-import com.wallparisoft.ebill.customer.exception.ModelNotFoundException;
 import com.wallparisoft.ebill.customer.repository.IClientContactRepo;
 import com.wallparisoft.ebill.customer.service.IClientContactService;
+import com.wallparisoft.ebill.utils.exception.ModelNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
