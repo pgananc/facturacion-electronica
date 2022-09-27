@@ -1,4 +1,4 @@
-package com.wallparisoft.ebill.product.util;
+package com.wallparisoft.ebill.utils.log;
 
 public enum Level {
   LEVEL_001,

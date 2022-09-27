@@ -1,4 +1,4 @@
-package com.wallparisoft.ebill.product.util;
+package com.wallparisoft.ebill.utils.log;
 
 import lombok.Builder;
 
