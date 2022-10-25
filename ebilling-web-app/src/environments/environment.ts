@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   HOST_AUTH: 'http://localhost:8280',
+  HOST_CUSTOMERS: 'http://localhost:8180',
   USER: 'user',
   REINTENTOS: 3,
 };

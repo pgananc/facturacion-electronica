@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Menu } from './_model/Menu';
+import { Menu } from './_model/auth/menu';
 import { MenuService } from './_service/auth/menu.service';
 import { LoginService } from './_service/auth/login.service';
 

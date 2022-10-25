@@ -13,12 +13,22 @@ import com.wallparisoft.ebill.customer.repository.IContactRepo;
 import com.wallparisoft.ebill.customer.service.IClientService;
 import com.wallparisoft.ebill.utils.exception.ModelNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.support.PagedListHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
+import static java.util.Objects.*;
 
 @Service
 public class ClientServiceImpl implements IClientService {
@@ -34,6 +44,9 @@ public class ClientServiceImpl implements IClientService {
     private ClientMapper clientMapper;
     @Autowired
     private ContactMapper contactMapper;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public Client save(Client entity) {
@@ -65,9 +78,25 @@ public class ClientServiceImpl implements IClientService {
     }
 
     @Override
-    public List<ClientDto> findClientsActiveAndContactActive() {
+    public List<ClientDto> findClientsActive(Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public List<ClientDto> findClientsActive() {
         List<ClientDto> clientDtoList = new ArrayList<>();
         List<Client> clients = this.clientRepo.findClientsActive();
+        clients.parallelStream().forEach(x -> {
+            ClientDto clientDto = clientMapper.convertClientToClientDto(x);
+            clientDtoList.add(clientDto);
+        });
+     return clientDtoList;
+    }
+
+    @Override
+    public List<ClientDto> findClientByIdActiveAndContactActive(Long idClient) {
+        List<ClientDto> clientDtoList = new ArrayList<>();
+        List<Client> clients = this.clientRepo.findClientActiveById(idClient);
         clients.parallelStream().forEach(x -> {
             ClientDto clientDto = clientMapper.convertClientToClientDto(x);
             List<Contact> contacts = contactRepo.findClientContactActiveByIdClient(x.getIdClient());
@@ -76,6 +105,71 @@ public class ClientServiceImpl implements IClientService {
             clientDtoList.add(clientDto);
         });
         return clientDtoList;
+    }
+
+    @Override
+    public Page<ClientDto> findClientByIdentificationOrNameOrType(String identification, String name
+            , Integer clientType, Boolean status, Pageable pageable) {
+        StringBuilder sql = new StringBuilder();
+        StringBuilder sqlCount = new StringBuilder();
+        sql.append("SELECT c FROM Client  c WHERE 1=1");
+        sqlCount.append("SELECT count(c) FROM Client  c WHERE 1=1");
+        if (nonNull(identification) && !identification.isEmpty()) {
+            sql.append(" and c.identification like :identification");
+            sqlCount.append(" and c.identification like :identification");
+        }
+        if (nonNull(name) && !name.isEmpty()) {
+            sql.append(" and upper(c.name) like :name");
+            sqlCount.append(" and upper(c.name) like :name");
+        }
+        if (nonNull(clientType) && clientType > 0) {
+            sql.append(" and c.clientType = :clientType");
+            sqlCount.append(" and c.clientType = :clientType");
+        }
+        if (nonNull(status)) {
+            sql.append(" and c.status = :status");
+            sqlCount.append(" and c.status = :status");
+        }
+
+        Query query = entityManager.createQuery(sql.toString());
+        Query queryCount = entityManager.createQuery(sqlCount.toString());
+        if (nonNull(identification) && !identification.isEmpty()) {
+            query.setParameter("identification", "%" + identification + "%");
+            queryCount.setParameter("identification", "%" + identification + "%");
+        }
+        if (nonNull(name) && !name.isEmpty()) {
+            query.setParameter("name", "%" + name.toUpperCase() + "%");
+            queryCount.setParameter("name", "%" + name.toUpperCase() + "%");
+        }
+        if (nonNull(clientType) && clientType > 0) {
+            query.setParameter("clientType", clientType);
+            queryCount.setParameter("clientType", clientType);
+        }
+        if (nonNull(status)) {
+            query.setParameter("status", status);
+            queryCount.setParameter("status", status);
+        }
+
+        long currentTotal = countClientByIdentificationOrNameOrType(queryCount);
+
+        query.setFirstResult((pageable.getPageNumber()) * pageable.getPageSize());
+        query.setMaxResults(pageable.getPageSize());
+
+        List<Client> clients = query.getResultList();
+        List<ClientDto> clientDtoList = new ArrayList<>();
+        clients.parallelStream().forEach(x -> {
+            ClientDto clientDto = clientMapper.convertClientToClientDto(x);
+            clientDtoList.add(clientDto);
+        });
+
+        return new PageImpl<>(clientDtoList, pageable, currentTotal);
+    }
+
+
+
+    public Long countClientByIdentificationOrNameOrType(Query queryCount) {
+        return (Long) queryCount.getSingleResult();
+
     }
 
     @Transactional
@@ -115,4 +209,6 @@ public class ClientServiceImpl implements IClientService {
             }
         });
     }
+
+
 }

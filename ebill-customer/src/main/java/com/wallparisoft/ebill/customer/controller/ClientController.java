@@ -8,6 +8,8 @@ import com.wallparisoft.ebill.utils.response.BasicResponse;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -82,7 +84,7 @@ public class ClientController {
                 .eventType(REQUEST.name())
                 .level(LEVEL_001.name())
                 .build());
-        List<ClientDto> clients = clientService.findClientsActiveAndContactActive();
+        List<ClientDto> clients = clientService.findClientsActive();
         ClientDtoResponse response = ClientDtoResponse.builder()
                 .status(HttpStatus.OK.getReasonPhrase())
                 .clientDtos(clients)
@@ -96,6 +98,31 @@ public class ClientController {
                 .build());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping("/{idClient}")
+    public ResponseEntity<ClientDtoResponse> findClientsActiveAndContactActive(@PathVariable(value = "idClient") Long idClient) {
+        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+        log.debug(EventLog.builder()
+                .service(traceElement.getClassName())
+                .method(traceElement.getMethodName())
+                .eventType(REQUEST.name())
+                .level(LEVEL_001.name())
+                .build());
+        List<ClientDto> clients = clientService.findClientByIdActiveAndContactActive(idClient);
+        ClientDtoResponse response = ClientDtoResponse.builder()
+                .status(HttpStatus.OK.getReasonPhrase())
+                .clientDtos(clients)
+                .build();
+        log.debug(EventLog.builder()
+                .service(traceElement.getClassName())
+                .method(traceElement.getMethodName())
+                .information(response.getClientDtos())
+                .eventType(RESPONSE.name())
+                .level(LEVEL_001.name())
+                .build());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
     @PatchMapping("/{idClient}")
     public ResponseEntity<BasicResponse> update(@Valid @RequestBody ClientDto clientDto, @PathVariable Long idClient) {
@@ -119,6 +146,28 @@ public class ClientController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PostMapping ("/pageable")
+    public ResponseEntity<Page<ClientDto>> listarPageable(Pageable pageable,
+                                                          @Valid @RequestBody ClientDto clientDto) {
+        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+        log.debug(EventLog.builder()
+                .service(traceElement.getClassName())
+                .method(traceElement.getMethodName())
+                .information("Object client: ".concat(clientDto.toString()))
+                .eventType(REQUEST.name())
+                .level(LEVEL_001.name())
+                .build());
+        Page<ClientDto> clients = clientService.
+                findClientByIdentificationOrNameOrType(clientDto.getIdentification(),
+                        clientDto.getName(), clientDto.getClientType(),clientDto.getStatus(),pageable);
+        log.debug(EventLog.builder()
+                .service(traceElement.getClassName())
+                .method(traceElement.getMethodName())
+                .eventType(RESPONSE.name())
+                .level(LEVEL_001.name())
+                .build());
+        return new ResponseEntity<Page<ClientDto>>(clients, HttpStatus.OK);
+    }
     private static BasicResponse getBasicResponse() {
         BasicResponse response = BasicResponse.builder().status(HttpStatus.OK.getReasonPhrase()).build();
         return response;

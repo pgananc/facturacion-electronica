@@ -10,9 +10,17 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ServerErrorsInterceptor } from './_shared/server-errors.interceptor';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
+import { ClientComponent } from './pages/customer/client/client.component';
+import { UpdateClientComponent } from './pages/customer/client/update-client/update-client.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, WelcomeComponent],
+  declarations: [
+    AppComponent,
+    LoginComponent,
+    WelcomeComponent,
+    ClientComponent,
+    UpdateClientComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
