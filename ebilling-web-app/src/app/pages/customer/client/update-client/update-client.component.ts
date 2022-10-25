@@ -5,12 +5,28 @@ import { ClientService } from '../../../../_service/customer/client.service';
 import { ActivatedRoute, Params, Route, Router } from '@angular/router';
 import { switchMap } from 'rxjs';
 import { Contact } from '../../../../_model/customer/contact';
-import { CONTACT_TYPE_ADRESS } from '../../../../_constants/constants';
+import {
+  CONTACT_TYPE_ADRESS,
+  EMPTY_DATA,
+} from '../../../../_constants/constants';
 import {
   CONTACT_TYPE_MOBIL,
   CONTACT_TYPE_MAIL,
 } from '../../../../_constants/constants';
-import { CONTACT_TYPE_PHONE } from '../../../../_constants/constants';
+import {
+  CONTACT_TYPE_PHONE,
+  EXIST_DATA,
+} from '../../../../_constants/constants';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { IDENTIFICATION_TYPE_DEFAULT_LENGTH } from '../../../../_constants/constants';
+import {
+  IDENTIFICATION_TYPE_CEDULA_LENGTH,
+  IDENTIFICATION_TYPE_PASSPORTE_LENGTH,
+} from '../../../../_constants/constants';
+import {
+  HEADER_MESSAGE,
+  IDENTIFICATION_TYPE_RUC_LENGTH,
+} from '../../../../_constants/constants';
 import {
   CLIENT_TYPE,
   UPDATE,
@@ -37,11 +53,14 @@ export class UpdateClientComponent implements OnInit {
   identificationTypes = IDENTIFICATION_TYPE;
   idType: number = 0;
   clientType: number = 0;
-
+  identificationMaxlength: number = IDENTIFICATION_TYPE_CEDULA_LENGTH.value;
+  identificationMinlength: number = IDENTIFICATION_TYPE_CEDULA_LENGTH.value;
+  identificationLast: string = '';
   constructor(
     private clientService: ClientService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -63,7 +82,6 @@ export class UpdateClientComponent implements OnInit {
     });
   }
   initForm() {
-    console.log(this.form.controls['email'].status);
     if (this.edition) {
       this.clientService.findById(this.idClient).subscribe((data) => {
         if (data.code == 0 && data.clientDtos.length > 0) {
@@ -82,8 +100,9 @@ export class UpdateClientComponent implements OnInit {
           );
           this.mail = this.findContact(client.contacts, CONTACT_TYPE_MAIL.code);
           this.idType = client.idType;
+          this.obtainIdentificationLength();
           this.clientType = client.clientType;
-
+          this.identificationLast = client.identification;
           this.form = new FormGroup({
             id: new FormControl(client.idClient),
             identification: new FormControl(client.identification),
@@ -107,6 +126,36 @@ export class UpdateClientComponent implements OnInit {
       return contact;
     }
   }
+
+  validateSave() {
+    if (
+      this.edition &&
+      this.identificationLast === this.form.value['identification']
+    ) {
+      this.save();
+    } else {
+      this.validateIdentification();
+    }
+  }
+
+  validateIdentification() {
+    this.clientService
+      .existsByIdentification(this.form.value['identification'])
+      .subscribe((data) => {
+        if (data) {
+          this.snackBar.open(
+            EXIST_DATA.MESSAGE_EXIST_DATA.message,
+            HEADER_MESSAGE.MESSAGE_HEADER_INFO.message,
+            {
+              duration: 5000,
+            }
+          );
+        } else {
+          this.save();
+        }
+      });
+  }
+
   save() {
     this.client.idClient = this.idClient;
     this.client.idType = this.idType;
@@ -190,7 +239,24 @@ export class UpdateClientComponent implements OnInit {
     return this.form.controls;
   }
 
-  validateSave() {
-    return this.idType;
+  clearIdentification() {
+    this.obtainIdentificationLength();
+    this.form.get('identification')?.reset();
+  }
+
+  obtainIdentificationLength() {
+    if (this.idType === 1) {
+      this.identificationMaxlength = IDENTIFICATION_TYPE_RUC_LENGTH.value;
+      this.identificationMinlength = IDENTIFICATION_TYPE_RUC_LENGTH.value;
+    }
+    if (this.idType === 2) {
+      this.identificationMaxlength = IDENTIFICATION_TYPE_CEDULA_LENGTH.value;
+      this.identificationMinlength = IDENTIFICATION_TYPE_CEDULA_LENGTH.value;
+    }
+    if (this.idType === 3) {
+      this.identificationMaxlength = IDENTIFICATION_TYPE_PASSPORTE_LENGTH.value;
+      this.identificationMinlength = IDENTIFICATION_TYPE_DEFAULT_LENGTH.value;
+    }
+    console.log(this.identificationMaxlength);
   }
 }

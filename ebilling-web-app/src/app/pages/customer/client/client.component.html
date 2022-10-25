@@ -76,16 +76,6 @@
     </button>
   </div>
   <div class="principal-container mat-elevation-z8">
-    <div class="principal-header">
-      <mat-form-field>
-        <input
-          matInput
-          (keyup)="applyFilter($event)"
-          placeholder="Filtrar cliente"
-        />
-      </mat-form-field>
-    </div>
-
     <mat-table [dataSource]="dataSource" matSort>
       <ng-container matColumnDef="identification">
         <mat-header-cell

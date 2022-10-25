@@ -1,12 +1,14 @@
 <mat-toolbar>
   <mat-toolbar-row>
-    <span style="margin: auto">Registro Cliente</span>
+    <span style="margin: auto">{{
+      edition ? "Actualización Cliente" : " Registro Cliente"
+    }}</span>
   </mat-toolbar-row>
 </mat-toolbar>
 <form
   class="principal-container"
   [formGroup]="form"
-  (ngSubmit)="save()"
+  (ngSubmit)="validateSave()"
   #frmClient="ngForm"
 >
   <mat-form-field class="principal-full-width">
@@ -25,6 +27,7 @@
     <mat-select
       placeholder="Tipo Identificación"
       [(value)]="idType"
+      (valueChange)="clearIdentification()"
       required="true"
     >
       <mat-option *ngFor="let ti of identificationTypes" [value]="ti.code">
@@ -36,8 +39,12 @@
   <mat-form-field class="principal-full-width">
     <input
       matInput
+      type="text"
+      oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
       placeholder="Identificación"
       required
+      [maxlength]="identificationMaxlength"
+      [minlength]="identificationMinlength"
       formControlName="identification"
     />
   </mat-form-field>
@@ -45,7 +52,7 @@
   <mat-form-field class="principal-full-width">
     <input
       matInput
-      placeholder="Nombre"
+      placeholder="Nombre y Apellido"
       required
       formControlName="name"
       name="name"
@@ -61,10 +68,27 @@
     />
   </mat-form-field>
   <mat-form-field class="principal-full-width">
-    <input matInput placeholder="Teléfono" required formControlName="phone" />
+    <input
+      matInput
+      placeholder="Teléfono"
+      type="text"
+      [maxLength]="9"
+      [minLength]="9"
+      oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
+      formControlName="phone"
+    />
   </mat-form-field>
   <mat-form-field class="principal-full-width">
-    <input matInput placeholder="Celular" formControlName="mobil" />
+    <input
+      matInput
+      placeholder="Celular"
+      type="text"
+      [maxLength]="10"
+      [minLength]="10"
+      oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
+      required
+      formControlName="mobil"
+    />
   </mat-form-field>
   <mat-form-field class="principal-full-width">
     <input

@@ -25,4 +25,7 @@ public interface IClientService extends ICRUD<Client> {
 
     List<ClientDto> findClientsActive();
 
+    boolean existsByIdentification(String identification);
+
+
 }

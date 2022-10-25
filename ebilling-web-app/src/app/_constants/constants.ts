@@ -57,6 +57,13 @@ export const EMPTY_DATA = {
     message: 'No existe datos para el filtro seleccionado.',
   },
 };
+
+export const EXIST_DATA = {
+  MESSAGE_EXIST_DATA: {
+    code: 7000,
+    message: 'La identificación ingresada ya se encuentra regitrada.',
+  },
+};
 //Use http code
 export const MESSAGE_ERROR_SERVER = {
   MESSAGE_ERROR_SERVER_400: {
@@ -100,4 +107,20 @@ export const CONTACT_TYPE_MAIL = {
 export const CONTACT_TYPE_ADRESS = {
   code: 'DIR',
   value: 'Teléfono',
+};
+export const IDENTIFICATION_TYPE_RUC_LENGTH = {
+  code: 'RUC',
+  value: 13,
+};
+export const IDENTIFICATION_TYPE_CEDULA_LENGTH = {
+  code: 'CEDULA',
+  value: 10,
+};
+export const IDENTIFICATION_TYPE_PASSPORTE_LENGTH = {
+  code: 'PASS',
+  value: 20,
+};
+export const IDENTIFICATION_TYPE_DEFAULT_LENGTH = {
+  code: 'DEFAULT',
+  value: 5,
 };

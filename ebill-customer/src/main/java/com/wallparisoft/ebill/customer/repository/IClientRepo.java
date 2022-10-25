@@ -11,8 +11,9 @@ public interface IClientRepo extends JpaRepository<Client, Long> {
     @Query(value = "SELECT c FROM Client  c where c.status=true order by c.identification")
     List<Client> findClientsActive();
 
-    @Query(value = "SELECT c FROM Client  c where c.idClient= :idClient and c.status=true order by c.identification")
+    @Query(value = "SELECT c FROM Client  c where c.idClient= :idClient order by c.identification")
     List<Client> findClientActiveById(@Param(value = "idClient") Long idClient);
 
+    boolean existsByIdentification(String identification);
 
 }

@@ -168,6 +168,28 @@ public class ClientController {
                 .build());
         return new ResponseEntity<Page<ClientDto>>(clients, HttpStatus.OK);
     }
+
+
+    @GetMapping("exist/{identification}")
+    public ResponseEntity<Boolean> existsByIdentification(@PathVariable(value = "identification") String identification) {
+        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+        log.debug(EventLog.builder()
+                .service(traceElement.getClassName())
+                .method(traceElement.getMethodName())
+                .eventType(REQUEST.name())
+                .level(LEVEL_001.name())
+                .build());
+        Boolean exists = clientService.existsByIdentification(identification);
+
+        log.debug(EventLog.builder()
+                .service(traceElement.getClassName())
+                .method(traceElement.getMethodName())
+                .information(exists)
+                .eventType(RESPONSE.name())
+                .level(LEVEL_001.name())
+                .build());
+        return new ResponseEntity<>(exists, HttpStatus.OK);
+    }
     private static BasicResponse getBasicResponse() {
         BasicResponse response = BasicResponse.builder().status(HttpStatus.OK.getReasonPhrase()).build();
         return response;

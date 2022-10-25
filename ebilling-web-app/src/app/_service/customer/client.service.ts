@@ -44,4 +44,8 @@ export class ClientService {
       client
     );
   }
+
+  existsByIdentification(identification: String) {
+    return this.http.get<boolean>(`${this.url}/exist/${identification}`);
+  }
 }

@@ -94,6 +94,11 @@ public class ClientServiceImpl implements IClientService {
     }
 
     @Override
+    public boolean existsByIdentification(String identification) {
+        return clientRepo.existsByIdentification(identification);
+    }
+
+    @Override
     public List<ClientDto> findClientByIdActiveAndContactActive(Long idClient) {
         List<ClientDto> clientDtoList = new ArrayList<>();
         List<Client> clients = this.clientRepo.findClientActiveById(idClient);
