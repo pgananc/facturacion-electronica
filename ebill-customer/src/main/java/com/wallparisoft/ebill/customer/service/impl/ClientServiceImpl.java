@@ -211,6 +211,14 @@ public class ClientServiceImpl implements IClientService {
                 clientContactRepo.save(clientContact);
                 x.setCreationDate(clientContact.getCreationDate());
                 contactRepo.save(x);
+            }else if(x.getIdContact()==0){
+                Contact contact = contactRepo.save(x);
+                ClientContact clientContact = ClientContact.builder()
+                        .client(clientSave)
+                        .contact(contact)
+                        .status(contact.isStatus()).build();
+                clientContactRepo.save(clientContact);
+
             }
         });
     }
