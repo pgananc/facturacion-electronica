@@ -1,0 +1,41 @@
+.principal-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.principal-full-width {
+    margin-left: 10px;
+}
+
+
+.principal-container>* {
+    width: 100%;
+}
+
+.flex-parent {
+    display: flex;
+}
+
+.jc-center {
+    justify-content: center;
+}
+
+.text-color-bold {
+    font-weight: bold;
+}
+
+.margin-right {
+    margin-right: 20px;
+}
+
+.text-invalid {
+    color: red;
+}
+
+.botton-width {
+    width: 100px;
+}
+
+.text-center {
+    text-align: center;
+}

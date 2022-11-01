@@ -13,12 +13,20 @@ import com.wallparisoft.ebill.customer.repository.IContactRepo;
 import com.wallparisoft.ebill.customer.service.IClientService;
 import com.wallparisoft.ebill.utils.exception.ModelNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
 
 @Service
 public class ClientServiceImpl implements IClientService {
@@ -34,6 +42,9 @@ public class ClientServiceImpl implements IClientService {
     private ClientMapper clientMapper;
     @Autowired
     private ContactMapper contactMapper;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public Client save(Client entity) {
@@ -65,17 +76,51 @@ public class ClientServiceImpl implements IClientService {
     }
 
     @Override
-    public List<ClientDto> findClientsActiveAndContactActive() {
+    public List<ClientDto> findClientsActive() {
         List<ClientDto> clientDtoList = new ArrayList<>();
         List<Client> clients = this.clientRepo.findClientsActive();
         clients.parallelStream().forEach(x -> {
             ClientDto clientDto = clientMapper.convertClientToClientDto(x);
-            List<Contact> contacts = contactRepo.findClientContactActiveByIdClient(x.getIdClient());
+            clientDtoList.add(clientDto);
+        });
+        return clientDtoList;
+    }
+
+    @Override
+    public boolean existsByIdentification(String identification) {
+        return clientRepo.existsByIdentification(identification);
+    }
+
+    @Override
+    public List<ClientDto> findClientByIdAndContact(Long idClient) {
+        List<ClientDto> clientDtoList = new ArrayList<>();
+        List<Client> clients = this.clientRepo.findClientById(idClient);
+        clients.parallelStream().forEach(client -> {
+            ClientDto clientDto = clientMapper.convertClientToClientDto(client);
+            List<Contact> contacts = contactRepo.findClientContactActiveByIdClient(client.getIdClient());
             List<ContactDto> contactsDto = contactMapper.convertContactListToContactDtoList(contacts);
             clientDto.setContacts(contactsDto);
             clientDtoList.add(clientDto);
         });
         return clientDtoList;
+    }
+
+    @Override
+    public Page<ClientDto> findClientByIdentificationOrNameOrType(String identification, String name
+            , Integer clientType, Boolean status, Pageable pageable) {
+        Page<Client> clients = clientRepo.findClientByIdentificationOrNameOrType("%"+identification+"%", "%"+name.toUpperCase()+"%", clientType, status, pageable);
+        List<ClientDto> clientDtoList = new ArrayList<>();
+        clients.getContent().parallelStream().forEach(client -> {
+            ClientDto clientDto = clientMapper.convertClientToClientDto(client);
+            clientDtoList.add(clientDto);
+        });
+        return new PageImpl<>(clientDtoList, pageable, clients.getTotalElements());
+    }
+
+
+    public Long countClientByIdentificationOrNameOrType(Query queryCount) {
+        return (Long) queryCount.getSingleResult();
+
     }
 
     @Transactional
@@ -84,12 +129,12 @@ public class ClientServiceImpl implements IClientService {
         Client client = clientMapper.convertClientDtoToClient(clientDto);
         List<Contact> contacts = contactMapper.convertContactDtoListToContactList(clientDto.getContacts());
         Client clientSave = save(client);
-        contacts.forEach(x -> {
-            Contact contact = contactRepo.save(x);
+        contacts.forEach(contact -> {
+            Contact contactSave = contactRepo.save(contact);
             ClientContact clientContact = ClientContact.builder()
                     .client(clientSave)
-                    .contact(contact)
-                    .status(contact.isStatus()).build();
+                    .contact(contactSave)
+                    .status(contactSave.getStatus()).build();
             clientContactRepo.save(clientContact);
 
         });
@@ -104,15 +149,25 @@ public class ClientServiceImpl implements IClientService {
 
         client.setCreationDate(clientSave.getCreationDate());
         save(client);
-        contacts.forEach(x -> {
-            Optional<ClientContact> clientContactOptional = clientContactRepo.findByIdClientAndIdContact(client.getIdClient(), x.getIdContact());
+        contacts.forEach(contact -> {
+            Optional<ClientContact> clientContactOptional = clientContactRepo.findByIdClientAndIdContact(client.getIdClient(), contact.getIdContact());
             if (clientContactOptional.isPresent()) {
                 ClientContact clientContact = clientContactOptional.get();
-                clientContact.setStatus(x.isStatus());
+                clientContact.setStatus(contact.getStatus());
                 clientContactRepo.save(clientContact);
-                x.setCreationDate(clientContact.getCreationDate());
-                contactRepo.save(x);
+                contact.setCreationDate(clientContact.getCreationDate());
+                contactRepo.save(contact);
+            } else if (contact.getIdContact() == 0) {
+                Contact contactSave = contactRepo.save(contact);
+                ClientContact clientContact = ClientContact.builder()
+                        .client(clientSave)
+                        .contact(contactSave)
+                        .status(contactSave.getStatus()).build();
+                clientContactRepo.save(clientContact);
+
             }
         });
     }
+
+
 }

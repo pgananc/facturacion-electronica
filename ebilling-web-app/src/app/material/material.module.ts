@@ -1,8 +1,12 @@
+import { MatPaginatorImpl } from './mat-paginator';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import {
+  MatPaginatorIntl,
+  MatPaginatorModule,
+} from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,6 +21,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
+
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 @NgModule({
   declarations: [],
@@ -40,6 +47,7 @@ import { MatDividerModule } from '@angular/material/divider';
     MatSidenavModule,
     MatMenuModule,
     MatDividerModule,
+    MatExpansionModule,
   ],
   exports: [
     MatToolbarModule,
@@ -60,6 +68,11 @@ import { MatDividerModule } from '@angular/material/divider';
     MatSidenavModule,
     MatMenuModule,
     MatDividerModule,
+    MatExpansionModule,
+  ],
+  providers: [
+    { provide: MatPaginatorIntl, useClass: MatPaginatorImpl },
+    { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },
   ],
 })
 export class MaterialModule {}

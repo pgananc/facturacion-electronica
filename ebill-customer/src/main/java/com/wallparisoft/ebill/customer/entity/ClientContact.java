@@ -40,8 +40,8 @@ public class ClientContact {
   @JoinColumn(name = "id_contact", referencedColumnName = "id_contact")
   private Contact contact;
 
-  @Column(name = "status", nullable = false)
-  private boolean status;
+  @Column(name = "status")
+  private Boolean status;
 
   @Column(name = "creation_date")
   private LocalDateTime creationDate;

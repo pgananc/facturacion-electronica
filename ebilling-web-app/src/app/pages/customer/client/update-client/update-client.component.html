@@ -1,0 +1,131 @@
+<mat-toolbar>
+  <mat-toolbar-row>
+    <span style="margin: auto">{{
+      edition ? "Actualización Cliente" : " Registro Cliente"
+    }}</span>
+  </mat-toolbar-row>
+</mat-toolbar>
+<form
+  class="principal-container"
+  [formGroup]="form"
+  (ngSubmit)="validateSave()"
+  #frmClient="ngForm"
+>
+  <mat-form-field class="principal-full-width">
+    <mat-select
+      placeholder="Tipo Cliente"
+      [(value)]="clientType"
+      required="true"
+    >
+      <mat-option *ngFor="let tc of clientTypes" [value]="tc.code">
+        {{ tc.value }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="principal-full-width">
+    <mat-select
+      placeholder="Tipo Identificación"
+      [(value)]="idType"
+      (valueChange)="clearIdentification()"
+      required="true"
+    >
+      <mat-option *ngFor="let ti of identificationTypes" [value]="ti.code">
+        {{ ti.value }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="principal-full-width">
+    <input
+      matInput
+      type="text"
+      oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
+      placeholder="Identificación"
+      required
+      [maxlength]="identificationMaxlength"
+      [minlength]="identificationMinlength"
+      formControlName="identification"
+    />
+  </mat-form-field>
+
+  <mat-form-field class="principal-full-width">
+    <input
+      matInput
+      placeholder="Nombre y Apellido"
+      required
+      formControlName="name"
+      name="name"
+    />
+  </mat-form-field>
+
+  <mat-form-field class="principal-full-width">
+    <input
+      matInput
+      placeholder="Dirección"
+      required
+      formControlName="address"
+    />
+  </mat-form-field>
+  <mat-form-field class="principal-full-width">
+    <input
+      matInput
+      placeholder="Teléfono"
+      type="text"
+      [maxLength]="9"
+      [minLength]="9"
+      oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
+      formControlName="phone"
+    />
+  </mat-form-field>
+  <mat-form-field class="principal-full-width">
+    <input
+      matInput
+      placeholder="Celular"
+      type="text"
+      [maxLength]="10"
+      [minLength]="10"
+      oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
+      required
+      formControlName="mobil"
+    />
+  </mat-form-field>
+  <mat-form-field class="principal-full-width">
+    <input
+      matInput
+      placeholder="Mail"
+      required
+      formControlName="email"
+      id="email"
+      email="true"
+    />
+  </mat-form-field>
+  <div
+    class="text-invalid principal-full-width"
+    *ngIf="f['email'].errors?.['email']"
+  >
+    Formato de email incorrecto.
+  </div>
+  <mat-checkbox
+    labelPosition="before"
+    formControlName="status"
+    class="principal-full-width"
+    >Estado</mat-checkbox
+  >
+  <div class="flex-parent jc-center">
+    <button
+      class="margin-right botton-width"
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="frmClient.invalid"
+    >
+      <mat-icon>done</mat-icon>
+      <span>Ok</span>
+    </button>
+    <button mat-raised-button color="accent" routerLink="/client" type="button">
+      <mat-icon>close</mat-icon>
+      <span>Cancel</span>
+    </button>
+  </div>
+</form>

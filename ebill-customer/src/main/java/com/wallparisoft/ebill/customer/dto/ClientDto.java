@@ -12,15 +12,15 @@ import java.util.List;
 public class ClientDto implements Serializable {
 
     private Long idClient;
-    @Min(value = 1)
+
     private Integer idType;
-    @NotEmpty
+
     private String identification;
-    @NotEmpty
+
     private String name;
-    @NotEmpty
-    private String clientType;
-    @NotNull
+
+    private Integer clientType;
+
     private Boolean status;
     private Long idCompany;
     List<ContactDto> contacts;

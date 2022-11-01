@@ -66,7 +66,7 @@ public class CompanyServiceImpl implements ICompanyService {
 			CompanyContact companyContact = CompanyContact.builder()
 					.company(companySave)
 					.contact(contact)
-					.status(contact.isStatus()).build();
+					.status(contact.getStatus()).build();
 			companyContactRepo.save(companyContact);
 
 		});
@@ -80,14 +80,14 @@ public class CompanyServiceImpl implements ICompanyService {
 
 		company.setCreationDate(companySave.getCreationDate());
 		save(company);
-		contacts.forEach(x -> {
-			Optional<CompanyContact> companyContactOptional = companyContactRepo.findByIdCompanyAndIdContact(company.getIdCompany(), x.getIdContact());
+		contacts.forEach(contact -> {
+			Optional<CompanyContact> companyContactOptional = companyContactRepo.findByIdCompanyAndIdContact(company.getIdCompany(), contact.getIdContact());
 			if (companyContactOptional.isPresent()) {
 				CompanyContact companyContact = companyContactOptional.get();
-				companyContact.setStatus(x.isStatus());
+				companyContact.setStatus(contact.getStatus());
 				companyContactRepo.save(companyContact);
-				x.setCreationDate(companyContact.getCreationDate());
-				contactRepo.save(x);
+				contact.setCreationDate(companyContact.getCreationDate());
+				contactRepo.save(contact);
 			}
 		});
 	}

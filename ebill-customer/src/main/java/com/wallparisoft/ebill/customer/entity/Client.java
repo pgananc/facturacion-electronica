@@ -25,17 +25,17 @@ public class Client {
     @Column(name = "id_type", nullable = false, length = 3)
     private Integer idType;
 
-    @Column(name = "identification", nullable = false, length = 13)
+    @Column(name = "identification", nullable = false, length = 13, unique = true)
     private String identification;
 
     @Column(name = "name")
     private String name;
 
-    @Column(name = "client_type")
-    private String clientType;
+    @Column(name = "client_type", length = 3)
+    private Integer clientType;
 
-    @Column(name = "status", nullable = false)
-    private boolean status;
+    @Column(name = "status")
+    private Boolean status;
 
     @Column(name = "creation_date")
     private LocalDateTime creationDate;

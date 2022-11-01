@@ -40,7 +40,7 @@ public class CompanyContact {
 	private Contact contact;
 
 	@Column(name = "status", nullable = false)
-	private boolean status;
+	private Boolean status;
 
 	@Column(name = "creation_date")
 	private LocalDateTime creationDate;

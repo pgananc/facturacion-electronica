@@ -1,12 +1,10 @@
 package com.wallparisoft.ebill.customer.service;
 
 import com.wallparisoft.ebill.customer.dto.ClientDto;
-import com.wallparisoft.ebill.customer.dto.ContactDto;
 import com.wallparisoft.ebill.customer.entity.Client;
-import com.wallparisoft.ebill.customer.entity.Contact;
-import com.wallparisoft.ebill.customer.response.ClientDtoResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 public interface IClientService extends ICRUD<Client> {
@@ -18,8 +16,15 @@ public interface IClientService extends ICRUD<Client> {
 
     void delete(Long id);
 
-    List<ClientDto> findClientsActiveAndContactActive();
 
+    List<ClientDto> findClientByIdAndContact(Long idClient);
+
+
+    Page<ClientDto> findClientByIdentificationOrNameOrType(String identification, String name, Integer clientType, Boolean status, Pageable pageable);
+
+    List<ClientDto> findClientsActive();
+
+    boolean existsByIdentification(String identification);
 
 
 }

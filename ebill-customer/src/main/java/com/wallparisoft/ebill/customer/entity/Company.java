@@ -52,8 +52,8 @@ public class Company {
 	@Column(name = "principal")
 	private String principal;
 
-	@Column(name = "status", nullable = false)
-	private boolean status;
+	@Column(name = "status")
+	private Boolean status;
 
 	@Column(name = "creation_date")
 	private LocalDateTime creationDate;

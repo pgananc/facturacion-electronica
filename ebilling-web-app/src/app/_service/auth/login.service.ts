@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { User } from 'src/app/_model/User';
+import { User } from 'src/app/_model/auth/user';
 
 @Injectable({
   providedIn: 'root',
