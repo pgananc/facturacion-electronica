@@ -16,9 +16,8 @@ public interface IClientService extends ICRUD<Client> {
 
     void delete(Long id);
 
-    List<ClientDto> findClientsActive(Pageable pageable);
 
-    List<ClientDto> findClientByIdActiveAndContactActive(Long idClient);
+    List<ClientDto> findClientByIdAndContact(Long idClient);
 
 
     Page<ClientDto> findClientByIdentificationOrNameOrType(String identification, String name, Integer clientType, Boolean status, Pageable pageable);

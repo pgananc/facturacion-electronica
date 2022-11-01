@@ -61,7 +61,7 @@ export const EMPTY_DATA = {
 export const EXIST_DATA = {
   MESSAGE_EXIST_DATA: {
     code: 7000,
-    message: 'La identificación ingresada ya se encuentra regitrada.',
+    message: 'La identificación ingresada ya se encuentra registrada.',
   },
 };
 //Use http code
@@ -106,7 +106,7 @@ export const CONTACT_TYPE_MAIL = {
 };
 export const CONTACT_TYPE_ADRESS = {
   code: 'DIR',
-  value: 'Teléfono',
+  value: 'Dirección',
 };
 export const IDENTIFICATION_TYPE_RUC_LENGTH = {
   code: 'RUC',
@@ -116,7 +116,7 @@ export const IDENTIFICATION_TYPE_CEDULA_LENGTH = {
   code: 'CEDULA',
   value: 10,
 };
-export const IDENTIFICATION_TYPE_PASSPORTE_LENGTH = {
+export const IDENTIFICATION_TYPE_PASSPORT_LENGTH = {
   code: 'PASS',
   value: 20,
 };
@@ -124,3 +124,6 @@ export const IDENTIFICATION_TYPE_DEFAULT_LENGTH = {
   code: 'DEFAULT',
   value: 5,
 };
+
+//=========================TIEMPO DE DURACION DE MENSAJE===========================
+export const DURATION_TIME_MESSAGE = { code: 1, value: 5000 };

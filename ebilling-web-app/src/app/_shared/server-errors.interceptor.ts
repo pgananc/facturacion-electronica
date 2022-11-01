@@ -10,6 +10,7 @@ import {
 import { catchError, EMPTY, Observable, retry, tap } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { DURATION_TIME_MESSAGE } from '../_constants/constants';
 import {
   MESSAGE_ERROR_SERVER,
   ERRORS,
@@ -36,9 +37,7 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
               event.body.errorMessage
             ) {
               throw new Error(event.body.errorMessage);
-            } /*else{
-                    this.snackBar.open("EXITO", 'AVISO', { duration: 5000 });    
-                }*/
+            }
           }
         })
       )
@@ -50,7 +49,7 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
               ERRORS.MESSAGE_ERROR.message,
               MESSAGE_ERROR_SERVER.MESSAGE_ERROR_SERVER_400.message,
               {
-                duration: 5000,
+                duration: DURATION_TIME_MESSAGE.value,
               }
             );
           } else if (err.status === 401) {
@@ -58,7 +57,7 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
               err.message,
               MESSAGE_ERROR_SERVER.MESSAGE_ERROR_SERVER_401.message,
               {
-                duration: 5000,
+                duration: DURATION_TIME_MESSAGE.value,
               }
             );
             sessionStorage.clear();
@@ -68,7 +67,7 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
               ERRORS.MESSAGE_ERROR.message,
               MESSAGE_ERROR_SERVER.MESSAGE_ERROR_SERVER_500.message,
               {
-                duration: 5000,
+                duration: DURATION_TIME_MESSAGE.value,
               }
             );
           } else {
@@ -76,7 +75,7 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
               ERRORS.MESSAGE_ERROR_NOT_AVAILABLE.message,
               HEADER_MESSAGE.MESSAGE_HEADER_ERROR.message,
               {
-                duration: 5000,
+                duration: DURATION_TIME_MESSAGE.value,
               }
             );
           }

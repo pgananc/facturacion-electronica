@@ -12,7 +12,10 @@ import {
   CLIENT_TYPE,
 } from '../../../_constants/constants';
 import { FormGroup, FormControl } from '@angular/forms';
-import { EMPTY_DATA } from '../../../_constants/constants';
+import {
+  EMPTY_DATA,
+  DURATION_TIME_MESSAGE,
+} from '../../../_constants/constants';
 
 @Component({
   selector: 'app-client',
@@ -59,8 +62,7 @@ export class ClientComponent implements OnInit {
     client.name = this.form.value['name'];
     client.clientType = this.clientType;
     client.status = this.status;
-    this.clientService.searchPageable(0, 5, client).subscribe((data) => {
-      console.log(data);
+    this.clientService.searchPageable(0, 10, client).subscribe((data) => {
       this.quantity = data.totalElements;
       this.dataSource = new MatTableDataSource(data.content);
       this.dataSource.sort = this.sort;
@@ -93,15 +95,14 @@ export class ClientComponent implements OnInit {
     client.name = this.form.value['name'];
     client.clientType = this.clientType;
     client.status = this.status;
-    this.clientService.searchPageable(0, 5, client).subscribe((data) => {
+    this.clientService.searchPageable(0, 10, client).subscribe((data) => {
       if (data != null) {
         this.quantity = data.totalElements;
         this.dataSource = new MatTableDataSource(data.content);
         this.dataSource.sort = this.sort;
-        //this.dataSource.paginator = this.paginator;
       } else {
         this.snackBar.open(EMPTY_DATA.MESSAGE_EMPTY_DATA.message, 'OK', {
-          duration: 5000,
+          duration: DURATION_TIME_MESSAGE.value,
         });
       }
     });

@@ -31,11 +31,11 @@ public class Client {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "client_type", nullable = false, length = 3)
+    @Column(name = "client_type", length = 3)
     private Integer clientType;
 
-    @Column(name = "status", nullable = false)
-    private boolean status;
+    @Column(name = "status")
+    private Boolean status;
 
     @Column(name = "creation_date")
     private LocalDateTime creationDate;

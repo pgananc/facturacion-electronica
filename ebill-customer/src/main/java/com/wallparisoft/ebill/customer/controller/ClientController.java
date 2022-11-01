@@ -76,7 +76,7 @@ public class ClientController {
     }
 
     @GetMapping
-    public ResponseEntity<ClientDtoResponse> findClientsActiveAndContactActive() {
+    public ResponseEntity<ClientDtoResponse> findClientsAndContact() {
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
         log.debug(EventLog.builder()
                 .service(traceElement.getClassName())
@@ -100,7 +100,7 @@ public class ClientController {
     }
 
     @GetMapping("/{idClient}")
-    public ResponseEntity<ClientDtoResponse> findClientsActiveAndContactActive(@PathVariable(value = "idClient") Long idClient) {
+    public ResponseEntity<ClientDtoResponse> findClientAndContact(@PathVariable(value = "idClient") Long idClient) {
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
         log.debug(EventLog.builder()
                 .service(traceElement.getClassName())
@@ -108,7 +108,7 @@ public class ClientController {
                 .eventType(REQUEST.name())
                 .level(LEVEL_001.name())
                 .build());
-        List<ClientDto> clients = clientService.findClientByIdActiveAndContactActive(idClient);
+        List<ClientDto> clients = clientService.findClientByIdAndContact(idClient);
         ClientDtoResponse response = ClientDtoResponse.builder()
                 .status(HttpStatus.OK.getReasonPhrase())
                 .clientDtos(clients)
@@ -147,7 +147,7 @@ public class ClientController {
     }
 
     @PostMapping ("/pageable")
-    public ResponseEntity<Page<ClientDto>> listarPageable(Pageable pageable,
+    public ResponseEntity<Page<ClientDto>> listPageable(Pageable pageable,
                                                           @Valid @RequestBody ClientDto clientDto) {
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
         log.debug(EventLog.builder()

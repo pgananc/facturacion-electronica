@@ -21,6 +21,9 @@
               <mat-form-field class="principal-full-width">
                 <input
                   matInput
+                  type="text"
+                  [maxLength]="20"
+                  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
                   placeholder="Identificación"
                   formControlName="identification"
                 />

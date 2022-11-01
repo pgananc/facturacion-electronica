@@ -18,10 +18,13 @@ import {
   EXIST_DATA,
 } from '../../../../_constants/constants';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { IDENTIFICATION_TYPE_DEFAULT_LENGTH } from '../../../../_constants/constants';
+import {
+  IDENTIFICATION_TYPE_DEFAULT_LENGTH,
+  DURATION_TIME_MESSAGE,
+} from '../../../../_constants/constants';
 import {
   IDENTIFICATION_TYPE_CEDULA_LENGTH,
-  IDENTIFICATION_TYPE_PASSPORTE_LENGTH,
+  IDENTIFICATION_TYPE_PASSPORT_LENGTH,
 } from '../../../../_constants/constants';
 import {
   HEADER_MESSAGE,
@@ -147,7 +150,7 @@ export class UpdateClientComponent implements OnInit {
             EXIST_DATA.MESSAGE_EXIST_DATA.message,
             HEADER_MESSAGE.MESSAGE_HEADER_INFO.message,
             {
-              duration: 5000,
+              duration: DURATION_TIME_MESSAGE.value,
             }
           );
         } else {
@@ -164,9 +167,7 @@ export class UpdateClientComponent implements OnInit {
     this.client.name = this.form.value['name'];
     this.client.status = this.form.value['status'];
     this.client.contacts = this.addContacts(this.form);
-    //let userName = sessionStorage.getItem(environment.USER);
     if (this.client != null && this.client.idClient > 0) {
-      // this.employee.modifiedBy = userName != null ? userName : '';
       this.clientService
         .update(this.client, this.client.idClient)
         .pipe(
@@ -181,7 +182,6 @@ export class UpdateClientComponent implements OnInit {
           );
         });
     } else {
-      // this.employee.createdBy = userName != null ? userName : '';
       this.clientService
         .save(this.client)
         .pipe(
@@ -254,7 +254,7 @@ export class UpdateClientComponent implements OnInit {
       this.identificationMinlength = IDENTIFICATION_TYPE_CEDULA_LENGTH.value;
     }
     if (this.idType === 3) {
-      this.identificationMaxlength = IDENTIFICATION_TYPE_PASSPORTE_LENGTH.value;
+      this.identificationMaxlength = IDENTIFICATION_TYPE_PASSPORT_LENGTH.value;
       this.identificationMinlength = IDENTIFICATION_TYPE_DEFAULT_LENGTH.value;
     }
     console.log(this.identificationMaxlength);
