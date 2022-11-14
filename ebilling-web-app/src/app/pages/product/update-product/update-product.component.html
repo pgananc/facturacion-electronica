@@ -1,0 +1,109 @@
+<mat-toolbar>
+  <mat-toolbar-row>
+    <span style="margin: auto">{{
+      edition ? "Actualización Producto" : " Registro Producto"
+      }}</span>
+  </mat-toolbar-row>
+</mat-toolbar>
+<form
+  class="principal-container"
+  [formGroup]="form"
+  (ngSubmit)="validateSave()"
+  #frmProduct="ngForm"
+>
+  <mat-form-field class="principal-full-width">
+    <input
+      matInput
+      type="text"
+      placeholder="Codigo principal"
+      required
+      formControlName="mainCode"
+    />
+  </mat-form-field>
+
+  <mat-form-field class="principal-full-width">
+    <input
+      matInput
+      placeholder="Código auxiliar"
+      required
+      formControlName="auxiliarCode"
+      name="auxiliarCode"
+    />
+  </mat-form-field>
+
+  <mat-form-field class="principal-full-width">
+    <input
+      matInput
+      placeholder="Nombre"
+      required
+      formControlName="name"
+      name="name"
+    />
+  </mat-form-field>
+
+  <mat-form-field class="principal-full-width">
+    <mat-select
+      placeholder="Tipo Producto"
+      [(value)]="productType"
+      required="true"
+    >
+      <mat-option *ngFor="let tp of productTypes" [value]="tp.code">
+        {{ tp.value }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="principal-full-width">
+    <input
+      matInput
+      placeholder="Descripción"
+      required
+      formControlName="description"
+      name="description"
+    />
+  </mat-form-field>
+
+  <mat-form-field class="principal-full-width">
+    <input
+      matInput
+      placeholder="Precio unitario"
+      required
+      formControlName="unitPrice"
+      name="unitPrice"
+    />
+  </mat-form-field>
+
+  <mat-form-field class="principal-full-width">
+    <input
+      matInput
+      placeholder="Descuento"
+      required
+      formControlName="discount"
+      name="discount"
+    />
+  </mat-form-field>
+
+  <mat-checkbox
+    labelPosition="before"
+    formControlName="status"
+    class="principal-full-width"
+  >Estado
+  </mat-checkbox
+  >
+  <div class="flex-parent jc-center">
+    <button
+      class="margin-right botton-width"
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="frmProduct.invalid"
+    >
+      <mat-icon>done</mat-icon>
+      <span>Ok</span>
+    </button>
+    <button mat-raised-button color="accent" routerLink="/product" type="button">
+      <mat-icon>close</mat-icon>
+      <span>Cancel</span>
+    </button>
+  </div>
+</form>

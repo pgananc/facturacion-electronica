@@ -37,8 +37,8 @@ public class Product {
   @Column(name = "auxiliar_code")
   private String auxiliarCode;
 
-  @Column(name = "product_type")
-  private String productType;
+  @Column(name = "product_type", length = 3)
+  private Integer productType;
 
   @Column(name = "name")
   private String name;

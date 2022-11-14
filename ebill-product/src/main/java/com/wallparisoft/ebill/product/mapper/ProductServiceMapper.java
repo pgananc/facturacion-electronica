@@ -1,19 +1,18 @@
 package com.wallparisoft.ebill.product.mapper;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import com.wallparisoft.ebill.product.dto.ProductDto;
 import com.wallparisoft.ebill.product.entity.Product;
 import com.wallparisoft.ebill.product.response.ProductResponse;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.control.DeepClone;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static lombok.AccessLevel.PRIVATE;
 
 @Log4j2
 @FieldDefaults(level = PRIVATE)
@@ -36,6 +35,23 @@ public abstract class ProductServiceMapper {
       product.setIdProduct(product.getIdProduct());
     }
     return product;
+  }
+
+  public ProductDto toProductDto(Product product) {
+    ProductDto productDto = ProductDto.builder()
+            .productType(product.getProductType())
+            .mainCode(product.getMainCode())
+            .discount(product.getDiscount())
+            .auxiliarCode(product.getAuxiliarCode())
+            .unitPrice(product.getUnitPrice())
+            .description(product.getDescription())
+            .status(true)
+            .name(product.getName())
+            .build();
+    if (product.getIdProduct() > 0) {
+      productDto.setIdProduct(product.getIdProduct().intValue());
+    }
+    return productDto;
   }
 
   public ProductResponse toProductResponse(Product product) {

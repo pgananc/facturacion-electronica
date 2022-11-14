@@ -12,6 +12,8 @@ import { ServerErrorsInterceptor } from './_shared/server-errors.interceptor';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { ClientComponent } from './pages/customer/client/client.component';
 import { UpdateClientComponent } from './pages/customer/client/update-client/update-client.component';
+import {ProductComponent} from "./pages/product/product.component";
+import {UpdateProductComponent} from "./pages/product/update-product/update-product.component";
 
 @NgModule({
   declarations: [
@@ -20,6 +22,8 @@ import { UpdateClientComponent } from './pages/customer/client/update-client/upd
     WelcomeComponent,
     ClientComponent,
     UpdateClientComponent,
+    ProductComponent,
+    UpdateProductComponent
   ],
   imports: [
     BrowserModule,
