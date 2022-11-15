@@ -1,0 +1,173 @@
+<router-outlet></router-outlet>
+
+<div [hidden]="route.children.length !== 0">
+  <div class="text-center">
+    <mat-toolbar>Consulta Producto</mat-toolbar>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel expanded="true">
+      <mat-expansion-panel-header style="background-color: #673ab7">
+        <mat-panel-title style="color: #fff"> Búsqueda </mat-panel-title>
+      </mat-expansion-panel-header>
+      <form
+        class="principal-container principal-full-width"
+        [formGroup]="form"
+        (ngSubmit)="search()"
+        #frmProduct="ngForm"
+      >
+        <table cellspacing="10">
+          <tr>
+            <td>
+              <mat-form-field class="principal-full-width">
+                <input
+                  matInput
+                  placeholder="ID producto"
+                  formControlName="mainCode"
+                />
+              </mat-form-field>
+            </td>
+            <td style="padding-left: 40px">
+              <mat-form-field class="principal-full-width">
+                <input matInput placeholder="Nombre" formControlName="name" />
+              </mat-form-field>
+            </td>
+            <td style="padding-left: 40px">
+              <mat-form-field class="principal-full-width">
+                <mat-select placeholder="Tipo Producto" [(value)]="productType">
+                  <mat-option *ngFor="let tp of productTypes" [value]="tp.code">
+                    {{ tp.value }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </td>
+            <td style="padding-left: 40px">
+              <mat-form-field class="principal-full-width">
+                <mat-select placeholder="Estado" [(value)]="status">
+                  <mat-option [value]="true">Activo</mat-option>
+                  <mat-option [value]="false">Inactivo</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </td>
+          </tr>
+        </table>
+        <div class="flex-parent jc-center">
+          <button
+            class="margin-right botton-width"
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="frmProduct.invalid"
+          >
+            <span>Buscar</span>
+          </button>
+        </div>
+      </form>
+    </mat-expansion-panel>
+  </mat-accordion>
+  <div>
+    <button
+      matTooltip="Agregar"
+      mat-button
+      color="second"
+      class="botton-add"
+      routerLink="/product/new"
+    >
+      <mat-icon>add_circle</mat-icon>
+    </button>
+  </div>
+  <div class="principal-container mat-elevation-z8">
+    <mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="mainCode">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold">
+          Código principal
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{ row.mainCode }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="auxiliarCode">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold">
+          Código auxiliar
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{ row.auxiliarCode }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          class="text-color-bold">
+          Nombre
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{ row.name }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="description">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold">
+          Descripción
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{ row.description }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="unitPrice">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold">
+          Precio unitario
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{ row.unitPrice }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="discount">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold">
+          Descuento
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{ row.discount }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          class="text-color-bold"
+        >
+          Estado
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{ row.status ? "Activo" : "Inactivo" }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef class="text-color-bold"
+          >Acciones</mat-header-cell
+        >
+        <mat-cell *matCellDef="let row">
+          <button
+            matTooltip="Editar"
+            mat-button
+            color="primary"
+            [routerLink]="['edit', row.idProduct]"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            matTooltip="Eliminar"
+            mat-button
+            color="accent"
+            (click)="delete(row.idProduct)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"> </mat-row>
+    </mat-table>
+
+    <mat-paginator
+      [pageSize]="5"
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      [length]="quantity"
+      (page)="showMore($event)"
+    ></mat-paginator>
+  </div>
+</div>

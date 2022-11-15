@@ -21,6 +21,10 @@ export const SUCCESS = {
     code: 2000,
     message: 'Cliente guardado correctamente.',
   },
+  MESSAGE_REGISTER_PRODUCT: {
+    code: 2001,
+    message: 'Producto guardado correctamente.',
+  },
 };
 
 //Message delete code > 3000
@@ -28,6 +32,10 @@ export const DELETE = {
   MESSAGE_DELETE_CLIENT: {
     code: 3000,
     message: 'Cliente eliminado correctamente.',
+  },
+  MESSAGE_DELETE_PRODUCT: {
+    code: 3001,
+    message: 'Producto eliminado correctamente.',
   },
 };
 
@@ -37,6 +45,10 @@ export const UPDATE = {
     code: 4000,
     message: 'Cliente actualizado correctamente.',
   },
+  MESSAGE_UPDATE_PRODUCT: {
+    code: 4001,
+    message: 'Producto actualizado correctamente.',
+  }
 };
 
 //Message header code > 5000
@@ -63,7 +75,12 @@ export const EXIST_DATA = {
     code: 7000,
     message: 'La identificación ingresada ya se encuentra registrada.',
   },
+  MESSAGE_EXISTS_MAINCODE: {
+    code: 7001,
+    message: 'El código principal ingresado ya se encuentra registrado.',
+  },
 };
+
 //Use http code
 export const MESSAGE_ERROR_SERVER = {
   MESSAGE_ERROR_SERVER_400: {
@@ -124,6 +141,12 @@ export const IDENTIFICATION_TYPE_DEFAULT_LENGTH = {
   code: 'DEFAULT',
   value: 5,
 };
+
+//=========================CATALOGOS PRODUCTOS===========================
+export const PRODUCT_TYPE = [
+  { code: 1, value: 'Bien' },
+  { code: 2, value: 'Servicio' },
+];
 
 //=========================TIEMPO DE DURACION DE MENSAJE===========================
 export const DURATION_TIME_MESSAGE = { code: 1, value: 5000 };

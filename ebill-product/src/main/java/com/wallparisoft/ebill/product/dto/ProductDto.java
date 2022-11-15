@@ -1,15 +1,12 @@
 package com.wallparisoft.ebill.product.dto;
 
-import static lombok.AccessLevel.PRIVATE;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
+
+import static lombok.AccessLevel.PRIVATE;
 
 @Data
 @NoArgsConstructor
@@ -19,17 +16,10 @@ import lombok.experimental.SuperBuilder;
 public class ProductDto {
 
   int idProduct;
-  @NotEmpty
-  @NotNull
   String mainCode;
-  @NotEmpty
-  @NotNull
   String auxiliarCode;
-  @NotEmpty
-  String productType;
-  @NotEmpty
+  Integer productType;
   String name;
-  @NotNull
   String description;
   double unitPrice;
   double discount;
