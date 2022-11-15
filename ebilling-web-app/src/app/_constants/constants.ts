@@ -77,7 +77,7 @@ export const EXIST_DATA = {
   },
   MESSAGE_EXISTS_MAINCODE: {
     code: 7001,
-    message: 'El código principal ingresado ya se encuentr registrado.',
+    message: 'El código principal ingresado ya se encuentra registrado.',
   },
 };
 

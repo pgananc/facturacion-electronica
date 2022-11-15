@@ -39,3 +39,6 @@ facturacion-electronica-app/.externalToolBuilders/
 **/.tern-project
 /.checkstyle
 /.eclipse-pmd
+
+#IGNORE FILES MACOSx
+**/.DS_Store
