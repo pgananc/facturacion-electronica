@@ -32,8 +32,8 @@ public class User {
   @Column(name = "password", nullable = false)
   private String password;
 
-  @Column(name = "enabled", nullable = false)
-  private boolean enabled;
+  @Column(name = "status", nullable = false)
+  private boolean status;
 
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "id_user", referencedColumnName = "idUser"), inverseJoinColumns = @JoinColumn(name = "id_role", referencedColumnName = "idRole"))

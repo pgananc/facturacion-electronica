@@ -1,4 +1,3 @@
-import { EMPTY } from 'rxjs';
 //Message general code > -1000
 export const ERRORS = {
   MESSAGE_ERROR_REGISTER: {
@@ -25,6 +24,10 @@ export const SUCCESS = {
     code: 2001,
     message: 'Producto guardado correctamente.',
   },
+  MESSAGE_REGISTER_COMPANY: {
+    code: 2002,
+    message: 'Compañía guardada correctamente.',
+  },
 };
 
 //Message delete code > 3000
@@ -37,6 +40,10 @@ export const DELETE = {
     code: 3001,
     message: 'Producto eliminado correctamente.',
   },
+  MESSAGE_DELETE_COMPANY: {
+    code: 3002,
+    message: 'Compañía eliminada correctamente.',
+  },
 };
 
 //Message update code > 4000
@@ -48,6 +55,10 @@ export const UPDATE = {
   MESSAGE_UPDATE_PRODUCT: {
     code: 4001,
     message: 'Producto actualizado correctamente.',
+  },
+  MESSAGE_UPDATE_COMPANY: {
+    code: 4002,
+    message: 'Compañía actualizada correctamente.',
   }
 };
 
@@ -71,7 +82,7 @@ export const EMPTY_DATA = {
 };
 
 export const EXIST_DATA = {
-  MESSAGE_EXIST_DATA: {
+  MESSAGE_EXISTS_IDENTIFICATION: {
     code: 7000,
     message: 'La identificación ingresada ya se encuentra registrada.',
   },

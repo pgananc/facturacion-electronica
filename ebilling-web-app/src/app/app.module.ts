@@ -14,6 +14,8 @@ import { ClientComponent } from './pages/customer/client/client.component';
 import { UpdateClientComponent } from './pages/customer/client/update-client/update-client.component';
 import {ProductComponent} from "./pages/product/product.component";
 import {UpdateProductComponent} from "./pages/product/update-product/update-product.component";
+import {CompanyComponent} from "./pages/company/company.component";
+import {UpdateCompanyComponent} from "./pages/company/update-company/update-company.component";
 
 @NgModule({
   declarations: [
@@ -23,7 +25,9 @@ import {UpdateProductComponent} from "./pages/product/update-product/update-prod
     ClientComponent,
     UpdateClientComponent,
     ProductComponent,
-    UpdateProductComponent
+    UpdateProductComponent,
+    CompanyComponent,
+    UpdateCompanyComponent
   ],
   imports: [
     BrowserModule,

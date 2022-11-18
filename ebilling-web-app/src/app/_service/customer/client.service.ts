@@ -10,7 +10,7 @@ import { ClientResponse } from '../../_model/customer/clientResponse';
 })
 export class ClientService {
   clientChange = new Subject<Client[]>();
-  messangeChange = new Subject<string>();
+  messageChange = new Subject<string>();
   url: string = `${environment.HOST_CUSTOMERS}/api/client`;
   constructor(private http: HttpClient) {}
 

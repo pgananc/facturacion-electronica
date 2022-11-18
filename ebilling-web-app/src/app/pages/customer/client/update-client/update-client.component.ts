@@ -147,7 +147,7 @@ export class UpdateClientComponent implements OnInit {
       .subscribe((data) => {
         if (data) {
           this.snackBar.open(
-            EXIST_DATA.MESSAGE_EXIST_DATA.message,
+            EXIST_DATA.MESSAGE_EXISTS_IDENTIFICATION.message,
             HEADER_MESSAGE.MESSAGE_HEADER_INFO.message,
             {
               duration: DURATION_TIME_MESSAGE.value,
@@ -177,7 +177,7 @@ export class UpdateClientComponent implements OnInit {
         )
         .subscribe((data) => {
           this.clientService.clientChange.next(data.clientDtos);
-          this.clientService.messangeChange.next(
+          this.clientService.messageChange.next(
             UPDATE.MESSAGE_UPDATE_CLIENT.message
           );
         });
@@ -191,7 +191,7 @@ export class UpdateClientComponent implements OnInit {
         )
         .subscribe((data) => {
           this.clientService.clientChange.next(data.clientDtos);
-          this.clientService.messangeChange.next(
+          this.clientService.messageChange.next(
             SUCCESS.MESSAGE_REGISTER_CLIENT.message
           );
         });

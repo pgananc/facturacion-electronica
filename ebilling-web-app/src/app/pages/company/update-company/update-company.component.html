@@ -1,0 +1,67 @@
+<mat-toolbar>
+  <mat-toolbar-row>
+    <span style="margin: auto">{{
+      edition ? "Actualización Compañía" : " Registro Compañía"
+      }}</span>
+  </mat-toolbar-row>
+</mat-toolbar>
+<form
+  class="principal-container"
+  [formGroup]="form"
+  (ngSubmit)="validateSave()"
+  #frmCompany="ngForm"
+>
+  <mat-form-field class="principal-full-width">
+    <input
+      matInput
+      type="text"
+      placeholder="Codigo de sucursal"
+      required
+      formControlName="branchOfficeCode"
+    />
+  </mat-form-field>
+
+  <mat-form-field class="principal-full-width">
+    <input
+      matInput
+      placeholder="ID compañía"
+      required
+      formControlName="identification"
+      name="identification"
+    />
+  </mat-form-field>
+
+  <mat-form-field class="principal-full-width">
+    <input
+      matInput
+      placeholder="Nombre"
+      required
+      formControlName="name"
+      name="name"
+    />
+  </mat-form-field>
+
+  <mat-checkbox
+    labelPosition="before"
+    formControlName="status"
+    class="principal-full-width"
+  >Estado
+  </mat-checkbox
+  >
+  <div class="flex-parent jc-center">
+    <button
+      class="margin-right botton-width"
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="frmCompany.invalid"
+    >
+      <mat-icon>done</mat-icon>
+      <span>Ok</span>
+    </button>
+    <button mat-raised-button color="accent" routerLink="/company" type="button">
+      <mat-icon>close</mat-icon>
+      <span>Cancel</span>
+    </button>
+  </div>
+</form>
