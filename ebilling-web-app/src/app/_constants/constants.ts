@@ -37,6 +37,10 @@ export const DELETE = {
     code: 3001,
     message: 'Producto eliminado correctamente.',
   },
+  MESSAGE_DELETE_USER: {
+    code: 3001,
+    message: 'Usuario eliminado correctamente.',
+  },
 };
 
 //Message update code > 4000
@@ -48,7 +52,7 @@ export const UPDATE = {
   MESSAGE_UPDATE_PRODUCT: {
     code: 4001,
     message: 'Producto actualizado correctamente.',
-  }
+  },
 };
 
 //Message header code > 5000

@@ -26,17 +26,19 @@ public class User {
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
   private Long idUser;
 
+  @Column(name = "name")
+  private String name;
+
   @Column(name = "username", nullable = false, unique = true)
-  private String username;
+  private String userName;
 
   @Column(name = "password", nullable = false)
   private String password;
 
-  @Column(name = "enabled", nullable = false)
-  private boolean enabled;
+  @Column(name = "mail", nullable = false)
+  private String mail;
 
-  @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "id_user", referencedColumnName = "idUser"), inverseJoinColumns = @JoinColumn(name = "id_role", referencedColumnName = "idRole"))
-  private List<Role> roles;
+  @Column(name = "status", nullable = false)
+  private Boolean status;
 
 }
