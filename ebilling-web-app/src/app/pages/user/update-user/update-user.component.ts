@@ -4,20 +4,17 @@ import { User } from '../../../_model/auth/user';
 import { UserService } from '../../../_service/user/user.service';
 import { ActivatedRoute, Route, Router, Params } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import {
-  MatTreeFlatDataSource,
-  MatTreeFlattener,
-} from '@angular/material/tree';
-import { TodoItemFlatNode } from '../../../_model/todoItemFlatNode';
-import { FlatTreeControl } from '@angular/cdk/tree';
-import { TodoItemNode } from '../../../_model/todoItemNode';
-import { SelectionModel } from '@angular/cdk/collections';
-import { BehaviorSubject } from 'rxjs';
-import { IDENTIFICATION_TYPE } from '../../../_constants/constants';
-import { RoleResponse } from 'src/app/_model/auth/roleResponse';
+
 import { RoleService } from '../../../_service/role/role.service';
 import { Role } from '../../../_model/auth/role';
 import { MatButtonModule } from '@angular/material/button';
+import { switchMap } from 'rxjs';
+import { UPDATE, SUCCESS } from '../../../_constants/constants';
+import {
+  EXIST_DATA,
+  HEADER_MESSAGE,
+  DURATION_TIME_MESSAGE,
+} from '../../../_constants/constants';
 
 @Component({
   selector: 'app-update-user',
@@ -66,16 +63,14 @@ export class UpdateUserComponent implements OnInit {
       this.userService.findById(this.idUser).subscribe((data) => {
         if (data.code == 0 && data.userDtos.length > 0) {
           let user = data.userDtos[0];
-          console.log(user);
-          this.idRole = user.roleDtos[0].idRole;
-
+          this.idRole = user.roleDtos[0]?.idRole;
           this.userNameLast = user.userName;
           this.form = new FormGroup({
             id: new FormControl(user.idUser),
             name: new FormControl(user.name),
             userName: new FormControl(user.userName),
-            password: new FormControl(user.userName),
-            passwordRepeat: new FormControl(user.userName),
+            password: new FormControl(user.password),
+            passwordRepeat: new FormControl(user.password),
             email: new FormControl(user.mail),
             status: new FormControl(user.status),
           });
@@ -91,7 +86,80 @@ export class UpdateUserComponent implements OnInit {
       }
     });
   }
-  validateSave() {}
+  validateSave() {
+    if (this.edition && this.userNameLast === this.form.value['userName']) {
+      this.save();
+    } else {
+      this.validateUserName();
+    }
+  }
+
+  validateUserName() {
+    this.userService
+      .existsByUserName(this.form.value['userName'])
+      .subscribe((data) => {
+        if (data) {
+          this.snackBar.open(
+            EXIST_DATA.MESSAGE_EXISTS_USER.message,
+            HEADER_MESSAGE.MESSAGE_HEADER_INFO.message,
+            {
+              duration: DURATION_TIME_MESSAGE.value,
+            }
+          );
+        } else {
+          this.save();
+        }
+      });
+  }
+
+  save() {
+    this.user.idUser = this.idUser;
+    this.user.name = this.form.value['name'];
+    this.user.userName = this.form.value['userName'];
+    this.user.password = this.form.value['password'];
+    this.user.status = this.form.value['status'];
+    this.user.mail = this.form.value['email'];
+    this.user.roleDtos = this.addRoles();
+    if (this.user != null && this.user.idUser > 0) {
+      this.userService
+        .update(this.user, this.user.idUser)
+        .pipe(
+          switchMap(() => {
+            return this.userService.findAll();
+          })
+        )
+        .subscribe((data) => {
+          this.userService.userChange.next(data.userDtos);
+          this.userService.messangeChange.next(
+            UPDATE.MESSAGE_UPDATE_USER.message
+          );
+        });
+    } else {
+      this.userService
+        .save(this.user)
+        .pipe(
+          switchMap(() => {
+            return this.userService.findAll();
+          })
+        )
+        .subscribe((data) => {
+          this.userService.userChange.next(data.userDtos);
+          this.userService.messangeChange.next(
+            SUCCESS.MESSAGE_REGISTER_CLIENT.message
+          );
+        });
+    }
+
+    this.router.navigate(['user']);
+  }
+
+  addRoles(): Role[] {
+    let role = new Role();
+    role.idRole = this.idRole;
+    let roles = [];
+    roles.push(role);
+    return roles;
+  }
 
   get f() {
     return this.form.controls;

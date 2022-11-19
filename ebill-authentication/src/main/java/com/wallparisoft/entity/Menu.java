@@ -35,4 +35,7 @@ public class Menu {
 	@Column(name = "url", length = 50)
 	private String url;
 
+	@Column(name = "status", nullable = false)
+	private Boolean status;
+
 }

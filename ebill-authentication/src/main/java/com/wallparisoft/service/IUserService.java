@@ -17,4 +17,10 @@ public interface IUserService extends ICRUD<User> {
     List<UserDto> findUsersActive();
 
     List<UserDto> findUserWithRolById( Long idUser);
+
+    void saveUserAndRole(UserDto userDto);
+
+    void updateUserAndRole(UserDto userDto, Long idUser);
+
+    Boolean existsByUserName(String userName);
 }

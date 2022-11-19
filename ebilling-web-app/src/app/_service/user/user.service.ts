@@ -14,6 +14,14 @@ export class UserService {
   url: string = `${environment.HOST_AUTH}/api/user`;
   constructor(private http: HttpClient) {}
 
+  save(user: User) {
+    return this.http.post(this.url, user);
+  }
+
+  update(user: User, id: Number) {
+    return this.http.patch(`${this.url}/${id}`, user);
+  }
+
   searchPageable(p: number, s: number, user: User) {
     return this.http.post<any>(
       `${this.url}/pageable?page=${p}&size=${s}`,
@@ -31,5 +39,9 @@ export class UserService {
 
   findById(id: Number) {
     return this.http.get<UserResponse>(`${this.url}/${id}`);
+  }
+
+  existsByUserName(userName: String) {
+    return this.http.get<boolean>(`${this.url}/exist/${userName}`);
   }
 }

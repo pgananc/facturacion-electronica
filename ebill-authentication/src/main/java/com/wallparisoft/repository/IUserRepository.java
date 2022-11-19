@@ -29,4 +29,5 @@ public interface IUserRepository extends JpaRepository<User, Long> {
   @Query(value = "SELECT u FROM User  u where u.idUser= :idUser order by u.name")
   List<User> findUserById(@Param(value = "idUser") Long idUser);
 
+  boolean existsByUserName(String userName);
 }

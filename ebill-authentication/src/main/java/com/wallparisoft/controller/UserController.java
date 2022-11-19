@@ -126,6 +126,70 @@ public class UserController {
                 .build());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @PostMapping
+    public ResponseEntity<BasicResponse> save(@Valid @RequestBody UserDto userDto) {
+        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+        log.debug(EventLog.builder()
+                .service(traceElement.getClassName())
+                .method(traceElement.getMethodName())
+                .eventType(REQUEST.name())
+                .level(LEVEL_001.name())
+                .build());
+        userService.saveUserAndRole(userDto);
+        BasicResponse response = getBasicResponse();
+        log.debug(EventLog.builder()
+                .service(traceElement.getClassName())
+                .method(traceElement.getMethodName())
+                .information(response.getMessage())
+                .eventType(RESPONSE.name())
+                .level(LEVEL_001.name())
+                .build());
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{idUser}")
+    public ResponseEntity<BasicResponse> update(@Valid @RequestBody UserDto userDto, @PathVariable Long idUser) {
+        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+        log.debug(EventLog.builder()
+                .service(traceElement.getClassName())
+                .method(traceElement.getMethodName())
+                .information("ID user: ".concat(idUser.toString()).concat(", Object company: ").concat(userDto.toString()))
+                .eventType(REQUEST.name())
+                .level(LEVEL_001.name())
+                .build());
+        userService.updateUserAndRole(userDto, idUser);
+        BasicResponse response = getBasicResponse();
+        log.debug(EventLog.builder()
+                .service(traceElement.getClassName())
+                .method(traceElement.getMethodName())
+                .information(response.getMessage())
+                .eventType(RESPONSE.name())
+                .level(LEVEL_001.name())
+                .build());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("exist/{userName}")
+    public ResponseEntity<Boolean> existsByUserName(@PathVariable(value = "userName") String userName) {
+        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+        log.debug(EventLog.builder()
+                .service(traceElement.getClassName())
+                .method(traceElement.getMethodName())
+                .eventType(REQUEST.name())
+                .level(LEVEL_001.name())
+                .build());
+        Boolean exists = userService.existsByUserName(userName);
+
+        log.debug(EventLog.builder()
+                .service(traceElement.getClassName())
+                .method(traceElement.getMethodName())
+                .information(exists)
+                .eventType(RESPONSE.name())
+                .level(LEVEL_001.name())
+                .build());
+        return new ResponseEntity<>(exists, HttpStatus.OK);
+    }
     private static BasicResponse getBasicResponse() {
         BasicResponse response = BasicResponse.builder().status(HttpStatus.OK.getReasonPhrase()).build();
         return response;
