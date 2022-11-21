@@ -104,6 +104,36 @@
         <mat-cell *matCellDef="let row"> {{ row.name }} </mat-cell>
       </ng-container>
 
+      <ng-container matColumnDef="forceToAccounting">
+        <mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          class="text-color-bold">
+          Obligado a llevar contabilidad
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{ row.forcedToAccounting }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="specialTaxpayer">
+        <mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          class="text-color-bold">
+          Contribuyente especial
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{ row.specialTaxpayer }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="principal">
+        <mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          class="text-color-bold">
+          Principal
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{ row.principal }} </mat-cell>
+      </ng-container>
+
       <ng-container matColumnDef="status">
         <mat-header-cell
           *matHeaderCellDef

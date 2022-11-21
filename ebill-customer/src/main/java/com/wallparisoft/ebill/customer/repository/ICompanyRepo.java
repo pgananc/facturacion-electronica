@@ -1,6 +1,5 @@
 package com.wallparisoft.ebill.customer.repository;
 
-import com.wallparisoft.ebill.customer.entity.Client;
 import com.wallparisoft.ebill.customer.entity.Company;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,12 +13,12 @@ public interface ICompanyRepo extends JpaRepository<Company, Long> {
     @Query(value = "SELECT c FROM Company  c where c.status=true order by c.identification")
     List<Company> findCompaniesActive();
 
-    @Query(value = "SELECT c FROM Company  c where " +
+    @Query(value = "SELECT c FROM Company c where " +
             "c.identification like :identification and UPPER(c.name) like :name and " +
-            "c.branchOfficeCode =:branchOfficeCode and c.status= :status " +
+            "UPPER(c.branchOfficeCode) like :branchOfficeCode and c.status= :status " +
             "order by c.idCompany asc")
     Page<Company> findCompanyByIdentificationOrNameOrBranchOfficeCode(String identification, String name
-            , String branchOfficeCode, Boolean status, Pageable pageable);
+            , String branchOfficeCode, boolean status, Pageable pageable);
 
-    boolean existsByIdentification(String identification);
+    boolean existsByIdentificationAndBranchOfficeCode(String identification, String branchOfficeCode);
 }

@@ -20,6 +20,8 @@ export class UpdateCompanyComponent implements OnInit {
   branchOfficeCode: string = '';
   identification: string = '';
   name: string = '';
+  forceToAccounting = true;
+  principal = true;
 
   constructor(
     private companyService: CompanyService,
@@ -37,6 +39,8 @@ export class UpdateCompanyComponent implements OnInit {
       identification: new FormControl('', Validators.required),
       name: new FormControl(''),
       status: new FormControl(true),
+      forceToAccounting: new FormControl(true),
+      principal: new FormControl(true)
     });
     this.route.params.subscribe((params: Params) => {
       this.idCompany = params['idCompany'];
@@ -48,17 +52,22 @@ export class UpdateCompanyComponent implements OnInit {
   initForm() {
     if (this.edition) {
       this.companyService.findById(this.idCompany).subscribe((data) => {
-        if (data.code == 0 && data.companyDtos.length > 0) {
-          let company = data.companyDtos[0];
+        if (data.code == 0 && data.companyDto) {
+          let company = data.companyDto;
           this.identification = company.identification;
           this.branchOfficeCode = company.branchOfficeCode;
-          this.name=company.name;
+          this.name = company.name;
+          this.forceToAccounting = company.forcedToAccounting === 'S';
+          this.principal = company.principal === 'S';
+
           this.form = new FormGroup({
             id: new FormControl(company.idCompany),
             identification: new FormControl(company.identification),
             branchOfficeCode: new FormControl(company.branchOfficeCode),
             name: new FormControl(company.name),
             status: new FormControl(company.status),
+            forceToAccounting: new FormControl(company.forcedToAccounting === 'S'),
+            principal: new FormControl(company.principal === 'S')
           });
         }
       });
@@ -78,7 +87,7 @@ export class UpdateCompanyComponent implements OnInit {
 
   validateIdentification() {
     this.companyService
-      .existsByIdentification(this.form.value['identification'])
+      .existsByIdentificationAndBranchOfficeCode(this.form.value['identification'], this.form.value['branchOfficeCode'])
       .subscribe((data) => {
         if (data) {
           this.snackBar.open(
@@ -100,6 +109,9 @@ export class UpdateCompanyComponent implements OnInit {
     this.company.branchOfficeCode = this.form.value['branchOfficeCode'];
     this.company.name = this.form.value['name'];
     this.company.status = this.form.value['status'];
+    this.company.forcedToAccounting = this.form.value['forceToAccounting'] ? 'S' : 'N';
+    console.log(`forceToAccounting: ${this.company.forcedToAccounting}`);
+    this.company.principal = this.form.value['principal'] ? 'S' : 'N';
 
     if (this.company.idCompany > 0) {
       this.companyService

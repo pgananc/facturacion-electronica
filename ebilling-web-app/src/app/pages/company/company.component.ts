@@ -16,7 +16,7 @@ import {CompanyService} from "../../_service/customer/company.service";
 })
 export class CompanyComponent implements OnInit {
   form: FormGroup;
-  displayedColumns = ['identification', 'branchOfficeCode', 'name', 'actions'];
+  displayedColumns = ['identification', 'branchOfficeCode','forceToAccounting','specialTaxpayer','principal', 'name', 'actions'];
   dataSource: MatTableDataSource<Company>;
   status: boolean = true;
   quantity: number = 0;

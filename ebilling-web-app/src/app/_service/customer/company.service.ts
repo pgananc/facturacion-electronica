@@ -1,4 +1,3 @@
-
 import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
@@ -44,7 +43,7 @@ export class CompanyService {
     );
   }
 
-  existsByIdentification(identification: String) {
-    return this.http.get<boolean>(`${this.url}/exist/${identification}`);
+  existsByIdentificationAndBranchOfficeCode(identification: string, branchOfficeCode: string) {
+    return this.http.get<boolean>(`${this.url}/exist/${identification}/branch/${branchOfficeCode}`);
   }
 }

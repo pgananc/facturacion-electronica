@@ -14,7 +14,7 @@
   <mat-form-field class="principal-full-width">
     <input
       matInput
-      type="text"
+      oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
       placeholder="Codigo de sucursal"
       required
       formControlName="branchOfficeCode"
@@ -24,6 +24,7 @@
   <mat-form-field class="principal-full-width">
     <input
       matInput
+      oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
       placeholder="ID compañía"
       required
       formControlName="identification"
@@ -40,6 +41,22 @@
       name="name"
     />
   </mat-form-field>
+
+  <mat-checkbox
+    labelPosition="before"
+    formControlName="forceToAccounting"
+    class="principal-full-width"
+  >Obligado a llevar contabilidad
+  </mat-checkbox
+  >
+
+  <mat-checkbox
+    labelPosition="before"
+    formControlName="principal"
+    class="principal-full-width"
+  >Principal
+  </mat-checkbox
+  >
 
   <mat-checkbox
     labelPosition="before"
