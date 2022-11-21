@@ -1,11 +1,11 @@
 package com.wallparisoft.service;
 
-import com.wallparisoft.dto.RoleDto;
 import com.wallparisoft.entity.Role;
+import com.wallparisoft.response.RoleDtoResponse;
 
-import java.util.List;
+
 
 public interface IRoleService extends  ICRUD<Role>{
 
-    List<RoleDto> findRoleActive();
+    RoleDtoResponse findRoleActive();
 }

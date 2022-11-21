@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IUserRepository extends JpaRepository<User, Long> {
 
@@ -25,9 +26,6 @@ public interface IUserRepository extends JpaRepository<User, Long> {
 
   @Query(value = "SELECT u FROM User  u where u.status=true order by u.name")
   List<User> findUsersActive();
-
-  @Query(value = "SELECT u FROM User  u where u.idUser= :idUser order by u.name")
-  List<User> findUserById(@Param(value = "idUser") Long idUser);
 
   boolean existsByUserName(String userName);
 }

@@ -7,7 +7,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { RoleService } from '../../../_service/role/role.service';
 import { Role } from '../../../_model/auth/role';
-import { MatButtonModule } from '@angular/material/button';
 import { switchMap } from 'rxjs';
 import { UPDATE, SUCCESS } from '../../../_constants/constants';
 import {
@@ -45,7 +44,6 @@ export class UpdateUserComponent implements OnInit {
       name: new FormControl(''),
       userName: new FormControl(''),
       password: new FormControl(''),
-      passwordRepeat: new FormControl(''),
       email: new FormControl('', [Validators.email]),
       status: new FormControl(true),
     });
@@ -70,7 +68,6 @@ export class UpdateUserComponent implements OnInit {
             name: new FormControl(user.name),
             userName: new FormControl(user.userName),
             password: new FormControl(user.password),
-            passwordRepeat: new FormControl(user.password),
             email: new FormControl(user.mail),
             status: new FormControl(user.status),
           });
@@ -145,7 +142,7 @@ export class UpdateUserComponent implements OnInit {
         .subscribe((data) => {
           this.userService.userChange.next(data.userDtos);
           this.userService.messangeChange.next(
-            SUCCESS.MESSAGE_REGISTER_CLIENT.message
+            SUCCESS.MESSAGE_REGISTER_USER.message
           );
         });
     }

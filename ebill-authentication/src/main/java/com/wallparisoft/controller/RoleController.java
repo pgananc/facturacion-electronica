@@ -40,11 +40,7 @@ public class RoleController {
                 .eventType(REQUEST.name())
                 .level(LEVEL_001.name())
                 .build());
-        List<RoleDto> roles = roleService.findRoleActive();
-        RoleDtoResponse response = RoleDtoResponse.builder()
-                .status(HttpStatus.OK.getReasonPhrase())
-                .roleDtos(roles)
-                .build();
+        RoleDtoResponse response  = roleService.findRoleActive();
         log.debug(EventLog.builder()
                 .service(traceElement.getClassName())
                 .method(traceElement.getMethodName())

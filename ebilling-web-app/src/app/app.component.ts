@@ -20,7 +20,6 @@ export class AppComponent {
 
   ngOnInit() {
     this.menuService.menuChange.subscribe((data) => {
-      console.log(data);
       this.menus = data;
     });
   }

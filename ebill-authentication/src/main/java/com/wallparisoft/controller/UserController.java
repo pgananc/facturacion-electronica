@@ -88,11 +88,8 @@ public class UserController {
                 .eventType(REQUEST.name())
                 .level(LEVEL_001.name())
                 .build());
-        List<UserDto> userDtos = userService.findUsersActive();
-        UserDtoResponse response = UserDtoResponse.builder()
-                .status(HttpStatus.OK.getReasonPhrase())
-                .userDtos(userDtos)
-                .build();
+        UserDtoResponse response = userService.findUsersActive();
+
         log.debug(EventLog.builder()
                 .service(traceElement.getClassName())
                 .method(traceElement.getMethodName())
@@ -112,11 +109,8 @@ public class UserController {
                 .eventType(REQUEST.name())
                 .level(LEVEL_001.name())
                 .build());
-        List<UserDto> userDtos = userService.findUserWithRolById(idUser);
-        UserDtoResponse response = UserDtoResponse.builder()
-                .status(HttpStatus.OK.getReasonPhrase())
-                .userDtos(userDtos)
-                .build();
+        UserDtoResponse response = userService.findUserWithRolById(idUser);
+
         log.debug(EventLog.builder()
                 .service(traceElement.getClassName())
                 .method(traceElement.getMethodName())
@@ -158,7 +152,7 @@ public class UserController {
                 .eventType(REQUEST.name())
                 .level(LEVEL_001.name())
                 .build());
-        userService.updateUserAndRole(userDto, idUser);
+        userService.update(userDto, idUser);
         BasicResponse response = getBasicResponse();
         log.debug(EventLog.builder()
                 .service(traceElement.getClassName())

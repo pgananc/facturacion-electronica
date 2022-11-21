@@ -34,8 +34,13 @@ public class User {
 
   @Column(name = "creation_date")
   private LocalDateTime creationDate;
+
+  @Column(name = "update_date")
+  private LocalDateTime updateDate;
   @PrePersist
   public void preInsert() {
     creationDate = LocalDateTime.now();
   }
+
+
 }

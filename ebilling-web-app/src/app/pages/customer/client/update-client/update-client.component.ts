@@ -254,6 +254,5 @@ export class UpdateClientComponent implements OnInit {
       this.identificationMaxlength = IDENTIFICATION_TYPE_PASSPORT_LENGTH.value;
       this.identificationMinlength = IDENTIFICATION_TYPE_DEFAULT_LENGTH.value;
     }
-    console.log(this.identificationMaxlength);
   }
 }

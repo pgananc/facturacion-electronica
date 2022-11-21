@@ -2,10 +2,11 @@ package com.wallparisoft.service;
 
 import com.wallparisoft.dto.UserDto;
 import com.wallparisoft.entity.User;
+import com.wallparisoft.response.UserDtoResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+
 
 public interface IUserService extends ICRUD<User> {
 
@@ -14,13 +15,13 @@ public interface IUserService extends ICRUD<User> {
     Page<UserDto> findUserByUserNameOrNameOrStatus(String name, String userName,
                                                    Boolean status, Pageable pageable);
 
-    List<UserDto> findUsersActive();
+    UserDtoResponse findUsersActive();
 
-    List<UserDto> findUserWithRolById( Long idUser);
+    UserDtoResponse findUserWithRolById( Long idUser);
 
     void saveUserAndRole(UserDto userDto);
 
-    void updateUserAndRole(UserDto userDto, Long idUser);
+    void update(UserDto userDto, Long idUser);
 
     Boolean existsByUserName(String userName);
 }
