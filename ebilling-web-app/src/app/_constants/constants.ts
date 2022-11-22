@@ -25,6 +25,10 @@ export const SUCCESS = {
     code: 2001,
     message: 'Producto guardado correctamente.',
   },
+  MESSAGE_REGISTER_USER: {
+    code: 2001,
+    message: 'Usuario guardado correctamente.',
+  },
 };
 
 //Message delete code > 3000
@@ -37,6 +41,10 @@ export const DELETE = {
     code: 3001,
     message: 'Producto eliminado correctamente.',
   },
+  MESSAGE_DELETE_USER: {
+    code: 3001,
+    message: 'Usuario eliminado correctamente.',
+  },
 };
 
 //Message update code > 4000
@@ -48,7 +56,11 @@ export const UPDATE = {
   MESSAGE_UPDATE_PRODUCT: {
     code: 4001,
     message: 'Producto actualizado correctamente.',
-  }
+  },
+  MESSAGE_UPDATE_USER: {
+    code: 4002,
+    message: 'Usuario actualizado correctamente.',
+  },
 };
 
 //Message header code > 5000
@@ -71,13 +83,17 @@ export const EMPTY_DATA = {
 };
 
 export const EXIST_DATA = {
-  MESSAGE_EXIST_DATA: {
+  MESSAGE_EXIST_IDENTIFICATION: {
     code: 7000,
     message: 'La identificación ingresada ya se encuentra registrada.',
   },
   MESSAGE_EXISTS_MAINCODE: {
     code: 7001,
     message: 'El código principal ingresado ya se encuentra registrado.',
+  },
+  MESSAGE_EXISTS_USER: {
+    code: 7001,
+    message: 'El usuario ingresado ya se encuentra registrado.',
   },
 };
 
