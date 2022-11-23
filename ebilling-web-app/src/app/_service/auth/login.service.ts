@@ -22,7 +22,6 @@ export class LoginService {
   }
   isLogin() {
     let user = sessionStorage.getItem(environment.USER);
-
     return user != null;
   }
 }
