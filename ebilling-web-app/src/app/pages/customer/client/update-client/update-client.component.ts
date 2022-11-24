@@ -5,10 +5,7 @@ import { ClientService } from '../../../../_service/customer/client.service';
 import { ActivatedRoute, Params, Route, Router } from '@angular/router';
 import { switchMap } from 'rxjs';
 import { Contact } from '../../../../_model/customer/contact';
-import {
-  CONTACT_TYPE_ADRESS,
-  EMPTY_DATA,
-} from '../../../../_constants/constants';
+import { CONTACT_TYPE_ADRESS } from '../../../../_constants/constants';
 import {
   CONTACT_TYPE_MOBIL,
   CONTACT_TYPE_MAIL,
@@ -147,7 +144,7 @@ export class UpdateClientComponent implements OnInit {
       .subscribe((data) => {
         if (data) {
           this.snackBar.open(
-            EXIST_DATA.MESSAGE_EXISTS_IDENTIFICATION.message,
+            EXIST_DATA.MESSAGE_EXIST_IDENTIFICATION.message,
             HEADER_MESSAGE.MESSAGE_HEADER_INFO.message,
             {
               duration: DURATION_TIME_MESSAGE.value,
@@ -166,7 +163,7 @@ export class UpdateClientComponent implements OnInit {
     this.client.identification = this.form.value['identification'];
     this.client.name = this.form.value['name'];
     this.client.status = this.form.value['status'];
-    this.client.contacts = this.addContacts(this.form);
+    this.client.contacts = this.addContacts();
     if (this.client != null && this.client.idClient > 0) {
       this.clientService
         .update(this.client, this.client.idClient)
@@ -200,7 +197,7 @@ export class UpdateClientComponent implements OnInit {
     this.router.navigate(['client']);
   }
 
-  addContacts(form: FormGroup): Contact[] {
+  addContacts(): Contact[] {
     let contacts = [];
     let phone = this.form.value['phone'];
     let mobil = this.form.value['mobil'];
@@ -257,6 +254,5 @@ export class UpdateClientComponent implements OnInit {
       this.identificationMaxlength = IDENTIFICATION_TYPE_PASSPORT_LENGTH.value;
       this.identificationMinlength = IDENTIFICATION_TYPE_DEFAULT_LENGTH.value;
     }
-    console.log(this.identificationMaxlength);
   }
 }

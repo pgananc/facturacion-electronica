@@ -1,18 +1,9 @@
 package com.wallparisoft.entity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.Data;
 
@@ -26,17 +17,29 @@ public class User {
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
   private Long idUser;
 
+  @Column(name = "name")
+  private String name;
+
   @Column(name = "username", nullable = false, unique = true)
-  private String username;
+  private String userName;
 
   @Column(name = "password", nullable = false)
   private String password;
 
-  @Column(name = "status", nullable = false)
-  private boolean status;
+  @Column(name = "mail", nullable = false)
+  private String mail;
 
-  @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "id_user", referencedColumnName = "idUser"), inverseJoinColumns = @JoinColumn(name = "id_role", referencedColumnName = "idRole"))
-  private List<Role> roles;
+  @Column(name = "status", nullable = false)
+  private Boolean status;
+
+  @Column(name = "creation_date")
+  private LocalDateTime creationDate;
+
+  @Column(name = "update_date")
+  private LocalDateTime updateDate;
+  @PrePersist
+  public void preInsert() {
+    creationDate = LocalDateTime.now();
+  }
 
 }

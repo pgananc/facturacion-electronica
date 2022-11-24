@@ -14,6 +14,6 @@ public class LoginServiceImpl implements ILoginService {
 
 	@Override
 	public User validateUserName(String userName, String password) throws Exception {
-		return loginRepository.validateByUserName(userName, password);
+		return loginRepository.findByUserNameAndPasswordAndStatus(userName, password,true);
 	}
 }

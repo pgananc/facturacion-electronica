@@ -1,9 +1,7 @@
 package com.wallparisoft.ebill.customer.mapper;
 
 
-import com.wallparisoft.ebill.customer.dto.CompanyDto;
 import com.wallparisoft.ebill.customer.dto.ContactDto;
-import com.wallparisoft.ebill.customer.entity.Company;
 import com.wallparisoft.ebill.customer.entity.Contact;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;

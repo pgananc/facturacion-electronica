@@ -22,6 +22,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTreeModule } from '@angular/material/tree';
 
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 
@@ -48,6 +49,7 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
     MatMenuModule,
     MatDividerModule,
     MatExpansionModule,
+    MatTreeModule,
   ],
   exports: [
     MatToolbarModule,
@@ -69,6 +71,7 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
     MatMenuModule,
     MatDividerModule,
     MatExpansionModule,
+    MatTreeModule,
   ],
   providers: [
     { provide: MatPaginatorIntl, useClass: MatPaginatorImpl },
