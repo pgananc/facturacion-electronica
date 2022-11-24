@@ -20,7 +20,7 @@ export class CompanyService {
     return this.http.post(this.url, company);
   }
 
-  update(company: Company, id: Number) {
+  update(company: Company, id: number) {
     return this.http.patch(`${this.url}/${id}`, company);
   }
 
@@ -28,7 +28,7 @@ export class CompanyService {
     return this.http.get<CompanyResponse>(this.url);
   }
 
-  findById(id: Number) {
+  findById(id: number) {
     return this.http.get<CompanyResponse>(`${this.url}/${id}`);
   }
 

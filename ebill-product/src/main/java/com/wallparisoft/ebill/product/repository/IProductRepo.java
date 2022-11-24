@@ -12,8 +12,7 @@ import java.util.Optional;
 
 public interface IProductRepo extends JpaRepository<Product, Long> {
 
-    @Query(value = "SELECT c FROM Product  c WHERE c.status=:status order by c.mainCode")
-    Optional<List<Product>> findProductsByStatus(@Param("status") boolean status);
+    Optional<List<Product>> findProductsByStatusOrderByMainCode(@Param("status") boolean status);
 
     boolean existsByMainCode(String mainCode);
 

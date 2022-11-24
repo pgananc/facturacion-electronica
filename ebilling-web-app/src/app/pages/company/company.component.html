@@ -21,6 +21,7 @@
               <mat-form-field class="principal-full-width">
                 <input
                   matInput
+                  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
                   placeholder="ID compañía"
                   formControlName="identification"
                 />
@@ -31,6 +32,7 @@
               <mat-form-field class="principal-full-width">
                 <input
                   matInput
+                  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
                   placeholder="Código sucursal"
                   formControlName="branchOfficeCode"
                 />

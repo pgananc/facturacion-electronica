@@ -58,7 +58,6 @@ export class CompanyComponent implements OnInit {
       this.quantity = data.totalElements;
       this.dataSource = new MatTableDataSource(data.content);
       this.dataSource.sort = this.sort!;
-      //this.dataSource.paginator = this.paginator;
     });
   }
 
@@ -122,7 +121,6 @@ export class CompanyComponent implements OnInit {
         this.quantity = data.totalElements;
         this.dataSource = new MatTableDataSource(data.content);
         this.dataSource.sort = this.sort!;
-        //this.dataSource.paginator = this.paginator;
       });
   }
 }

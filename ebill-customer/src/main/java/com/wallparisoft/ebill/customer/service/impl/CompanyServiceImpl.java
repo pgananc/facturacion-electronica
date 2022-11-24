@@ -81,6 +81,7 @@ public class CompanyServiceImpl implements ICompanyService {
     }
 
     @Override
+    @Transactional
     public void updateCompanyAndContact(CompanyDto companyDto, Long idCompany) {
         Company companySave = findById(idCompany);
         Company company = companyMapper.convertCompanyDtoToCompany(companyDto);
@@ -101,6 +102,7 @@ public class CompanyServiceImpl implements ICompanyService {
     }
 
     @Override
+    @Transactional
     public void updateCompany(CompanyDto companyDto) {
         Company companySave = findById(companyDto.getIdCompany());
         if (companySave == null) {
@@ -113,6 +115,7 @@ public class CompanyServiceImpl implements ICompanyService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         Company company = findById(id);
         company.setStatus(false);
@@ -151,6 +154,7 @@ public class CompanyServiceImpl implements ICompanyService {
     }
 
     @Override
+    @Transactional
     public void saveCompany(CompanyDto companyDto) {
         companyRepo.save(companyMapper.convertCompanyDtoToCompany(companyDto));
     }
