@@ -4,6 +4,8 @@ import { LoginComponent } from './pages/login/login.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { ClientComponent } from './pages/customer/client/client.component';
 import { UpdateClientComponent } from './pages/customer/client/update-client/update-client.component';
+import {CompanyComponent} from "./pages/company/company.component";
+import {UpdateCompanyComponent} from "./pages/company/update-company/update-company.component";
 import { ProductComponent } from './pages/product/product.component';
 import { UpdateProductComponent } from './pages/product/update-product/update-product.component';
 import { UserComponent } from './pages/user/user.component';
@@ -47,6 +49,14 @@ const routes: Routes = [
       { path: 'edit/:idUser', component: UpdateUserComponent },
     ],
     canActivate: [CanActiveUserGuard],
+  },
+  {
+    path: 'company',
+    component: CompanyComponent,
+    children: [
+      { path: 'new', component: UpdateCompanyComponent },
+      { path: 'edit/:idCompany', component: UpdateCompanyComponent },
+    ]
   },
   { path: '**', component: Not404Component },
 ];

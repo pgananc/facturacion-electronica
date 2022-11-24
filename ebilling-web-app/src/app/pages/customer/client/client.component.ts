@@ -52,7 +52,7 @@ export class ClientComponent implements OnInit {
       this.dataSource.paginator = this.paginator;
     });
 
-    this.clientService.messangeChange.subscribe((data) => {
+    this.clientService.messageChange.subscribe((data) => {
       this.snackBar.open(data, HEADER_MESSAGE.MESSAGE_HEADER_INFO.message, {
         duration: 2000,
       });
@@ -75,7 +75,7 @@ export class ClientComponent implements OnInit {
       this.clientService.findAll().subscribe((data) => {
         if (data.code == 0) {
           this.clientService.clientChange.next(data.clientDtos);
-          this.clientService.messangeChange.next(
+          this.clientService.messageChange.next(
             DELETE.MESSAGE_DELETE_CLIENT.message
           );
         } else {

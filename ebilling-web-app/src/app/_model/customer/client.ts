@@ -1,5 +1,5 @@
-import { BasicEntity } from '../basicEntity';
-import { Contact } from './contact';
+import {Contact} from './contact';
+
 export class Client {
   idClient: number = 0;
   idType: number = 0;

@@ -5,13 +5,18 @@ import com.wallparisoft.ebill.customer.dto.CompanyDto;
 import com.wallparisoft.ebill.customer.entity.Company;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
-public interface CompanyMapper {
+public abstract class CompanyMapper {
+    public abstract Company convertCompanyDtoToCompany(CompanyDto companyDto);
 
-    CompanyMapper INSTANCE = Mappers.getMapper(CompanyMapper.class);
-    Company convertCompanyDtoToCompany(CompanyDto companyDto);
     @InheritInverseConfiguration
-    CompanyDto convertCompanyToCompanyDto(Company company);
+    public abstract CompanyDto convertCompanyToCompanyDto(Company company);
+
+    public List<CompanyDto> convertCompaniesToCompaniesDto(List<Company> companies) {
+        return companies.stream().map(company -> convertCompanyToCompanyDto(company)).collect(Collectors.toList());
+    }
 }

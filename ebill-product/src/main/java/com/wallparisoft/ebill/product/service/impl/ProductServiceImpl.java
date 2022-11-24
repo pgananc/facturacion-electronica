@@ -112,7 +112,7 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public ProductResponse getProductsByStatus(boolean status) {
-        Optional<List<Product>> products = repo.findProductsByStatus(status);
+        Optional<List<Product>> products = repo.findProductsByStatusOrderByMainCode(status);
         ProductResponse response = products.isPresent() ? serviceMapper
                 .toProductResponse(products.get()) : ProductResponse.builder().build();
         response.setCode(HttpStatus.OK.value());

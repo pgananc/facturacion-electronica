@@ -174,7 +174,7 @@ export class UpdateClientComponent implements OnInit {
         )
         .subscribe((data) => {
           this.clientService.clientChange.next(data.clientDtos);
-          this.clientService.messangeChange.next(
+          this.clientService.messageChange.next(
             UPDATE.MESSAGE_UPDATE_CLIENT.message
           );
         });
@@ -188,7 +188,7 @@ export class UpdateClientComponent implements OnInit {
         )
         .subscribe((data) => {
           this.clientService.clientChange.next(data.clientDtos);
-          this.clientService.messangeChange.next(
+          this.clientService.messageChange.next(
             SUCCESS.MESSAGE_REGISTER_CLIENT.message
           );
         });

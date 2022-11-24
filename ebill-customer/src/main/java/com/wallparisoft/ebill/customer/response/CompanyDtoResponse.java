@@ -14,4 +14,5 @@ import java.util.List;
 @Getter
 public class CompanyDtoResponse extends BasicResponse {
     private List<CompanyDto> companyDtos;
+    private CompanyDto companyDto;
 }
