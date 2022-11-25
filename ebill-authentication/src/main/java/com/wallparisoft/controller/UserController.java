@@ -4,18 +4,18 @@ import com.wallparisoft.dto.UserDto;
 import com.wallparisoft.ebill.utils.log.EventLog;
 import com.wallparisoft.ebill.utils.response.BasicResponse;
 import com.wallparisoft.response.UserDtoResponse;
+import com.wallparisoft.service.IRestTokenService;
 import com.wallparisoft.service.IUserService;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
-import java.util.List;
 
 import static com.wallparisoft.ebill.utils.log.EventType.REQUEST;
 import static com.wallparisoft.ebill.utils.log.EventType.RESPONSE;
@@ -30,8 +30,11 @@ public class UserController {
 
     private final IUserService userService;
 
-    public UserController(IUserService userService) {
+    private final IRestTokenService restTokenService;
+
+    public UserController(IUserService userService, IRestTokenService restTokenService) {
         this.userService = userService;
+        this.restTokenService = restTokenService;
     }
 
     @DeleteMapping("/{id}")
@@ -183,6 +186,28 @@ public class UserController {
                 .level(LEVEL_001.name())
                 .build());
         return new ResponseEntity<>(exists, HttpStatus.OK);
+    }
+
+
+    @PostMapping(value = "/restore/{token}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> restorePassword(@PathVariable("token") String token, @RequestBody String password) {
+     Boolean result= Boolean.FALSE;
+        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+        log.debug(EventLog.builder()
+                .service(traceElement.getClassName())
+                .method(traceElement.getMethodName())
+                .eventType(REQUEST.name())
+                .level(LEVEL_001.name())
+                .build());
+     result = userService.restorePassword(token,password);
+        log.debug(EventLog.builder()
+                .service(traceElement.getClassName())
+                .method(traceElement.getMethodName())
+                .information(result)
+                .eventType(RESPONSE.name())
+                .level(LEVEL_001.name())
+                .build());
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
     private static BasicResponse getBasicResponse() {
         BasicResponse response = BasicResponse.builder().status(HttpStatus.OK.getReasonPhrase()).build();

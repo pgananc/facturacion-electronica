@@ -1,0 +1,56 @@
+<mat-toolbar *ngIf="!tokenValido" class="alert alert-danger">
+  La petición no es válida o ha expirado
+</mat-toolbar>
+
+<mat-toolbar *ngIf="tokenValido">
+  <mat-toolbar-row>
+    <span style="margin: auto">{{ "Cambio de contraseña" }}</span>
+  </mat-toolbar-row>
+</mat-toolbar>
+<form
+  [formGroup]="form"
+  (ngSubmit)="onSubmit()"
+  *ngIf="tokenValido"
+  class="principal-container"
+>
+  <mat-form-field class="principal-full-width">
+    <input
+      matInput
+      type="password"
+      name="password"
+      placeholder="Nueva contraseña"
+      formControlName="password"
+      [formGroup]="form"
+      required
+    />
+  </mat-form-field>
+
+  <mat-form-field class="principal-full-width">
+    <input
+      matInput
+      type="password"
+      placeholder="Repetir contraseña"
+      formControlName="confirmPassword"
+      [formGroup]="form"
+      required
+    />
+  </mat-form-field>
+
+  <mat-toolbar
+    class="alert alert-danger"
+    *ngIf="form.get('confirmPassword')?.errors?.['confirmPasswordValidator']"
+    >Contraseñas no coinciden</mat-toolbar
+  >
+  <mat-toolbar *ngIf="mensaje">{{ mensaje }}</mat-toolbar>
+  <mat-toolbar *ngIf="error">{{ error }}</mat-toolbar>
+  <div class="flex-parent jc-center">
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="form.invalid"
+    >
+      Cambiar contraseña
+    </button>
+  </div>
+</form>

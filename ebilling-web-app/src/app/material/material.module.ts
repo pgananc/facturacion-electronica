@@ -23,6 +23,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTreeModule } from '@angular/material/tree';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 
@@ -50,6 +51,7 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
     MatDividerModule,
     MatExpansionModule,
     MatTreeModule,
+    MatProgressBarModule,
   ],
   exports: [
     MatToolbarModule,
@@ -72,6 +74,7 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
     MatDividerModule,
     MatExpansionModule,
     MatTreeModule,
+    MatProgressBarModule,
   ],
   providers: [
     { provide: MatPaginatorIntl, useClass: MatPaginatorImpl },

@@ -1,5 +1,5 @@
 import { environment } from './../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -23,5 +23,15 @@ export class LoginService {
   isLogin() {
     let user = sessionStorage.getItem(environment.USER);
     return user != null;
+  }
+
+  sendMail(mail: string) {
+    return this.http.post<number>(
+      `${environment.HOST_AUTH}/api/mail/send`,
+      mail,
+      {
+        headers: new HttpHeaders().set('Content-Type', 'text/plain'),
+      }
+    );
   }
 }

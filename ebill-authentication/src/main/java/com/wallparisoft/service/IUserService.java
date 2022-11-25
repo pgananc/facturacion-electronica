@@ -24,4 +24,12 @@ public interface IUserService extends ICRUD<User> {
     void update(UserDto userDto, Long idUser);
 
     Boolean existsByUserName(String userName);
+
+    User findByMailAndStatus(String userName);
+
+    Integer sendMailUser(String mail);
+
+    boolean restorePassword(String token, String password);
+
+    void changePassword(String password, Long idUser) throws Exception;
 }

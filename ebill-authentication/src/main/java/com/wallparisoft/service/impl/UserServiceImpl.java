@@ -2,44 +2,62 @@ package com.wallparisoft.service.impl;
 
 import com.wallparisoft.dto.RoleDto;
 import com.wallparisoft.dto.UserDto;
+import com.wallparisoft.ebill.utils.dto.MailDto;
+import com.wallparisoft.ebill.utils.enums.ParmsAuthEnum;
 import com.wallparisoft.ebill.utils.exception.ModelNotFoundException;
-import com.wallparisoft.entity.Role;
-import com.wallparisoft.entity.User;
-import com.wallparisoft.entity.UserRole;
+import com.wallparisoft.ebill.utils.log.EventLog;
+import com.wallparisoft.ebill.utils.mail.EmailUtil;
+import com.wallparisoft.entity.*;
 import com.wallparisoft.mapper.RoleMapper;
 import com.wallparisoft.mapper.UserMapper;
-import com.wallparisoft.repository.IRoleRepository;
-import com.wallparisoft.repository.IUserRepository;
-import com.wallparisoft.repository.IUserRoleRepository;
+import com.wallparisoft.repository.*;
 import com.wallparisoft.response.UserDtoResponse;
 import com.wallparisoft.service.IUserService;
-import org.springframework.beans.BeanUtils;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+
+import static com.wallparisoft.ebill.utils.log.EventType.REQUEST;
+import static com.wallparisoft.ebill.utils.log.EventType.RESPONSE;
+import static com.wallparisoft.ebill.utils.log.Level.LEVEL_001;
+import static com.wallparisoft.ebill.utils.log.Level.LEVEL_002;
+import static lombok.AccessLevel.PRIVATE;
 
 @Service
+@FieldDefaults(level = PRIVATE)
+@Log4j2
 public class UserServiceImpl implements IUserService {
 
-    private final IUserRepository userRepository;
+     final IUserRepository userRepository;
 
-    private final IRoleRepository roleRepository;
-    private final IUserRoleRepository userRoleRepository;
-    private final UserMapper userMapper;
+     final IRoleRepository roleRepository;
+     final IUserRoleRepository userRoleRepository;
+
+     final IRestTokenRepository restTokenRepository;
+
+     final IParamsRepository paramsRepository;
+
+     final EmailUtil emailUtil;
+     final UserMapper userMapper;
     private final RoleMapper roleMapper;
 
-    public UserServiceImpl(IUserRepository userRepository, IRoleRepository roleRepository, IUserRoleRepository userRoleRepository, UserMapper userMapper, RoleMapper roleMapper) {
+    public UserServiceImpl(IUserRepository userRepository, IRoleRepository roleRepository, IUserRoleRepository userRoleRepository, IRestTokenRepository restTokenRepository, IParamsRepository paramsRepository, EmailUtil emailUtil, UserMapper userMapper, RoleMapper roleMapper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userRoleRepository = userRoleRepository;
+        this.restTokenRepository = restTokenRepository;
+        this.paramsRepository = paramsRepository;
+        this.emailUtil = emailUtil;
         this.userMapper = userMapper;
         this.roleMapper = roleMapper;
     }
@@ -136,8 +154,8 @@ public class UserServiceImpl implements IUserService {
         user.setUpdateDate(LocalDateTime.now());
         save(user);
         roles.forEach(role -> {
-            Optional<UserRole> userRoleOptional = userRoleRepository.findByIdUserAndIdRole(user.getIdUser(), role.getIdRole());
-            if (!userRoleOptional.isPresent()) {
+            UserRole userRoleSave = userRoleRepository.findByUser_IdUserAndAndRole_IdRole(user.getIdUser(), role.getIdRole());
+            if (Objects.isNull(userRoleSave)) {
                 userRoleRepository.deleteUserRoleByUser(user);
                 UserRole userRole = UserRole.builder()
                         .user(userSave)
@@ -151,5 +169,78 @@ public class UserServiceImpl implements IUserService {
     @Override
     public Boolean existsByUserName(String userName) {
         return userRepository.existsByUserName(userName);
+    }
+
+    @Override
+    public User findByMailAndStatus(String mail) {
+        return userRepository.findByMailAndStatus(mail,true);
+    }
+
+    @Override
+    @Transactional
+    public Integer sendMailUser(String mail) {
+        int result = 0;
+
+            User user = findByMailAndStatus(mail);
+            if (user != null && user.getIdUser() > 0) {
+                Params paramsTime= paramsRepository.findParamsByCodeParam(ParmsAuthEnum.COD002_TIME_DURATION_TOKEN.getCode());
+                ResetToken token = new ResetToken();
+                token.setToken(UUID.randomUUID().toString());
+                token.setUser(user);
+                token.setStatus(true);
+                token.setExpirationDate(Integer.valueOf(paramsTime.getValue()));
+                restTokenRepository.save(token);
+                MailDto mailDto = new MailDto();
+                mailDto.setFrom(mail);
+                mailDto.setTo(user.getMail());
+                mailDto.setSubject("RESTABLECER CONTRASEÑA - WALLPARISOFT");
+
+                Params paramsMail= paramsRepository.findParamsByCodeParam(ParmsAuthEnum.COD001_MAIL_TEMPLATE_RESTORE_PASSWORD.getCode());
+                Params paramsURL= paramsRepository.findParamsByCodeParam(ParmsAuthEnum.COD003_URL_REST_PASS.getCode());
+                String html= paramsMail.getValue();
+                html= html.replace("${user}",user.getName())
+                        .replace("${duration}",paramsTime.getValue())
+                        .replace("${resetUrl}",paramsURL.getValue()+token.getToken());
+                mailDto.setTemplateHtml(html);
+                emailUtil.sendMail(mailDto);
+                result = 1;
+
+
+            }
+      return  result;
+
+    }
+
+    @Override
+    public boolean restorePassword(String token, String password)  {
+        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+        log.debug(EventLog.builder()
+                .service(traceElement.getClassName())
+                .method(traceElement.getMethodName())
+                .information(token)
+                .eventType(REQUEST.name())
+                .level(LEVEL_002.name())
+                .build());
+        try {
+            ResetToken resetToken = restTokenRepository.findByToken(token);
+            changePassword(password, resetToken.getUser().getIdUser());
+            restTokenRepository.delete(resetToken);
+        } catch (Exception e) {
+            log.debug(EventLog.builder()
+                    .service(traceElement.getClassName())
+                    .method(traceElement.getMethodName())
+                    .information(token)
+                    .eventType(RESPONSE.name())
+                    .level(LEVEL_001.name())
+                    .build());
+            throw  new ModelNotFoundException("Error al actualizar password");
+        }
+
+        return true;
+    }
+
+    @Override
+    public void changePassword(String password, Long idUser) throws Exception {
+        userRepository.changePassword(password,idUser);
     }
 }
