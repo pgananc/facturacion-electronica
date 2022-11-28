@@ -14,10 +14,10 @@ import { TokenService } from 'src/app/_service/auth/token.service';
 export class TokenComponent implements OnInit {
   form: FormGroup;
   token: string;
-  mensaje: string;
+  message: string;
   error: string;
-  rpta: number;
-  tokenValido: boolean;
+  response: number;
+  validToken: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -41,12 +41,12 @@ export class TokenComponent implements OnInit {
     this.route.params.subscribe(
       (params: Params) => {
         this.token = params['token'];
-        this.tokenValido = true;
+        this.validToken = true;
         this.tokenService.validateTokenReset(this.token).subscribe((data) => {
           if (data === true) {
-            this.tokenValido = true;
+            this.validToken = true;
           } else {
-            this.tokenValido = false;
+            this.validToken = false;
             setTimeout(() => {
               this.router.navigate(['login']);
             }, 2000);
@@ -62,8 +62,7 @@ export class TokenComponent implements OnInit {
     console.log(clave);
     this.userService.restore(this.token, clave).subscribe((data) => {
       if (data === true) {
-        this.mensaje = 'Se cambio la contraseña';
-
+        this.message = 'Se cambio la contraseña exitosamente';
         setTimeout(() => {
           this.router.navigate(['login']);
         }, 2000);

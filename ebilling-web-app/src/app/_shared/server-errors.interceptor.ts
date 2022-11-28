@@ -44,7 +44,9 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
       .pipe(
         catchError((err) => {
           console.log(err);
-          if (err.status === 400) {
+          if (
+            err.status === MESSAGE_ERROR_SERVER.MESSAGE_ERROR_SERVER_400.code
+          ) {
             this.snackBar.open(
               ERRORS.MESSAGE_ERROR.message,
               MESSAGE_ERROR_SERVER.MESSAGE_ERROR_SERVER_400.message,
@@ -52,7 +54,9 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
                 duration: DURATION_TIME_MESSAGE.value,
               }
             );
-          } else if (err.status === 401) {
+          } else if (
+            err.status === MESSAGE_ERROR_SERVER.MESSAGE_ERROR_SERVER_401.code
+          ) {
             this.snackBar.open(
               err.message,
               MESSAGE_ERROR_SERVER.MESSAGE_ERROR_SERVER_401.message,
@@ -62,7 +66,21 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
             );
             sessionStorage.clear();
             this.router.navigate(['/login']);
-          } else if (err.status === 500) {
+          } else if (
+            err.status === MESSAGE_ERROR_SERVER.MESSAGE_ERROR_SERVER_404.code
+          ) {
+            this.snackBar.open(
+              ERRORS.MESSAGE_ERROR_NOT_FOUND.message,
+              MESSAGE_ERROR_SERVER.MESSAGE_ERROR_SERVER_404.message,
+              {
+                duration: DURATION_TIME_MESSAGE.value,
+              }
+            );
+            sessionStorage.clear();
+            this.router.navigate(['/not-404']);
+          } else if (
+            err.status === MESSAGE_ERROR_SERVER.MESSAGE_ERROR_SERVER_500.code
+          ) {
             this.snackBar.open(
               ERRORS.MESSAGE_ERROR.message,
               MESSAGE_ERROR_SERVER.MESSAGE_ERROR_SERVER_500.message,

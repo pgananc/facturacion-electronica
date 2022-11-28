@@ -7,11 +7,15 @@ export const ERRORS = {
   },
   MESSAGE_ERROR_NOT_AVAILABLE: {
     code: -1001,
-    message: 'Servicio no disponible intente más tarde',
+    message: 'Servicio no disponible intente más tarde.',
   },
   MESSAGE_ERROR: {
     code: -1002,
-    message: 'Ha ocurrido un error intente más tarde',
+    message: 'Ha ocurrido un error intente más tarde.',
+  },
+  MESSAGE_ERROR_NOT_FOUND: {
+    code: -1003,
+    message: 'Página no se ha cargado correctamente.',
   },
 };
 
@@ -110,6 +114,10 @@ export const MESSAGE_ERROR_SERVER = {
   MESSAGE_ERROR_SERVER_500: {
     code: 500,
     message: 'Error 500',
+  },
+  MESSAGE_ERROR_SERVER_404: {
+    code: 404,
+    message: 'Error 404',
   },
 };
 

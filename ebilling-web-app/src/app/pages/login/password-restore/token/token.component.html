@@ -1,8 +1,8 @@
-<mat-toolbar *ngIf="!tokenValido" class="alert alert-danger">
+<mat-toolbar *ngIf="!validToken" class="alert alert-danger">
   La petición no es válida o ha expirado
 </mat-toolbar>
 
-<mat-toolbar *ngIf="tokenValido">
+<mat-toolbar *ngIf="validToken">
   <mat-toolbar-row>
     <span style="margin: auto">{{ "Cambio de contraseña" }}</span>
   </mat-toolbar-row>
@@ -10,7 +10,7 @@
 <form
   [formGroup]="form"
   (ngSubmit)="onSubmit()"
-  *ngIf="tokenValido"
+  *ngIf="validToken"
   class="principal-container"
 >
   <mat-form-field class="principal-full-width">
@@ -41,7 +41,7 @@
     *ngIf="form.get('confirmPassword')?.errors?.['confirmPasswordValidator']"
     >Contraseñas no coinciden</mat-toolbar
   >
-  <mat-toolbar *ngIf="mensaje">{{ mensaje }}</mat-toolbar>
+  <mat-toolbar *ngIf="message">{{ message }}</mat-toolbar>
   <mat-toolbar *ngIf="error">{{ error }}</mat-toolbar>
   <div class="flex-parent jc-center">
     <button
