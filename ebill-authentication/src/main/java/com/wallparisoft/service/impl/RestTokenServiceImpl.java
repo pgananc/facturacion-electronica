@@ -48,12 +48,12 @@ public class RestTokenServiceImpl implements IRestTokenService {
     }
 
     @Override
-    public boolean validateTokenActive(String token) {
+    public boolean validateActiveToken(String token) {
         ResetToken resetToken= findByToken(token);
         if(Objects.isNull(resetToken)){
             return false;
         }else{
-            return resetToken.isExpirate();
+            return resetToken.isExpired();
         }
     }
 

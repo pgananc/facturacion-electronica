@@ -10,6 +10,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface IRestTokenService extends ICRUD<ResetToken> {
 
-    boolean validateTokenActive(String token);
+    boolean validateActiveToken(String token);
     ResetToken findByToken(String token);
 }

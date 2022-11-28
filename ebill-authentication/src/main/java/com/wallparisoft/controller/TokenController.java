@@ -28,7 +28,7 @@ public class TokenController {
   }
 
   @GetMapping(value = "/restore-password/validate/{token}")
-  public ResponseEntity<Boolean> restablecerClave(@PathVariable("token") String token) {
+  public ResponseEntity<Boolean> resetPassword(@PathVariable("token") String token) {
     Boolean result = false;
     StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
     log.debug(EventLog.builder()
@@ -37,10 +37,7 @@ public class TokenController {
             .eventType(REQUEST.name())
             .level(LEVEL_001.name())
             .build());
-
-      if (token != null && !token.isEmpty()) {
-        result = restTokenService.validateTokenActive(token);
-      }
+        result = restTokenService.validateActiveToken(token);
       log.debug(EventLog.builder()
               .service(traceElement.getClassName())
               .method(traceElement.getMethodName())

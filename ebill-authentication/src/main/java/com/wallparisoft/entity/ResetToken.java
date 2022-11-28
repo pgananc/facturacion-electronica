@@ -43,7 +43,7 @@ public class ResetToken {
         this.expirationDate = exp;
     }
 
-    public boolean isExpirate() {
+    public boolean isExpired() {
         return LocalDateTime.now().isBefore(this.expirationDate);
     }
 }
