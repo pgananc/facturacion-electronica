@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { User } from '../../_model/auth/user';
 import { Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UserResponse } from '../../_model/auth/userResponse';
 
 @Injectable({
@@ -43,5 +43,11 @@ export class UserService {
 
   existsByUserName(userName: String) {
     return this.http.get<boolean>(`${this.url}/exist/${userName}`);
+  }
+
+  resetPassword(token: string, clave: string) {
+    return this.http.post<boolean>(`${this.url}/restore/${token}`, clave, {
+      headers: new HttpHeaders().set('Content-Type', 'text/plain'),
+    });
   }
 }

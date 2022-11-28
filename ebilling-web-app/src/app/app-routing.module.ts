@@ -13,12 +13,19 @@ import { UpdateUserComponent } from './pages/user/update-user/update-user.compon
 import { Not403Component } from './pages/error/not403/not403.component';
 import { CanActiveUserGuard } from './_service/canActivate/can-active-user.guard';
 import { Not404Component } from './pages/error/not404/not404.component';
+import { ResetPasswordComponent } from './pages/login/reset-password/reset-password.component';
+import { TokenComponent } from './pages/login/reset-password/token/token.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'not-403', component: Not403Component },
 
+  {
+    path: 'reset-password',
+    component: ResetPasswordComponent,
+    children: [{ path: ':token', component: TokenComponent }],
+  },
   {
     path: 'welcome',
     component: WelcomeComponent,

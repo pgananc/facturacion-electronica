@@ -10,8 +10,7 @@ import java.util.Optional;
 
 public interface IUserRoleRepository extends JpaRepository<UserRole, Long> {
 
-    @Query(value = "SELECT ur FROM UserRole  ur where  ur.user.idUser =:idUser and ur.role.idRole = :idRole")
-    Optional<UserRole> findByIdUserAndIdRole(@Param("idUser") Long idUser,@Param("idRole") Long idRole);
+    UserRole findByUser_IdUserAndAndRole_IdRole(@Param("idUser") Long idUser,@Param("idRole") Long idRole);
 
     void deleteUserRoleByUser(User user);
 
