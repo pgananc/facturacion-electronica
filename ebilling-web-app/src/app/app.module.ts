@@ -18,8 +18,8 @@ import { UserComponent } from './pages/user/user.component';
 import { UpdateUserComponent } from './pages/user/update-user/update-user.component';
 import { Not403Component } from './pages/error/not403/not403.component';
 import { Not404Component } from './pages/error/not404/not404.component';
-import { ResetPasswordComponent } from './pages/login/password-restore/reset-password.component';
-import { TokenComponent } from './pages/login/password-restore/token/token.component';
+import { ResetPasswordComponent } from './pages/login/reset-password/reset-password.component';
+import { TokenComponent } from './pages/login/reset-password/token/token.component';
 
 @NgModule({
   declarations: [
