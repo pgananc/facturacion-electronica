@@ -41,7 +41,6 @@ export class TokenComponent implements OnInit {
     this.route.params.subscribe(
       (params: Params) => {
         this.token = params['token'];
-        this.validToken = true;
         this.tokenService.validateTokenReset(this.token).subscribe((data) => {
           if (data === true) {
             this.validToken = true;
@@ -60,9 +59,9 @@ export class TokenComponent implements OnInit {
   onSubmit() {
     let clave: string = this.form.value.confirmPassword;
     console.log(clave);
-    this.userService.restore(this.token, clave).subscribe((data) => {
+    this.userService.resetPassword(this.token, clave).subscribe((data) => {
       if (data === true) {
-        this.message = 'Se cambio la contraseña exitosamente';
+        this.message = 'Se cambio la contraseña exitosamente.';
         setTimeout(() => {
           this.router.navigate(['login']);
         }, 2000);

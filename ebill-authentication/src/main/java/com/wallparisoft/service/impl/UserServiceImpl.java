@@ -18,12 +18,10 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -43,7 +41,7 @@ public class UserServiceImpl implements IUserService {
      final IRoleRepository roleRepository;
      final IUserRoleRepository userRoleRepository;
 
-     final IRestTokenRepository restTokenRepository;
+     final ITokenRepository tokenRepository;
 
      final IParamsRepository paramsRepository;
 
@@ -51,11 +49,11 @@ public class UserServiceImpl implements IUserService {
      final UserMapper userMapper;
     private final RoleMapper roleMapper;
 
-    public UserServiceImpl(IUserRepository userRepository, IRoleRepository roleRepository, IUserRoleRepository userRoleRepository, IRestTokenRepository restTokenRepository, IParamsRepository paramsRepository, EmailUtil emailUtil, UserMapper userMapper, RoleMapper roleMapper) {
+    public UserServiceImpl(IUserRepository userRepository, IRoleRepository roleRepository, IUserRoleRepository userRoleRepository, ITokenRepository tokenRepository, IParamsRepository paramsRepository, EmailUtil emailUtil, UserMapper userMapper, RoleMapper roleMapper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userRoleRepository = userRoleRepository;
-        this.restTokenRepository = restTokenRepository;
+        this.tokenRepository = tokenRepository;
         this.paramsRepository = paramsRepository;
         this.emailUtil = emailUtil;
         this.userMapper = userMapper;
@@ -184,16 +182,13 @@ public class UserServiceImpl implements IUserService {
             User user = findByMailAndStatus(mail);
             if (user != null && user.getIdUser() > 0) {
                 Params paramsTime= paramsRepository.findParamsByCodeParam(ParmsAuthEnum.COD002_TIME_DURATION_TOKEN.getCode());
-                ResetToken token = new ResetToken();
-                token.setToken(UUID.randomUUID().toString());
-                token.setUser(user);
-                token.setStatus(true);
+                Token token =  Token.builder()
+                        .token(UUID.randomUUID().toString())
+                        .user(user)
+                        .status(true)
+                        .build();
                 token.setExpirationDate(Integer.valueOf(paramsTime.getValue()));
-                restTokenRepository.save(token);
-                MailDto mailDto = new MailDto();
-                mailDto.setFrom(mail);
-                mailDto.setTo(user.getMail());
-                mailDto.setSubject("RESTABLECER CONTRASEÑA - WALLPARISOFT");
+                tokenRepository.save(token);
 
                 Params paramsMail= paramsRepository.findParamsByCodeParam(ParmsAuthEnum.COD001_MAIL_TEMPLATE_RESTORE_PASSWORD.getCode());
                 Params paramsURL= paramsRepository.findParamsByCodeParam(ParmsAuthEnum.COD003_URL_REST_PASS.getCode());
@@ -201,7 +196,13 @@ public class UserServiceImpl implements IUserService {
                 html= html.replace("${user}",user.getName())
                         .replace("${duration}",paramsTime.getValue())
                         .replace("${resetUrl}",paramsURL.getValue()+token.getToken());
-                mailDto.setTemplateHtml(html);
+
+                MailDto mailDto =  MailDto.builder()
+                        .from(mail)
+                        .to(user.getMail())
+                        .subject("RESTABLECER CONTRASEÑA - WALLPARISOFT")
+                        .templateHtml(html)
+                        .build();
                 emailUtil.sendMail(mailDto);
                 result = 1;
 
@@ -212,7 +213,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public boolean restorePassword(String token, String password)  {
+    public boolean resetPassword(String token, String password)  {
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
         log.debug(EventLog.builder()
                 .service(traceElement.getClassName())
@@ -222,9 +223,9 @@ public class UserServiceImpl implements IUserService {
                 .level(LEVEL_002.name())
                 .build());
         try {
-            ResetToken resetToken = restTokenRepository.findByToken(token);
+            Token resetToken = tokenRepository.findByToken(token);
             changePassword(password, resetToken.getUser().getIdUser());
-            restTokenRepository.delete(resetToken);
+            tokenRepository.delete(resetToken);
         } catch (Exception e) {
             log.debug(EventLog.builder()
                     .service(traceElement.getClassName())

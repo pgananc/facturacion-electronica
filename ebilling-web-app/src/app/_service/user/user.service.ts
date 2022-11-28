@@ -45,7 +45,7 @@ export class UserService {
     return this.http.get<boolean>(`${this.url}/exist/${userName}`);
   }
 
-  restore(token: string, clave: string) {
+  resetPassword(token: string, clave: string) {
     return this.http.post<boolean>(`${this.url}/restore/${token}`, clave, {
       headers: new HttpHeaders().set('Content-Type', 'text/plain'),
     });

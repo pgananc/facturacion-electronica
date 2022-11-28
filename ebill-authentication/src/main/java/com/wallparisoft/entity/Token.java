@@ -1,20 +1,26 @@
 package com.wallparisoft.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "reset_token")
-public class ResetToken {
+@Table(name = "token")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class Token {
 
 
     @Id
-    @SequenceGenerator(sequenceName = "reset_token_seq", name = "reset_token_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reset_token_seq")
-    private Long idRestToken;
+    @SequenceGenerator(sequenceName = "token_seq", name = "token_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "token_seq")
+    private Long idToken;
 
     @Column(nullable = false, unique = true)
     private String token;

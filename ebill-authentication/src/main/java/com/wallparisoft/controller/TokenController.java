@@ -1,8 +1,7 @@
 package com.wallparisoft.controller;
 
 import com.wallparisoft.ebill.utils.log.EventLog;
-import com.wallparisoft.entity.ResetToken;
-import com.wallparisoft.service.IRestTokenService;
+import com.wallparisoft.service.ITokenService;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -21,10 +20,10 @@ import static lombok.AccessLevel.PRIVATE;
 public class TokenController {
 
 
-   final IRestTokenService restTokenService;
+   final ITokenService tokenService;
 
-  public TokenController(IRestTokenService restTokenService) {
-    this.restTokenService = restTokenService;
+  public TokenController(ITokenService tokenService) {
+    this.tokenService = tokenService;
   }
 
   @GetMapping(value = "/restore-password/validate/{token}")
@@ -37,7 +36,7 @@ public class TokenController {
             .eventType(REQUEST.name())
             .level(LEVEL_001.name())
             .build());
-        result = restTokenService.validateActiveToken(token);
+        result = tokenService.validateActiveToken(token);
       log.debug(EventLog.builder()
               .service(traceElement.getClassName())
               .method(traceElement.getMethodName())

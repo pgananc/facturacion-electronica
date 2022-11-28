@@ -4,7 +4,7 @@ import com.wallparisoft.dto.UserDto;
 import com.wallparisoft.ebill.utils.log.EventLog;
 import com.wallparisoft.ebill.utils.response.BasicResponse;
 import com.wallparisoft.response.UserDtoResponse;
-import com.wallparisoft.service.IRestTokenService;
+import com.wallparisoft.service.ITokenService;
 import com.wallparisoft.service.IUserService;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
@@ -30,11 +30,11 @@ public class UserController {
 
     private final IUserService userService;
 
-    private final IRestTokenService restTokenService;
+    private final ITokenService tokenService;
 
-    public UserController(IUserService userService, IRestTokenService restTokenService) {
+    public UserController(IUserService userService, ITokenService tokenService) {
         this.userService = userService;
-        this.restTokenService = restTokenService;
+        this.tokenService = tokenService;
     }
 
     @DeleteMapping("/{id}")
@@ -199,7 +199,7 @@ public class UserController {
                 .eventType(REQUEST.name())
                 .level(LEVEL_001.name())
                 .build());
-     result = userService.restorePassword(token,password);
+     result = userService.resetPassword(token,password);
         log.debug(EventLog.builder()
                 .service(traceElement.getClassName())
                 .method(traceElement.getMethodName())

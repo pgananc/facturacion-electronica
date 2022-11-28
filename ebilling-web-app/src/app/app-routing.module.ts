@@ -11,7 +11,7 @@ import { UpdateUserComponent } from './pages/user/update-user/update-user.compon
 import { Not403Component } from './pages/error/not403/not403.component';
 import { CanActiveUserGuard } from './_service/canActivate/can-active-user.guard';
 import { Not404Component } from './pages/error/not404/not404.component';
-import { PasswordRestoreComponent } from './pages/login/password-restore/password-restore.component';
+import { ResetPasswordComponent } from './pages/login/password-restore/reset-password.component';
 import { TokenComponent } from './pages/login/password-restore/token/token.component';
 
 const routes: Routes = [
@@ -20,8 +20,8 @@ const routes: Routes = [
   { path: 'not-403', component: Not403Component },
 
   {
-    path: 'password-restore',
-    component: PasswordRestoreComponent,
+    path: 'reset-password',
+    component: ResetPasswordComponent,
     children: [{ path: ':token', component: TokenComponent }],
   },
   {

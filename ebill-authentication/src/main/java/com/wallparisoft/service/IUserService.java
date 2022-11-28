@@ -29,7 +29,7 @@ public interface IUserService extends ICRUD<User> {
 
     Integer sendMailUser(String mail);
 
-    boolean restorePassword(String token, String password);
+    boolean resetPassword(String token, String password);
 
     void changePassword(String password, Long idUser) throws Exception;
 }

@@ -4,11 +4,11 @@ import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-password-restore',
-  templateUrl: './password-restore.component.html',
-  styleUrls: ['./password-restore.component.css'],
+  selector: 'app-reset-password',
+  templateUrl: './reset-password.component.html',
+  styleUrls: ['./reset-password.component.css'],
 })
-export class PasswordRestoreComponent implements OnInit {
+export class ResetPasswordComponent implements OnInit {
   message: string;
   error: string;
   percentage: number = 0;
