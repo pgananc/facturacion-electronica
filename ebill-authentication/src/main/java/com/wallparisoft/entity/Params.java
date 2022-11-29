@@ -3,8 +3,6 @@ package com.wallparisoft.entity;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.nio.charset.StandardCharsets;
-import java.sql.Clob;
 import java.time.LocalDateTime;
 
 @Data
@@ -18,14 +16,14 @@ public class Params {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "params_seq")
     private Long idParam;
 
-    @Column(name = "code_param",nullable = false, unique = true)
+    @Column(name = "code_param", nullable = false, unique = true)
     private String codeParam;
 
-    @Lob
-    @Column(name = "value_param",nullable = false)
-    private byte[] valueParam;
 
-    @Column(name = "description_param",nullable = false)
+    @Column(name = "value_param", nullable = false)
+    private String valueParam;
+
+    @Column(name = "description_param", nullable = false)
     private String descriptionParam;
 
     @Column(name = "status", nullable = false)
@@ -37,11 +35,6 @@ public class Params {
     @PrePersist
     public void preInsert() {
         creationDate = LocalDateTime.now();
-    }
-
-    public String getValue(){
-        return new String(getValueParam(), StandardCharsets.UTF_8);
-
     }
 
 }

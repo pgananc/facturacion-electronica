@@ -144,7 +144,7 @@ export class UpdateClientComponent implements OnInit {
       .subscribe((data) => {
         if (data) {
           this.snackBar.open(
-            EXIST_DATA.MESSAGE_EXIST_IDENTIFICATION.message,
+            EXIST_DATA.MESSAGE_EXISTS_IDENTIFICATION.message,
             HEADER_MESSAGE.MESSAGE_HEADER_INFO.message,
             {
               duration: DURATION_TIME_MESSAGE.value,

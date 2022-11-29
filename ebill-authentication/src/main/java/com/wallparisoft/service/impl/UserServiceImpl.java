@@ -36,17 +36,17 @@ import static lombok.AccessLevel.PRIVATE;
 @Log4j2
 public class UserServiceImpl implements IUserService {
 
-     final IUserRepository userRepository;
+    final IUserRepository userRepository;
 
-     final IRoleRepository roleRepository;
-     final IUserRoleRepository userRoleRepository;
+    final IRoleRepository roleRepository;
+    final IUserRoleRepository userRoleRepository;
 
-     final ITokenRepository tokenRepository;
+    final ITokenRepository tokenRepository;
 
-     final IParamsRepository paramsRepository;
+    final IParamsRepository paramsRepository;
 
-     final EmailUtil emailUtil;
-     final UserMapper userMapper;
+    final EmailUtil emailUtil;
+    final UserMapper userMapper;
     private final RoleMapper roleMapper;
 
     public UserServiceImpl(IUserRepository userRepository, IRoleRepository roleRepository, IUserRoleRepository userRoleRepository, ITokenRepository tokenRepository, IParamsRepository paramsRepository, EmailUtil emailUtil, UserMapper userMapper, RoleMapper roleMapper) {
@@ -171,7 +171,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public User findByMailAndStatus(String mail) {
-        return userRepository.findByMailAndStatus(mail,true);
+        return userRepository.findByMailAndStatus(mail, true);
     }
 
     @Override
@@ -179,41 +179,41 @@ public class UserServiceImpl implements IUserService {
     public Integer sendMailUser(String mail) {
         int result = 0;
 
-            User user = findByMailAndStatus(mail);
-            if (user != null && user.getIdUser() > 0) {
-                Params paramsTime= paramsRepository.findParamsByCodeParam(ParmsAuthEnum.COD002_TIME_DURATION_TOKEN.getCode());
-                Token token =  Token.builder()
-                        .token(UUID.randomUUID().toString())
-                        .user(user)
-                        .status(true)
-                        .build();
-                token.setExpirationDate(Integer.valueOf(paramsTime.getValue()));
-                tokenRepository.save(token);
+        User user = findByMailAndStatus(mail);
+        if (user != null && user.getIdUser() > 0) {
+            Params paramsTime = paramsRepository.findParamsByCodeParam(ParmsAuthEnum.COD002_TIME_DURATION_TOKEN.getCode());
+            Token token = Token.builder()
+                    .token(UUID.randomUUID().toString())
+                    .user(user)
+                    .status(true)
+                    .build();
+            token.setExpirationDate(Integer.valueOf(paramsTime.getValueParam()));
+            tokenRepository.save(token);
 
-                Params paramsMail= paramsRepository.findParamsByCodeParam(ParmsAuthEnum.COD001_MAIL_TEMPLATE_RESTORE_PASSWORD.getCode());
-                Params paramsURL= paramsRepository.findParamsByCodeParam(ParmsAuthEnum.COD003_URL_REST_PASS.getCode());
-                String html= paramsMail.getValue();
-                html= html.replace("${user}",user.getName())
-                        .replace("${duration}",paramsTime.getValue())
-                        .replace("${resetUrl}",paramsURL.getValue()+token.getToken());
+            Params paramsMail = paramsRepository.findParamsByCodeParam(ParmsAuthEnum.COD001_MAIL_TEMPLATE_RESTORE_PASSWORD.getCode());
+            Params paramsURL = paramsRepository.findParamsByCodeParam(ParmsAuthEnum.COD003_URL_REST_PASS.getCode());
+            String html = paramsMail.getValueParam();
+            html = html.replace("${user}", user.getName())
+                    .replace("${duration}", paramsTime.getValueParam())
+                    .replace("${resetUrl}", paramsURL.getValueParam() + token.getToken());
 
-                MailDto mailDto =  MailDto.builder()
-                        .from(mail)
-                        .to(user.getMail())
-                        .subject("RESTABLECER CONTRASEÑA - WALLPARISOFT")
-                        .templateHtml(html)
-                        .build();
-                emailUtil.sendMail(mailDto);
-                result = 1;
+            MailDto mailDto = MailDto.builder()
+                    .from(mail)
+                    .to(user.getMail())
+                    .subject("RESTABLECER CONTRASEÑA - WALLPARISOFT")
+                    .templateHtml(html)
+                    .build();
+            emailUtil.sendMail(mailDto);
+            result = 1;
 
 
-            }
-      return  result;
+        }
+        return result;
 
     }
 
     @Override
-    public boolean resetPassword(String token, String password)  {
+    public boolean resetPassword(String token, String password) {
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
         log.debug(EventLog.builder()
                 .service(traceElement.getClassName())
@@ -234,7 +234,7 @@ public class UserServiceImpl implements IUserService {
                     .eventType(RESPONSE.name())
                     .level(LEVEL_001.name())
                     .build());
-            throw  new ModelNotFoundException("Error al actualizar password");
+            throw new ModelNotFoundException("Error al actualizar password");
         }
 
         return true;
@@ -242,6 +242,6 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public void changePassword(String password, Long idUser) throws Exception {
-        userRepository.changePassword(password,idUser);
+        userRepository.changePassword(password, idUser);
     }
 }

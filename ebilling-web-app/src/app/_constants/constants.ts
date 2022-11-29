@@ -76,7 +76,6 @@ export const UPDATE = {
     code: 4003,
     message: 'Usuario actualizado correctamente.',
   },
-
 };
 
 //Message header code > 5000
@@ -99,7 +98,7 @@ export const EMPTY_DATA = {
 };
 
 export const EXIST_DATA = {
-  MESSAGE_EXIST_IDENTIFICATION: {
+  MESSAGE_EXISTS_IDENTIFICATION: {
     code: 7000,
     message: 'La identificación ingresada ya se encuentra registrada.',
   },
