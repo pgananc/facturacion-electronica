@@ -40,11 +40,11 @@ public class AuthServiceImpl implements IAuthService {
     private static final String USER_NAME = "userName";
     private static final String BEARER_PREFIX = "Bearer ";
 
-    private  RedisTemplate<String, String> redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
     private final UtilsToken utilsToken;
     private final UtilsRedis utilsRedis;
-    private  UtilsRedis redis;
-    private  Environment environment;
+    private UtilsRedis redis;
+    private Environment environment;
     ObjectMapper objectMapper = new ObjectMapper().configure(
             DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
@@ -61,12 +61,12 @@ public class AuthServiceImpl implements IAuthService {
             claims.put(USER_NAME, informationEntity.getUserName());
             claims.put("roles", informationEntity.getRoles());
             String token = utilsToken.doGenerateToken(claims, Constants.EXPIRATION_TOKEN_JWT);
-            RedisEntity redisEntity= new RedisEntity();
+            RedisEntity redisEntity = new RedisEntity();
             redisEntity.setKey(token);
             redisEntity.setValue(objectMapper.writeValueAsString(informationEntity));
             redisEntity.setDuration(Constants.EXPIRATION_TOKEN_REDIS);
             utilsRedis.registerKey(redisEntity);
-            TokenSession tokenSession= new TokenSession();
+            TokenSession tokenSession = new TokenSession();
             tokenSession.setToken(token);
             return tokenSession;
         } catch (Exception exception) {
@@ -77,16 +77,14 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public void validateToken(TokenInformation informationEntity) {
-       // int state = getStateToken(informationEntity);
         log.info("Token state user name ({}), state: {}", informationEntity.getUserName(), 1);
         Map<String, Object> claims = new HashMap<>();
         claims.put(USER_NAME, informationEntity.getUserName());
         String token = utilsToken.doGenerateToken(claims, Constants.EXPIRATION_TOKEN_JWT);
-        TokenSession tokenSession= new TokenSession();
+        TokenSession tokenSession = new TokenSession();
         tokenSession.setToken(token);
         throw new TokenException(tokenSession, 1);
     }
-
 
 
     @Override
