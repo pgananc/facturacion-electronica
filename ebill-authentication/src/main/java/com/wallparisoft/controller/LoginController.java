@@ -1,7 +1,10 @@
 package com.wallparisoft.controller;
 
-import com.wallparisoft.entity.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.wallparisoft.ebill.auth.util.exception.InternalErrorException;
+import com.wallparisoft.ebill.utils.log.EventLog;
+import com.wallparisoft.response.TokenResponse;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,25 +15,52 @@ import org.springframework.web.bind.annotation.RestController;
 import com.wallparisoft.dto.UserDto;
 import com.wallparisoft.service.ILoginService;
 
+import static com.wallparisoft.ebill.utils.log.EventType.REQUEST;
+import static com.wallparisoft.ebill.utils.log.EventType.RESPONSE;
+import static com.wallparisoft.ebill.utils.log.Level.LEVEL_001;
+import static lombok.AccessLevel.PRIVATE;
+
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/api/login")
+@FieldDefaults(level = PRIVATE)
+@Log4j2
 public class LoginController {
 
-  @Autowired
-  private ILoginService service;
+
+   final ILoginService loginService;
+
+
+
+  public LoginController(ILoginService loginService) {
+    this.loginService = loginService;
+
+  }
+
 
   @PostMapping
-  public ResponseEntity<Integer> login(@RequestBody UserDto userDto) {
-    int code = 0;
+  public ResponseEntity<TokenResponse> login(@RequestBody UserDto userDto) {
+    StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+    log.debug(EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName())
+            .eventType(REQUEST.name())
+            .level(LEVEL_001.name())
+            .build());
+    TokenResponse response  = null;
     try {
-      User user = service.validateUserName(userDto.getUserName(), userDto.getPassword());
-      if (user != null) {
-        code = 1;
-      }
+      response = loginService.authetication(userDto);
+      log.debug(EventLog.builder()
+              .service(traceElement.getClassName())
+              .method(traceElement.getMethodName())
+              .information(response.getToken())
+              .eventType(RESPONSE.name())
+              .level(LEVEL_001.name())
+              .build());
+      return new ResponseEntity<>(response, HttpStatus.OK);
     } catch (Exception e) {
-      return new ResponseEntity<Integer>(code, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new InternalErrorException("Error al validar usuario");
     }
-    return new ResponseEntity<Integer>(code, HttpStatus.OK);
+
   }
 
 }

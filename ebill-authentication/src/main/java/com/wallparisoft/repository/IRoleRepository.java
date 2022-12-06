@@ -15,4 +15,5 @@ public interface IRoleRepository extends JpaRepository<Role, Long> {
     @Query(value = "SELECT r FROM UserRole  ur inner join ur.role r inner join ur.user u where u.idUser = :idUser and ur.status=true")
     List<Role> findRoleActiveByIdUser(@Param("idUser") Long idUser);
 
+
 }
