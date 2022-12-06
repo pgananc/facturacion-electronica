@@ -47,11 +47,6 @@
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>com.wallparisoft</groupId>
-			<artifactId>ebill-auth-util</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>

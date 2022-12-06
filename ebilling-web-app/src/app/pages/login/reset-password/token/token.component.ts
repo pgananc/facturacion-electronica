@@ -58,6 +58,7 @@ export class TokenComponent implements OnInit {
 
   onSubmit() {
     let clave: string = this.form.value.confirmPassword;
+    console.log(clave);
     this.userService.resetPassword(this.token, clave).subscribe((data) => {
       if (data === true) {
         this.message = 'Se cambio la contraseña exitosamente.';

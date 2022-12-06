@@ -4,8 +4,8 @@ import { LoginComponent } from './pages/login/login.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { ClientComponent } from './pages/customer/client/client.component';
 import { UpdateClientComponent } from './pages/customer/client/update-client/update-client.component';
-import { CompanyComponent } from './pages/company/company.component';
-import { UpdateCompanyComponent } from './pages/company/update-company/update-company.component';
+import {CompanyComponent} from "./pages/company/company.component";
+import {UpdateCompanyComponent} from "./pages/company/update-company/update-company.component";
 import { ProductComponent } from './pages/product/product.component';
 import { UpdateProductComponent } from './pages/product/update-product/update-product.component';
 import { UserComponent } from './pages/user/user.component';
@@ -15,12 +15,10 @@ import { CanActiveUserGuard } from './_service/canActivate/can-active-user.guard
 import { Not404Component } from './pages/error/not404/not404.component';
 import { ResetPasswordComponent } from './pages/login/reset-password/reset-password.component';
 import { TokenComponent } from './pages/login/reset-password/token/token.component';
-import { ProfileComponent } from './pages/profile/profile.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'profile', component: ProfileComponent },
   { path: 'not-403', component: Not403Component },
 
   {
@@ -65,7 +63,7 @@ const routes: Routes = [
     children: [
       { path: 'new', component: UpdateCompanyComponent },
       { path: 'edit/:idCompany', component: UpdateCompanyComponent },
-    ],
+    ]
   },
   { path: '**', component: Not404Component },
 ];

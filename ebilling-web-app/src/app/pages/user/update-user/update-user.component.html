@@ -22,6 +22,20 @@
   </mat-form-field>
 
   <mat-form-field class="principal-full-width">
+    <input matInput placeholder="Usuario" required formControlName="userName" />
+  </mat-form-field>
+
+  <mat-form-field class="principal-full-width">
+    <input
+      type="password"
+      matInput
+      placeholder="Password"
+      required
+      formControlName="password"
+    />
+  </mat-form-field>
+
+  <mat-form-field class="principal-full-width">
     <input
       matInput
       placeholder="Mail"
@@ -37,16 +51,6 @@
   >
     Formato de email incorrecto.
   </div>
-
-  <mat-form-field class="principal-full-width">
-    <input
-      type="password"
-      matInput
-      placeholder="Password"
-      required
-      formControlName="password"
-    />
-  </mat-form-field>
 
   <mat-form-field class="principal-full-width">
     <mat-select placeholder="Roles" [(value)]="idRole" required="true">

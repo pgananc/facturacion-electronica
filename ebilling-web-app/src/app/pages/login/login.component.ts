@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { LoginService } from '../../_service/auth/login.service';
 import { MenuService } from '../../_service/auth/menu.service';
 import { User } from '../../_model/auth/user';
-import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Component({
   selector: 'app-login',
@@ -38,23 +37,14 @@ export class LoginComponent implements OnInit {
     user.userName = this.userName;
     user.password = this.password;
     this.loginService.login(user).subscribe((data) => {
-      if (data.code == 0) {
+      if (data == 0) {
         this.loginService.messageChange.next('User / password incorrect');
-      } else if (
-        data.token != null &&
-        data.token.token != null &&
-        data.token.token != ''
-      ) {
-        sessionStorage.setItem(environment.TOKEN, data.token.token);
-        const helper = new JwtHelperService();
-        let decodedToken = helper.decodeToken(data.token.token);
-        console.log(decodedToken);
-        this.menuService
-          .findMenuByUser(decodedToken.userName)
-          .subscribe((data) => {
-            this.menuService.menuChange.next(data);
-            this.router.navigate(['/welcome']);
-          });
+      } else {
+        sessionStorage.setItem(environment.USER, this.userName);
+        this.menuService.findMenuByUser(this.userName).subscribe((data) => {
+          this.menuService.menuChange.next(data);
+          this.router.navigate(['/welcome']);
+        });
       }
     });
   }

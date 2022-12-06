@@ -8,7 +8,6 @@ export const environment = {
   HOST_CUSTOMERS: 'http://localhost:8180',
   HOST_PRODUCTS: 'http://localhost:8380',
   USER: 'user',
-  TOKEN: 'token',
   REINTENTOS: 3,
 };
 

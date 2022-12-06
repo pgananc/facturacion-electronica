@@ -42,6 +42,7 @@ export class UpdateUserComponent implements OnInit {
     this.form = new FormGroup({
       id: new FormControl(0),
       name: new FormControl(''),
+      userName: new FormControl(''),
       password: new FormControl(''),
       email: new FormControl('', [Validators.email]),
       status: new FormControl(true),
@@ -65,6 +66,7 @@ export class UpdateUserComponent implements OnInit {
           this.form = new FormGroup({
             id: new FormControl(user.idUser),
             name: new FormControl(user.name),
+            userName: new FormControl(user.userName),
             password: new FormControl(user.password),
             email: new FormControl(user.mail),
             status: new FormControl(user.status),
@@ -82,7 +84,7 @@ export class UpdateUserComponent implements OnInit {
     });
   }
   validateSave() {
-    if (this.edition && this.userNameLast === this.form.value['email']) {
+    if (this.edition && this.userNameLast === this.form.value['userName']) {
       this.save();
     } else {
       this.validateUserName();
@@ -91,7 +93,7 @@ export class UpdateUserComponent implements OnInit {
 
   validateUserName() {
     this.userService
-      .existsByUserName(this.form.value['email'])
+      .existsByUserName(this.form.value['userName'])
       .subscribe((data) => {
         if (data) {
           this.snackBar.open(
@@ -110,7 +112,7 @@ export class UpdateUserComponent implements OnInit {
   save() {
     this.user.idUser = this.idUser;
     this.user.name = this.form.value['name'];
-    this.user.userName = this.form.value['email'];
+    this.user.userName = this.form.value['userName'];
     this.user.password = this.form.value['password'];
     this.user.status = this.form.value['status'];
     this.user.mail = this.form.value['email'];

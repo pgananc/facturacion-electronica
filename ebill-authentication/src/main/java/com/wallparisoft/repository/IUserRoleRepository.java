@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface IUserRoleRepository extends JpaRepository<UserRole, Long> {
@@ -15,5 +14,4 @@ public interface IUserRoleRepository extends JpaRepository<UserRole, Long> {
 
     void deleteUserRoleByUser(User user);
 
-    List<UserRole> findByUser_UserNameAndStatus(@Param("userName") String userName, @Param("status") Boolean status);
 }

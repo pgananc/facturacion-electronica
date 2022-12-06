@@ -15,7 +15,7 @@ import com.wallparisoft.entity.Menu;
 import com.wallparisoft.service.IMenuService;
 
 @RestController
-@RequestMapping("/api/menu")
+@RequestMapping("/menus")
 public class MenuController {
 
   @Autowired
