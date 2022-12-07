@@ -45,6 +45,8 @@ public class SecurityConfig {
                 .permitAll()
                 .antMatchers("/api/token/**")
                 .permitAll()
+                .antMatchers("/api/user/restore/**")
+                .permitAll()
                 .antMatchers("/api/menu/**")
                 .authenticated()
                 .antMatchers("/api/role/**")

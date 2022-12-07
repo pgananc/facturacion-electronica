@@ -198,7 +198,7 @@ public class UserServiceImpl implements IUserService {
                     .replace("${resetUrl}", paramsURL.getValueParam() + token.getToken());
 
             MailDto mailDto = MailDto.builder()
-                    .from(mail)
+                   // .from(mail)
                     .to(user.getMail())
                     .subject("RESTABLECER CONTRASEÑA - WALLPARISOFT")
                     .templateHtml(html)
