@@ -6,7 +6,6 @@ import com.wallparisoft.ebill.auth.util.constant.Constants;
 import com.wallparisoft.ebill.auth.util.UtilsRedis;
 import com.wallparisoft.ebill.auth.util.UtilsToken;
 import com.wallparisoft.ebill.auth.util.exception.InternalErrorException;
-import com.wallparisoft.ebill.auth.util.exception.TokenException;
 import com.wallparisoft.ebill.auth.util.model.RedisEntity;
 import com.wallparisoft.ebill.auth.util.model.TokenInformation;
 import com.wallparisoft.ebill.auth.util.model.TokenSession;
@@ -74,18 +73,6 @@ public class AuthServiceImpl implements IAuthService {
         }
 
     }
-
-    @Override
-    public void validateToken(TokenInformation informationEntity) {
-        log.info("Token state user name ({}), state: {}", informationEntity.getUserName(), 1);
-        Map<String, Object> claims = new HashMap<>();
-        claims.put(USER_NAME, informationEntity.getUserName());
-        String token = utilsToken.doGenerateToken(claims, Constants.EXPIRATION_TOKEN_JWT);
-        TokenSession tokenSession = new TokenSession();
-        tokenSession.setToken(token);
-        throw new TokenException(tokenSession, 1);
-    }
-
 
     @Override
     public Optional<Authentication> authenticate(HttpServletRequest request) {

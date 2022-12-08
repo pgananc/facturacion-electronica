@@ -41,7 +41,7 @@ public class LoginServiceImpl implements ILoginService {
     }
 
     @Override
-    public TokenResponse authetication(UserDto userDto) throws Exception {
+    public TokenResponse authentication(UserDto userDto) throws Exception {
         User user = validateUserName(userDto.getUserName(), userDto.getPassword());
         List<Role> roles = roleService.findByUserNameAndStatus(user.getUserName(), true);
         List<String> rolesName = roles.stream().map(role -> {

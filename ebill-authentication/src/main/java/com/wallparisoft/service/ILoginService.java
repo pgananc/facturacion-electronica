@@ -8,7 +8,7 @@ public interface ILoginService {
 	
 	User validateUserName(String userName, String password) throws Exception;
 
-	TokenResponse authetication(UserDto userDto) throws Exception;
+	TokenResponse authentication(UserDto userDto) throws Exception;
 	
 
 }

@@ -11,6 +11,5 @@ import java.util.Optional;
 
 public interface IAuthService {
     TokenSession generateToken(TokenInformation tokenInformation, boolean verified);
-    void validateToken(TokenInformation tokenInformation);
     public Optional<Authentication> authenticate(HttpServletRequest request);
 }

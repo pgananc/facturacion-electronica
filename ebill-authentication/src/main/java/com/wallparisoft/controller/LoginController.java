@@ -48,7 +48,7 @@ public class LoginController {
             .build());
     TokenResponse response  = null;
     try {
-      response = loginService.authetication(userDto);
+      response = loginService.authentication(userDto);
       log.debug(EventLog.builder()
               .service(traceElement.getClassName())
               .method(traceElement.getMethodName())

@@ -5,7 +5,6 @@ import com.wallparisoft.ebill.utils.dto.MailDto;
 import com.wallparisoft.ebill.utils.exception.InternalException;
 import com.wallparisoft.ebill.utils.log.EventLog;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -22,9 +21,6 @@ import static com.wallparisoft.ebill.utils.log.Level.LEVEL_003;
 @Log4j2
 public class EmailUtil {
     private final JavaMailSender emailSender;
-
-    @Value("${spring.mail.username}")
-    private String accountMail;
 
     public EmailUtil(JavaMailSender emailSender) {
         this.emailSender = emailSender;
@@ -44,7 +40,7 @@ public class EmailUtil {
             helper.setTo(mail.getTo());
             helper.setText(mail.getTemplateHtml(), true);
             helper.setSubject(mail.getSubject());
-            helper.setFrom(accountMail);
+            helper.setFrom(mail.getFrom());
             emailSender.send(message);
 
             log.debug(EventLog.builder()
