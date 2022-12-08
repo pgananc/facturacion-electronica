@@ -15,6 +15,7 @@ import com.wallparisoft.response.UserDtoResponse;
 import com.wallparisoft.service.IUserService;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -48,6 +49,9 @@ public class UserServiceImpl implements IUserService {
     final EmailUtil emailUtil;
     final UserMapper userMapper;
     private final RoleMapper roleMapper;
+
+    @Value("${spring.mail.username}")
+    private String mailNotification;
 
     public UserServiceImpl(IUserRepository userRepository, IRoleRepository roleRepository, IUserRoleRepository userRoleRepository, ITokenRepository tokenRepository, IParamsRepository paramsRepository, EmailUtil emailUtil, UserMapper userMapper, RoleMapper roleMapper) {
         this.userRepository = userRepository;
@@ -195,10 +199,11 @@ public class UserServiceImpl implements IUserService {
             String html = paramsMail.getValueParam();
             html = html.replace("${user}", user.getName())
                     .replace("${duration}", paramsTime.getValueParam())
-                    .replace("${resetUrl}", paramsURL.getValueParam() + token.getToken());
+                    .replace("${resetUrl}", paramsURL.getValueParam() + token.getToken())
+                    .replace("#{year}", String.valueOf(LocalDateTime.now().getYear()));
 
             MailDto mailDto = MailDto.builder()
-                    .from(mail)
+                    .from(mailNotification)
                     .to(user.getMail())
                     .subject("RESTABLECER CONTRASEÑA - WALLPARISOFT")
                     .templateHtml(html)

@@ -1,5 +1,6 @@
 package com.wallparisoft.controller;
 
+import com.wallparisoft.ebill.auth.util.exception.InternalErrorException;
 import com.wallparisoft.ebill.utils.log.EventLog;
 import com.wallparisoft.entity.User;
 import com.wallparisoft.response.RoleDtoResponse;
@@ -27,8 +28,7 @@ import static lombok.AccessLevel.PRIVATE;
 public class MailController {
 
 
-
-     final IUserService userService;
+    final IUserService userService;
 
     public MailController(IUserService userService) {
 
@@ -45,7 +45,13 @@ public class MailController {
                 .eventType(REQUEST.name())
                 .level(LEVEL_001.name())
                 .build());
-        int result = userService.sendMailUser(mail);
+        int result = 0;
+        try {
+            result = userService.sendMailUser(mail);
+        } catch (Exception e) {
+            throw new InternalErrorException("Error al enviar correo");
+        }
+
         log.debug(EventLog.builder()
                 .service(traceElement.getClassName())
                 .method(traceElement.getMethodName())
