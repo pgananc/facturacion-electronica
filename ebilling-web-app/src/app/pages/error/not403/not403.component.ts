@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { environment } from 'src/environments/environment';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Component({
   selector: 'app-not403',
@@ -11,6 +12,9 @@ export class Not403Component implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.userName = sessionStorage.getItem(environment.USER)!;
+    let token = sessionStorage.getItem(environment.TOKEN)!;
+    const helper = new JwtHelperService();
+    let decodedToken = helper.decodeToken(token);
+    this.userName = decodedToken.userName;
   }
 }

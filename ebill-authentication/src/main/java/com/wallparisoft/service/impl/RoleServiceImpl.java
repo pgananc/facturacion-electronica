@@ -4,22 +4,32 @@ import com.wallparisoft.dto.RoleDto;
 import com.wallparisoft.entity.Role;
 import com.wallparisoft.mapper.RoleMapper;
 import com.wallparisoft.repository.IRoleRepository;
+import com.wallparisoft.repository.IUserRoleRepository;
 import com.wallparisoft.response.RoleDtoResponse;
 import com.wallparisoft.service.IRoleService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class RoleServiceImpl implements IRoleService {
 
-    @Autowired
-    private IRoleRepository roleRepository;
-    @Autowired
-    private RoleMapper roleMapper;
+
+    private final IRoleRepository roleRepository;
+    private final IUserRoleRepository userRoleRepository;
+    private final RoleMapper roleMapper;
+
+    public RoleServiceImpl(IRoleRepository roleRepository, IUserRoleRepository userRoleRepository, RoleMapper roleMapper) {
+        this.roleRepository = roleRepository;
+        this.userRoleRepository = userRoleRepository;
+        this.roleMapper = roleMapper;
+    }
 
 
     @Override
@@ -51,5 +61,12 @@ public class RoleServiceImpl implements IRoleService {
                 .roleDtos(roleDtos)
                 .build();
 
+    }
+
+    @Override
+    public List<Role> findByUserNameAndStatus(String userName, Boolean status) {
+        return  userRoleRepository.findByUser_UserNameAndStatus(userName,status).stream().map(userRole->{
+            return userRole.getRole();
+         }).collect(Collectors.toList());
     }
 }

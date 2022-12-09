@@ -10,7 +10,7 @@ import { Menu } from '../../_model/auth/menu';
 export class MenuService {
   menuChange = new Subject<Menu[]>();
 
-  url: string = `${environment.HOST_AUTH}/menus`;
+  url: string = `${environment.HOST_AUTH}/api/menu`;
   constructor(private http: HttpClient) {}
 
   findMenuByUser(userName: string) {
