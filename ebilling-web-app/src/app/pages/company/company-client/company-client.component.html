@@ -1,0 +1,123 @@
+<router-outlet></router-outlet>
+
+<div [hidden]="route.children.length !== 0">
+  <div class="text-center">
+    <mat-toolbar>Gestión de Compañía-Usuarios</mat-toolbar>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel expanded="true">
+      <mat-expansion-panel-header style="background-color: #673ab7">
+        <mat-panel-title style="color: #fff"> Compañías</mat-panel-title>
+      </mat-expansion-panel-header>
+      <form
+        class="principal-container principal-full-width"
+        [formGroup]="form"
+        (ngSubmit)="search()"
+        #frmCompanyClient="ngForm"
+      >
+        <table cellspacing="10">
+          <tr>
+            <td style="padding-left: 40px">
+              <mat-form-field class="principal-full-width">
+                <mat-select placeholder="Seleccione" [(value)]="companyId">
+                  <mat-option>Select</mat-option>
+                  <mat-option *ngFor="let company of companies" [value]="company.idCompany">
+                    {{ company.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </td>
+
+          </tr>
+        </table>
+        <div class="flex-parent jc-center">
+          <button
+            class="margin-right botton-width"
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="frmCompanyClient.invalid"
+          >
+            <span>Buscar</span>
+          </button>
+        </div>
+      </form>
+    </mat-expansion-panel>
+  </mat-accordion>
+  <div>
+    <button
+      matTooltip="Agregar"
+      mat-button
+      color="second"
+      class="botton-add"
+      routerLink="/company-client/new">
+      <mat-icon>add_circle</mat-icon>
+    </button>
+  </div>
+
+  <div class="principal-container mat-elevation-z8">
+    <mat-table [dataSource]="dataSourceClient" matSort>
+      <ng-container matColumnDef="identification">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold">
+          Identificación
+        </mat-header-cell>
+        <mat-cell *matCellDef="let clientRow"> {{ clientRow.identification }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="idType">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold">
+          Tipo de identificación
+        </mat-header-cell>
+        <mat-cell *matCellDef="let clientRow"> {{ clientRow.idTypeEnum }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          class="text-color-bold">
+          Nombre
+        </mat-header-cell>
+        <mat-cell *matCellDef="let clientRow"> {{ clientRow.name }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="clientType">
+        <mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          class="text-color-bold">
+          Tipo de cliente
+        </mat-header-cell>
+        <mat-cell *matCellDef="let clientRow"> {{ clientRow.clientTypeEnum }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef class="text-color-bold"
+        >Acciones
+        </mat-header-cell
+        >
+        <mat-cell *matCellDef="let clientRow">
+          <button
+            matTooltip="Eliminar"
+            mat-button
+            color="accent"
+            (click)="delete(companyId,clientRow.idClient)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumnsClient"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumnsClient"></mat-row>
+    </mat-table>
+
+    <mat-paginator
+      [pageSize]="5"
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      [length]="quantity"
+      (page)="showMore($event)"
+    ></mat-paginator>
+  </div>
+
+</div>
