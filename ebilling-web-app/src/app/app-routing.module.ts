@@ -15,6 +15,7 @@ import { CanActiveUserGuard } from './_service/canActivate/can-active-user.guard
 import { Not404Component } from './pages/error/not404/not404.component';
 import { ResetPasswordComponent } from './pages/login/reset-password/reset-password.component';
 import { TokenComponent } from './pages/login/reset-password/token/token.component';
+import {CompanyClientComponent} from "./pages/company/company-client/company-client.component";
 import { ProfileComponent } from './pages/profile/profile.component';
 
 const routes: Routes = [
@@ -66,6 +67,12 @@ const routes: Routes = [
       { path: 'new', component: UpdateCompanyComponent },
       { path: 'edit/:idCompany', component: UpdateCompanyComponent },
     ],
+    canActivate: [CanActiveUserGuard],
+  },
+  {
+    path: 'company-client',
+    component: CompanyClientComponent,
+    canActivate: [CanActiveUserGuard],
   },
   { path: '**', component: Not404Component },
 ];

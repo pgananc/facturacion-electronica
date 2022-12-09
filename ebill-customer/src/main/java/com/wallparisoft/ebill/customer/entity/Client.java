@@ -40,9 +40,6 @@ public class Client {
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
 
-    @Column(name = "id_company")
-    private Long idCompany;
-
     @PrePersist
     public void preInsert() {
         creationDate = LocalDateTime.now();

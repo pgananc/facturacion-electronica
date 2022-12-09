@@ -1,12 +1,13 @@
 import {Contact} from './contact';
 
 export class Client {
-  idClient: number = 0;
-  idType: number = 0;
-  identification: string = '';
+  idClient = 0;
+  idType = 0;
+  idTypeEnum:any;
+  identification = '';
   name: string = '';
-  clientType: number = 0;
-  status: boolean = true;
-  idCompany: number = 0;
+  clientType = 0;
+  clientTypeEnum:any;
+  status = true;
   contacts: Contact[] = [];
 }

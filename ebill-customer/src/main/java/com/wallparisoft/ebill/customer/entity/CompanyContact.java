@@ -46,7 +46,7 @@ public class CompanyContact {
 	private LocalDateTime creationDate;
 
 	@PrePersist
-	public void preInsertar() {
+	public void preInsert() {
 		creationDate = LocalDateTime.now();
 	}
 }
