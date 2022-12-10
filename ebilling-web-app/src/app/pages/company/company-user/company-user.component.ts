@@ -52,6 +52,7 @@ export class CompanyUserComponent implements OnInit {
     });
   }
 
+
   delete(companyId: number, userId: number) {
     this.companyUserService.delete(companyId, userId).subscribe(() => {
       this.companyService.findAll().subscribe((data) => {
@@ -95,7 +96,7 @@ export class CompanyUserComponent implements OnInit {
     user.name = this.form.value['name'];
     user.userName = this.form.value['userName'];
     user.mail = this.form.value['mail'];
-    this.companyService
+    this.companyUserService
       .searchPageable(e.pageIndex, e.pageSize, this.companyId)
       .subscribe((data) => {
         this.quantity = data.totalElements;

@@ -36,10 +36,10 @@ export class CompanyService {
     return this.http.delete(`${this.url}/${idCompany}`);
   }
 
-  searchPageable(p: number, s: number, idCompany: number) {
+  searchPageable(p: number, s: number, company: Company) {
     return this.http.post<any>(
       `${this.url}/pageable?page=${p}&size=${s}`,
-      idCompany
+      company
     );
   }
 

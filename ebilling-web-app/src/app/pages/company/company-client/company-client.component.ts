@@ -116,7 +116,7 @@ export class CompanyClientComponent implements OnInit {
     company.name = this.form.value['name'];
     company.branchOfficeCode = this.form.value['branchOfficeCode'];
     company.status = this.status;
-    this.companyService
+    this.companyClientService
       .searchPageable(e.pageIndex, e.pageSize, this.companyId)
       .subscribe((data) => {
         this.quantity = data.totalElements;
