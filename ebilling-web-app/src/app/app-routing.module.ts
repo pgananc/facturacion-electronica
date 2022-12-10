@@ -81,6 +81,12 @@ const routes: Routes = [
     canActivate: [CanActiveUserGuard],
   },
   { path: '**', component: Not404Component },
+  {
+    path: 'user-company',
+    component: CompanyUserComponent,
+    canActivate: [CanActiveUserGuard],
+  },
+  { path: '**', component: Not404Component },
 ];
 
 @NgModule({
