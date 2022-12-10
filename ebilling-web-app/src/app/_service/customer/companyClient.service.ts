@@ -32,7 +32,7 @@ export class CompanyClientService {
   }
 
   delete(idCompany: number, idClient: number) {
-    return this.http.delete(`${this.url}/idCompany/${idCompany}/idClient/${idClient}`);
+    return this.http.delete(`${this.url}/company/${idCompany}/client/${idClient}`);
   }
 
   searchPageable(p: number, s: number, idCompany: number) {

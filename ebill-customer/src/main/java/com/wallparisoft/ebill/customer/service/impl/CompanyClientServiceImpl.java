@@ -1,5 +1,6 @@
 package com.wallparisoft.ebill.customer.service.impl;
 
+import com.wallparisoft.ebill.customer.dto.ClientDto;
 import com.wallparisoft.ebill.customer.dto.CompanyClientDto;
 import com.wallparisoft.ebill.customer.entity.Client;
 import com.wallparisoft.ebill.customer.entity.Company;
@@ -11,6 +12,9 @@ import com.wallparisoft.ebill.customer.service.ICompanyClientService;
 import com.wallparisoft.ebill.customer.service.ICompanyService;
 import com.wallparisoft.ebill.utils.exception.ModelNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,7 +41,7 @@ public class CompanyClientServiceImpl implements ICompanyClientService {
     public void delete(Long idCompany, Long idClient) {
         CompanyClient companyClient = companyClientRepo.findByCompany_IdCompanyAndClient_IdClient(idCompany, idClient)
                 .orElseThrow(() -> new ModelNotFoundException("Company Client not found for this id company :: " + idCompany + ", " +
-                "and id client :: " + idClient));
+                        "and id client :: " + idClient));
         companyClientRepo.delete(companyClient);
     }
 
@@ -46,22 +50,32 @@ public class CompanyClientServiceImpl implements ICompanyClientService {
         Company company = companyService.findById(idCompany);
         Client client = clientService.findById(idClient);
         try {
-            findByIdCompanyAndAndIdClient(idCompany, idClient);
+            findByIdCompanyAndIdClient(idCompany, idClient);
             return null;
-        } catch (ModelNotFoundException ex) {
+        } catch (ModelNotFoundException me) {
             CompanyClient companyClient = CompanyClient.builder()
                     .company(company)
                     .client(client)
                     .build();
             return save(companyClient);
         }
+    }
 
+    @Override
+    public Page<ClientDto> getClientsFromACompanyPageable(Long idCompany, Pageable pageable) {
+        Page<CompanyClient> companyClients = companyClientRepo.findByCompany_IdCompany(idCompany, pageable);
+        if (companyClients == null) {
+            throw new ModelNotFoundException("Company Client not found for this company id :: " + idCompany);
+        }
+        CompanyClientDto companyClientDtos = companyClientMapper.getClientsFromCompany(companyClients.getContent());
+
+        return new PageImpl<>(companyClientDtos.getClients(), pageable, companyClientDtos.getClients().size());
     }
 
     @Override
     public CompanyClientDto getClientsFromACompany(Long idCompany) {
-        Optional<List<CompanyClient>> companyClientsOpt=companyClientRepo.findByCompany_IdCompany(idCompany);
-        if(companyClientsOpt.isPresent()){
+        Optional<List<CompanyClient>> companyClientsOpt = companyClientRepo.findByCompany_IdCompany(idCompany);
+        if (companyClientsOpt.isPresent()) {
             return companyClientMapper.getClientsFromCompany(companyClientsOpt.get());
         }
         throw new ModelNotFoundException("Company Client not found for this company id :: " + idCompany);
@@ -85,10 +99,10 @@ public class CompanyClientServiceImpl implements ICompanyClientService {
     }
 
     @Override
-    public CompanyClientDto findByIdCompanyAndAndIdClient(Long idCompany, Long idClient) {
-        CompanyClient companyClient=companyClientRepo.findByCompany_IdCompanyAndClient_IdClient(idCompany, idClient)
+    public CompanyClientDto findByIdCompanyAndIdClient(Long idCompany, Long idClient) {
+        CompanyClient companyClient = companyClientRepo.findByCompany_IdCompanyAndClient_IdClient(idCompany, idClient)
                 .orElseThrow(() -> new ModelNotFoundException("Company Client not found for this id company :: " + idCompany + ", " +
-                "and id client :: " + idClient));
+                        "and id client :: " + idClient));
         return companyClientMapper.convertCompanyClientToCompanyClientDto(companyClient);
     }
 }

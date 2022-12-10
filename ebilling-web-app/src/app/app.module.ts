@@ -26,6 +26,7 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { CompanyClientComponent } from "./pages/company/company-client/company-client.component";
 import { HashLocationStrategy, LocationStrategy } from "@angular/common";
+import {CompanyUserComponent} from "./pages/company/company-user/company-user.component";
 
 export function tokenGetter() {
   let tk = sessionStorage.getItem(environment.TOKEN);
@@ -43,6 +44,7 @@ export function tokenGetter() {
     CompanyClientComponent,
     CompanyComponent,
     UpdateCompanyComponent,
+    CompanyUserComponent,
     UserComponent,
     UpdateUserComponent,
     Not403Component,
