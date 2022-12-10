@@ -75,9 +75,8 @@ const routes: Routes = [
     component: CompanyClientComponent,
     canActivate: [CanActiveUserGuard],
   },
-  { path: '**', component: Not404Component },
   {
-    path: 'user-company',
+    path: 'company-user',
     component: CompanyUserComponent,
     canActivate: [CanActiveUserGuard],
   },
