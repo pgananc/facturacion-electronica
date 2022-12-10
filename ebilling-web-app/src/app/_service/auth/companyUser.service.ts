@@ -20,15 +20,15 @@ export class CompanyUserService {
   }
 
   delete(idCompany: number, idUser: number) {
-    return this.http.delete(`${this.url}/idCompany/${idCompany}/idUser/${idUser}`);
+    return this.http.delete(`${this.url}/company/${idCompany}/user/${idUser}`);
   }
 
   findUsersByIdCompany(idCompany: number) {
-    return this.http.get<CompanyResponse>(`${this.url}/idCompany/${idCompany}`);
+    return this.http.get<CompanyResponse>(`${this.url}/company/${idCompany}`);
   }
 
   findByIdCompanyAndIdUser(idCompany: number, idUser:number) {
-    return this.http.get<CompanyResponse>(`${this.url}/idCompany/${idCompany}/idUser/${idUser}`);
+    return this.http.get<CompanyResponse>(`${this.url}/company/${idCompany}/user/${idUser}`);
   }
 
   searchPageable(p: number, s: number, idCompany: number) {

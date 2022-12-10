@@ -51,7 +51,7 @@ public class UserCompanyController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/idCompany/{idCompany}/idUser/{idUser}")
+    @DeleteMapping("/company/{idCompany}/user/{idUser}")
     public ResponseEntity<BasicResponse> delete(@PathVariable("idCompany") Long idCompany, @PathVariable("idUser") Long idUser) {
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
         log.debug(EventLog.builder().service(traceElement.getClassName())
@@ -64,7 +64,7 @@ public class UserCompanyController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/idCompany/{idCompany}/idUser/{idUser}")
+    @GetMapping("/company/{idCompany}/user/{idUser}")
     public ResponseEntity<UserCompanyResponse> getByIdCompanyAndIdUser(@PathVariable(value = "idCompany") Long idCompany,
                                                                          @PathVariable(value = "idUser") Long idUser) {
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
@@ -77,7 +77,7 @@ public class UserCompanyController {
         return new ResponseEntity<>(userCompanyResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/idCompany/{idCompany}")
+    @GetMapping("/company/{idCompany}")
     public ResponseEntity<UserCompanyResponse> getUsersByIdCompany(@PathVariable(value = "idCompany") Long idCompany) {
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
         log.debug(EventLog.builder().service(traceElement.getClassName()).method(traceElement.getMethodName()).eventType(REQUEST.name()).level(LEVEL_001.name()).build());
