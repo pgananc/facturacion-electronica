@@ -4,8 +4,15 @@ import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute} from '@angular/router';
-import {DELETE, DURATION_TIME_MESSAGE, EMPTY_DATA, HEADER_MESSAGE,CLIENT_TYPE,IDENTIFICATION_TYPE} from '../../../_constants/constants';
-import {FormControl, FormGroup} from '@angular/forms';
+import {
+  CLIENT_TYPE,
+  DELETE,
+  DURATION_TIME_MESSAGE,
+  EMPTY_DATA,
+  HEADER_MESSAGE,
+  IDENTIFICATION_TYPE
+} from '../../../_constants/constants';
+import {FormGroup} from '@angular/forms';
 import {Company} from "../../../_model/customer/company";
 import {CompanyService} from "../../../_service/customer/company.service";
 
@@ -80,11 +87,6 @@ export class CompanyClientComponent implements OnInit {
     });
   }
 
-  applyFilter(event: Event) {
-    const input = (event.target as HTMLInputElement).value;
-    this.dataSourceClient!.filter = input.trim().toLowerCase();
-  }
-
   search() {
     let company = new Company();
     company.identification = this.form.value['identification'];
@@ -108,15 +110,6 @@ export class CompanyClientComponent implements OnInit {
     });
   }
 
-  limpiar() {
-    this.form = new FormGroup({
-      identification: new FormControl(''),
-      branchOfficeCode: new FormControl(''),
-      name: new FormControl(''),
-    });
-    this.status = true;
-  }
-
   showMore(e: any) {
     let company = new Company();
     company.identification = this.form.value['identification'];
@@ -124,7 +117,7 @@ export class CompanyClientComponent implements OnInit {
     company.branchOfficeCode = this.form.value['branchOfficeCode'];
     company.status = this.status;
     this.companyService
-      .searchPageable(e.pageIndex, e.pageSize, company)
+      .searchPageable(e.pageIndex, e.pageSize, this.companyId)
       .subscribe((data) => {
         this.quantity = data.totalElements;
         this.dataSourceClient = new MatTableDataSource(data.content);
