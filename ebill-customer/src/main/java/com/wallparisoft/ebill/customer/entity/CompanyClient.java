@@ -22,7 +22,7 @@ public class CompanyClient {
     private Long idCompanyClient;
 
     @ManyToOne
-    @JoinColumn(name = "id_company", referencedColumnName = "id_company")
+    @JoinColumn(name = "identification", referencedColumnName = "identification")
     private Company company;
 
     @ManyToOne

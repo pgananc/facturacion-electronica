@@ -57,38 +57,28 @@
 
   <div class="principal-container mat-elevation-z8">
     <mat-table [dataSource]="dataSourceUser" matSort>
-      <ng-container matColumnDef="identification">
-        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold">
-          Identificación
-        </mat-header-cell>
-        <mat-cell *matCellDef="let clientRow"> {{ clientRow.identification }} </mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="idType">
-        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold">
-          Tipo de identificación
-        </mat-header-cell>
-        <mat-cell *matCellDef="let clientRow"> {{ clientRow.idTypeEnum }} </mat-cell>
-      </ng-container>
-
       <ng-container matColumnDef="name">
-        <mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          class="text-color-bold">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold">
           Nombre
         </mat-header-cell>
-        <mat-cell *matCellDef="let clientRow"> {{ clientRow.name }} </mat-cell>
+        <mat-cell *matCellDef="let userRow"> {{ userRow.name }} </mat-cell>
       </ng-container>
 
-      <ng-container matColumnDef="clientType">
+      <ng-container matColumnDef="username">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold">
+          Usuario
+        </mat-header-cell>
+        <mat-cell *matCellDef="let userRow"> {{ userRow.userName }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="mail">
         <mat-header-cell
           *matHeaderCellDef
           mat-sort-header
           class="text-color-bold">
-          Tipo de cliente
+          Correo electrónico
         </mat-header-cell>
-        <mat-cell *matCellDef="let clientRow"> {{ clientRow.clientTypeEnum }} </mat-cell>
+        <mat-cell *matCellDef="let userRow"> {{ userRow.mail }} </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="actions">
@@ -96,12 +86,12 @@
         >Acciones
         </mat-header-cell
         >
-        <mat-cell *matCellDef="let clientRow">
+        <mat-cell *matCellDef="let userRow">
           <button
             matTooltip="Eliminar"
             mat-button
             color="accent"
-            (click)="delete(companyId,clientRow.idClient)"
+            (click)="delete(companyId,userRow.idClient)"
           >
             <mat-icon>delete</mat-icon>
           </button>
