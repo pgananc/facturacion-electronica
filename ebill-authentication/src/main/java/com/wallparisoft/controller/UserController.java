@@ -72,7 +72,7 @@ public class UserController {
                 .build());
         Page<UserDto> users = userService.
                 findUserByUserNameOrNameOrStatus(userDto.getName(),
-                        userDto.getUserName(),userDto.getStatus(),pageable);
+                        userDto.getUserName(), userDto.getStatus(), pageable);
         log.debug(EventLog.builder()
                 .service(traceElement.getClassName())
                 .method(traceElement.getMethodName())
@@ -191,7 +191,7 @@ public class UserController {
 
     @PostMapping(value = "/restore/{token}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> restorePassword(@PathVariable("token") String token, @RequestBody String password) {
-     Boolean result= Boolean.FALSE;
+        Boolean result = Boolean.FALSE;
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
         log.debug(EventLog.builder()
                 .service(traceElement.getClassName())
@@ -199,7 +199,7 @@ public class UserController {
                 .eventType(REQUEST.name())
                 .level(LEVEL_001.name())
                 .build());
-     result = userService.resetPassword(token,password);
+        result = userService.resetPassword(token, password);
         log.debug(EventLog.builder()
                 .service(traceElement.getClassName())
                 .method(traceElement.getMethodName())
@@ -209,6 +209,28 @@ public class UserController {
                 .build());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    @GetMapping("/company/{idCompany}")
+    public ResponseEntity<UserDtoResponse> findActiveUsersAndNotInCompany(@PathVariable("idCompany") Long idCompany) {
+        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+        log.debug(EventLog.builder()
+                .service(traceElement.getClassName())
+                .method(traceElement.getMethodName())
+                .eventType(REQUEST.name())
+                .level(LEVEL_001.name())
+                .build());
+        UserDtoResponse response = userService.findActiveUsersAndNotInCompany(idCompany);
+
+        log.debug(EventLog.builder()
+                .service(traceElement.getClassName())
+                .method(traceElement.getMethodName())
+                .information(response.getUserDtos())
+                .eventType(RESPONSE.name())
+                .level(LEVEL_001.name())
+                .build());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     private static BasicResponse getBasicResponse() {
         BasicResponse response = BasicResponse.builder().status(HttpStatus.OK.getReasonPhrase()).build();
         return response;

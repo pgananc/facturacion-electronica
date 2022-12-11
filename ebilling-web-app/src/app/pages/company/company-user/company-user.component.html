@@ -13,7 +13,7 @@
         class="principal-container principal-full-width"
         [formGroup]="form"
         (ngSubmit)="search()"
-        #frmCompanyClient="ngForm"
+        #frmCompanyUser="ngForm"
       >
         <table cellspacing="10">
           <tr>
@@ -36,7 +36,7 @@
             mat-raised-button
             color="primary"
             type="submit"
-            [disabled]="frmCompanyClient.invalid"
+            [disabled]="frmCompanyUser.invalid"
           >
             <span>Buscar</span>
           </button>
@@ -44,19 +44,70 @@
       </form>
     </mat-expansion-panel>
   </mat-accordion>
-  <div>
-    <button
-      matTooltip="Agregar"
-      mat-button
-      color="second"
-      class="botton-add"
-      routerLink="/company-client/new">
-      <mat-icon>add_circle</mat-icon>
-    </button>
+
+  <div class="principal-container mat-elevation-z8">
+    <mat-card>
+      <mat-card-content>Usuarios de la Compañía</mat-card-content>
+    </mat-card>
+    <mat-table [dataSource]="dsCurrentUsersInCompany" matSort>
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef class="text-color-bold">
+          Nombre
+        </mat-header-cell>
+        <mat-cell *matCellDef="let userRow"> {{ userRow.name }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="username">
+        <mat-header-cell *matHeaderCellDef class="text-color-bold">
+          Usuario
+        </mat-header-cell>
+        <mat-cell *matCellDef="let userRow"> {{ userRow.userName }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="mail">
+        <mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          class="text-color-bold">
+          Correo electrónico
+        </mat-header-cell>
+        <mat-cell *matCellDef="let userRow"> {{ userRow.mail }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef class="text-color-bold"
+        >Acciones
+        </mat-header-cell
+        >
+        <mat-cell *matCellDef="let userRow">
+          <button
+            matTooltip="Eliminar"
+            mat-button
+            color="accent"
+            (click)="delete(companyId,userRow.idUser)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumnsClient"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumnsClient"></mat-row>
+    </mat-table>
+
+    <mat-paginator
+      [pageSize]="5"
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      [length]="quantityCurrentUsers"
+      (page)="showMore($event)"
+    ></mat-paginator>
   </div>
 
   <div class="principal-container mat-elevation-z8">
-    <mat-table [dataSource]="dataSourceUser" matSort>
+    <mat-card>
+      <mat-card-content>Usuarios disponibles para agregar</mat-card-content>
+    </mat-card>
+    <mat-table [dataSource]="dsAvailableUsers" matSort>
       <ng-container matColumnDef="name">
         <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold">
           Nombre
@@ -88,12 +139,12 @@
         >
         <mat-cell *matCellDef="let userRow">
           <button
-            matTooltip="Eliminar"
-            mat-button
-            color="accent"
-            (click)="delete(companyId,userRow.idClient)"
+            class="margin-right botton-width"
+            mat-raised-button
+            color="primary"
+            (click)="save(userRow.idUser)"
           >
-            <mat-icon>delete</mat-icon>
+            <span>Seleccionar</span>
           </button>
         </mat-cell>
       </ng-container>
@@ -105,9 +156,8 @@
     <mat-paginator
       [pageSize]="5"
       [pageSizeOptions]="[5, 10, 25, 100]"
-      [length]="quantity"
+      [length]="quantityAvailableUsers"
       (page)="showMore($event)"
     ></mat-paginator>
   </div>
-
 </div>
