@@ -81,8 +81,9 @@ export function tokenGetter() {
       useClass: ServerErrorsInterceptor,
       multi: true,
     },
-    { provide: LocationStrategy, useClass: HashLocationStrategy },
+    {provide: LocationStrategy, useClass: HashLocationStrategy},
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+}

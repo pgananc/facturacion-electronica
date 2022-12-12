@@ -191,7 +191,7 @@ public class UserServiceImpl implements IUserService {
                     .user(user)
                     .status(true)
                     .build();
-            token.setExpirationDate(Integer.valueOf(paramsTime.getValueParam()));
+            token.setExpirationDate(Integer.parseInt(paramsTime.getValueParam()));
             tokenRepository.save(token);
 
             Params paramsMail = paramsRepository.findParamsByCodeParam(ParmsAuthEnum.COD001_MAIL_TEMPLATE_RESTORE_PASSWORD.getCode());
@@ -248,5 +248,21 @@ public class UserServiceImpl implements IUserService {
     @Override
     public void changePassword(String password, Long idUser) throws Exception {
         userRepository.changePassword(password, idUser);
+    }
+
+    @Override
+    public UserDtoResponse findActiveUsersAndNotInCompany(Long idCompany) {
+        List<User> userList = userRepository.findActiveUsersAndNotInCompany(idCompany).orElse(null);
+        List<UserDto> userDtoList = new ArrayList<>();
+        if (userList != null) {
+            userList.parallelStream().forEach(user -> {
+                UserDto clientDto = userMapper.convertUserToUserDto(user);
+                userDtoList.add(clientDto);
+            });
+        }
+        return UserDtoResponse.builder()
+                .status(HttpStatus.OK.name())
+                .userDtos(userDtoList)
+                .build();
     }
 }

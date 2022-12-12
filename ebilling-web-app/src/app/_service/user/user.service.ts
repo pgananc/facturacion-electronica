@@ -50,4 +50,8 @@ export class UserService {
       headers: new HttpHeaders().set('Content-Type', 'text/plain'),
     });
   }
+
+  findActiveUsersAndNotInCompany(idCompany: number) {
+    return this.http.get<UserResponse>(`${this.url}/company/${idCompany}`);
+  }
 }

@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 
-
 public interface IUserService extends ICRUD<User> {
 
     void delete(Long id);
@@ -32,4 +31,6 @@ public interface IUserService extends ICRUD<User> {
     boolean resetPassword(String token, String password);
 
     void changePassword(String password, Long idUser) throws Exception;
+
+    UserDtoResponse findActiveUsersAndNotInCompany(Long idCompany);
 }
