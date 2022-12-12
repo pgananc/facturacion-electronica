@@ -1,11 +1,17 @@
-import {Component, OnInit} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute, Params, Router} from '@angular/router';
-import {switchMap} from 'rxjs';
-import {DURATION_TIME_MESSAGE, EXIST_DATA, HEADER_MESSAGE, SUCCESS, UPDATE,} from '../../../_constants/constants';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {Company} from "../../../_model/customer/company";
-import {CompanyService} from "../../../_service/customer/company.service";
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { switchMap } from 'rxjs';
+import {
+  DURATION_TIME_MESSAGE,
+  EXIST_DATA,
+  HEADER_MESSAGE,
+  SUCCESS,
+  UPDATE,
+} from '../../../_constants/constants';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Company } from '../../../_model/customer/company';
+import { CompanyService } from '../../../_service/customer/company.service';
 
 @Component({
   selector: 'app-update-company',
@@ -28,8 +34,7 @@ export class UpdateCompanyComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.company = new Company();
@@ -40,7 +45,7 @@ export class UpdateCompanyComponent implements OnInit {
       name: new FormControl(''),
       status: new FormControl(true),
       forceToAccounting: new FormControl(true),
-      principal: new FormControl(true)
+      principal: new FormControl(true),
     });
     this.route.params.subscribe((params: Params) => {
       this.idCompany = params['idCompany'];
@@ -66,8 +71,10 @@ export class UpdateCompanyComponent implements OnInit {
             branchOfficeCode: new FormControl(company.branchOfficeCode),
             name: new FormControl(company.name),
             status: new FormControl(company.status),
-            forceToAccounting: new FormControl(company.forcedToAccounting === 'S'),
-            principal: new FormControl(company.principal === 'S')
+            forceToAccounting: new FormControl(
+              company.forcedToAccounting === 'S'
+            ),
+            principal: new FormControl(company.principal === 'S'),
           });
         }
       });
@@ -87,7 +94,10 @@ export class UpdateCompanyComponent implements OnInit {
 
   validateIdentification() {
     this.companyService
-      .existsByIdentificationAndBranchOfficeCode(this.form.value['identification'], this.form.value['branchOfficeCode'])
+      .existsByIdentificationAndBranchOfficeCode(
+        this.form.value['identification'],
+        this.form.value['branchOfficeCode']
+      )
       .subscribe((data) => {
         if (data) {
           this.snackBar.open(
@@ -109,7 +119,9 @@ export class UpdateCompanyComponent implements OnInit {
     this.company.branchOfficeCode = this.form.value['branchOfficeCode'];
     this.company.name = this.form.value['name'];
     this.company.status = this.form.value['status'];
-    this.company.forcedToAccounting = this.form.value['forceToAccounting'] ? 'S' : 'N';
+    this.company.forcedToAccounting = this.form.value['forceToAccounting']
+      ? 'S'
+      : 'N';
     console.log(`forceToAccounting: ${this.company.forcedToAccounting}`);
     this.company.principal = this.form.value['principal'] ? 'S' : 'N';
 
@@ -122,7 +134,7 @@ export class UpdateCompanyComponent implements OnInit {
           })
         )
         .subscribe((data) => {
-          this.companyService.companyChange.next(data.companyDtos);
+          this.companyService.companiesChange.next(data.companyDtos);
           this.companyService.messageChange.next(
             UPDATE.MESSAGE_UPDATE_COMPANY.message
           );
@@ -136,7 +148,7 @@ export class UpdateCompanyComponent implements OnInit {
           })
         )
         .subscribe((data) => {
-          this.companyService.companyChange.next(data.companyDtos);
+          this.companyService.companiesChange.next(data.companyDtos);
           this.companyService.messageChange.next(
             SUCCESS.MESSAGE_REGISTER_COMPANY.message
           );

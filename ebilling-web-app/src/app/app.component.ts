@@ -2,6 +2,11 @@ import { Component } from '@angular/core';
 import { Menu } from './_model/auth/menu';
 import { MenuService } from './_service/auth/menu.service';
 import { LoginService } from './_service/auth/login.service';
+import { CompanyService } from './_service/customer/company.service';
+import { MatDialog } from '@angular/material/dialog';
+import { CompanyInfoComponent } from './pages/company/company-info/company-info.component';
+import { Company } from './_model/customer/company';
+import { decodeToken } from './_functions/functions';
 
 @Component({
   selector: 'app-root',
@@ -10,17 +15,44 @@ import { LoginService } from './_service/auth/login.service';
 })
 export class AppComponent {
   title = 'ebilling-web-app';
+  companyName = '';
+  companies: Company[];
 
   menus: Menu[] = [];
 
   constructor(
     private menuService: MenuService,
-    public loginService: LoginService
+    private companyService: CompanyService,
+    public loginService: LoginService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
+    console.log('init app');
+    this.companyName = '';
     this.menuService.menuChange.subscribe((data) => {
       this.menus = data;
     });
+    this.companyService.companyChange.subscribe((data) => {
+      this.companyName = data.name;
+    });
+  }
+  openDialog(companies: Company[]) {
+    const dialogRef = this.dialog.open(CompanyInfoComponent, {
+      width: '800px',
+      disableClose: true,
+      data: companies,
+    });
+  }
+
+  showInfoCompany() {
+    let token = decodeToken();
+    if (token.companies != null && token.companies.length > 0) {
+      this.companyService.findByIds(token.companies).subscribe((data) => {
+        if (data.code === 0) {
+          this.openDialog(data.companyDtos);
+        }
+      });
+    }
   }
 }

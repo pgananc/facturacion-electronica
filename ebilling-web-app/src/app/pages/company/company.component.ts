@@ -1,13 +1,18 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {ActivatedRoute} from '@angular/router';
-import {DELETE, DURATION_TIME_MESSAGE, EMPTY_DATA, HEADER_MESSAGE,} from '../../_constants/constants';
-import {FormControl, FormGroup} from '@angular/forms';
-import {Company} from "../../_model/customer/company";
-import {CompanyService} from "../../_service/customer/company.service";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute } from '@angular/router';
+import {
+  DELETE,
+  DURATION_TIME_MESSAGE,
+  EMPTY_DATA,
+  HEADER_MESSAGE,
+} from '../../_constants/constants';
+import { FormControl, FormGroup } from '@angular/forms';
+import { Company } from '../../_model/customer/company';
+import { CompanyService } from '../../_service/customer/company.service';
 
 @Component({
   selector: 'app-company',
@@ -16,20 +21,27 @@ import {CompanyService} from "../../_service/customer/company.service";
 })
 export class CompanyComponent implements OnInit {
   form: FormGroup;
-  displayedColumns = ['identification', 'branchOfficeCode','forceToAccounting','specialTaxpayer','principal', 'name', 'actions'];
+  displayedColumns = [
+    'identification',
+    'branchOfficeCode',
+    'forceToAccounting',
+    'specialTaxpayer',
+    'principal',
+    'name',
+    'actions',
+  ];
   dataSource: MatTableDataSource<Company>;
   status: boolean = true;
   quantity: number = 0;
 
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
 
   constructor(
     private companyService: CompanyService,
     private snackBar: MatSnackBar,
     public route: ActivatedRoute
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     this.form = new FormGroup({
@@ -38,7 +50,7 @@ export class CompanyComponent implements OnInit {
       name: new FormControl(''),
     });
     this.status = true;
-    this.companyService.companyChange.subscribe((data) => {
+    this.companyService.companiesChange.subscribe((data) => {
       this.dataSource = new MatTableDataSource(data);
       this.dataSource!.sort = this.sort!;
       this.dataSource!.paginator = this.paginator!;
@@ -65,7 +77,7 @@ export class CompanyComponent implements OnInit {
     this.companyService.delete(idProduct).subscribe(() => {
       this.companyService.findAll().subscribe((data) => {
         if (data.code == 0) {
-          this.companyService.companyChange.next(data.companyDtos);
+          this.companyService.companiesChange.next(data.companyDtos);
           this.companyService.messageChange.next(
             DELETE.MESSAGE_DELETE_COMPANY.message
           );

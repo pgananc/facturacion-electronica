@@ -6,6 +6,8 @@ import { LoginService } from '../../_service/auth/login.service';
 import { MenuService } from '../../_service/auth/menu.service';
 import { User } from '../../_model/auth/user';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { CompanyService } from '../../_service/customer/company.service';
+import { Company } from 'src/app/_model/customer/company';
 
 @Component({
   selector: 'app-login',
@@ -21,6 +23,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private loginService: LoginService,
     private menuService: MenuService,
+    private companyService: CompanyService,
     private snackBar: MatSnackBar,
     private router: Router
   ) {}
@@ -48,13 +51,25 @@ export class LoginComponent implements OnInit {
         sessionStorage.setItem(environment.TOKEN, data.token.token);
         const helper = new JwtHelperService();
         let decodedToken = helper.decodeToken(data.token.token);
-        console.log(decodedToken);
-        this.menuService
-          .findMenuByUser(decodedToken.userName)
-          .subscribe((data) => {
-            this.menuService.menuChange.next(data);
-            this.router.navigate(['/welcome']);
-          });
+        if (
+          decodedToken.companies != null &&
+          decodedToken.companies.length > 0
+        ) {
+          this.menuService
+            .findMenuByUser(decodedToken.userName)
+            .subscribe((data) => {
+              this.menuService.menuChange.next(data);
+              this.companyService.companyChange.next(new Company());
+              this.router.navigate(['/welcome']);
+            });
+        } else {
+          this.userName = '';
+          this.password = '';
+          sessionStorage.clear();
+          this.loginService.messageChange.next(
+            'Usuario no tiene asignado una compañia. Comuníquese con el administrador.'
+          );
+        }
       }
     });
   }

@@ -15,4 +15,6 @@ public interface IUserCompanyRepo extends JpaRepository<UserCompany, Long> {
     Page<UserCompany> findByCompany(@Param("idCompany") Long idCompany, Pageable pageable);
 
     Optional<List<UserCompany>> findByCompany(@Param("idCompany") Long idCompany);
+
+    Optional<List<UserCompany>> findByUser_IdUser(@Param("idUser") Long idUser);
 }
