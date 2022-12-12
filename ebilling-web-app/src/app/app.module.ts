@@ -1,6 +1,6 @@
-import {MaterialModule} from './material/material.module';
-import {NgModule} from '@angular/core';
-import {BrowserModule} from '@angular/platform-browser';
+import { MaterialModule } from './material/material.module';
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -24,9 +24,11 @@ import { TokenComponent } from './pages/login/reset-password/token/token.compone
 import { environment } from 'src/environments/environment';
 import { JwtModule } from '@auth0/angular-jwt';
 import { ProfileComponent } from './pages/profile/profile.component';
-import { CompanyClientComponent } from "./pages/company/company-client/company-client.component";
-import { HashLocationStrategy, LocationStrategy } from "@angular/common";
-import {CompanyUserComponent} from "./pages/company/company-user/company-user.component";
+import { CompanyClientComponent } from './pages/company/company-client/company-client.component';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { CompanyUserComponent } from './pages/company/company-user/company-user.component';
+import { CompanyDialogComponent } from './pages/welcome/company-dialog/company-dialog.component';
+import { CompanyInfoComponent } from './pages/company/company-info/company-info.component';
 
 export function tokenGetter() {
   let tk = sessionStorage.getItem(environment.TOKEN);
@@ -52,6 +54,8 @@ export function tokenGetter() {
     ResetPasswordComponent,
     TokenComponent,
     ProfileComponent,
+    CompanyDialogComponent,
+    CompanyInfoComponent,
   ],
   imports: [
     BrowserModule,
@@ -77,9 +81,8 @@ export function tokenGetter() {
       useClass: ServerErrorsInterceptor,
       multi: true,
     },
-    {provide: LocationStrategy, useClass: HashLocationStrategy},
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {
-}
+export class AppModule {}

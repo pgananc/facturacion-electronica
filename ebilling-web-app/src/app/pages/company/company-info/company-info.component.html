@@ -1,0 +1,111 @@
+<mat-accordion>
+  <mat-expansion-panel expanded="true" hideToggle="true">
+    <mat-expansion-panel-header style="background-color: #673ab7">
+      <mat-panel-title style="color: #fff">Compañía</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <table [cellSpacing]="10">
+      <tr>
+        <td>
+          <label class="text-bold">RUC:</label>
+        </td>
+        <td>
+          <label>{{ company.identification }}</label>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label class="text-bold">Razón Social:</label>
+        </td>
+        <td>
+          <label>{{ company.name }}</label>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label class="text-bold">Sucursal:</label>
+        </td>
+        <td>
+          <label>{{ company.branchOfficeCode }}</label>
+        </td>
+      </tr>
+    </table>
+  </mat-expansion-panel>
+</mat-accordion>
+
+<div [hidden]="!showCompanies">
+  <br />
+  <mat-accordion>
+    <mat-expansion-panel expanded="true">
+      <mat-expansion-panel-header style="background-color: #673ab7">
+        <mat-panel-title style="color: #fff"
+          >Compañía registradas</mat-panel-title
+        >
+      </mat-expansion-panel-header>
+      <div>
+        <mat-table [dataSource]="dataSource" matSort>
+          <ng-container matColumnDef="name">
+            <mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              class="text-color-bold"
+            >
+              Nombre
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{ row.name }} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="branchOfficeCode">
+            <mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              class="text-color-bold"
+            >
+              Codigo
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              {{ row.branchOfficeCode }}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="principal">
+            <mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              class="text-color-bold"
+            >
+              Principal
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              {{ row.principal }}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef class="text-color-bold"
+              >Acciones</mat-header-cell
+            >
+            <mat-cell *matCellDef="let row">
+              <button mat-button color="primary" (click)="selectCompany(row)">
+                Seleccionar
+              </button>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns"> </mat-row>
+        </mat-table>
+
+        <mat-paginator
+          [pageSize]="5"
+          [pageSizeOptions]="[5, 10, 25, 100]"
+          [length]="1"
+        ></mat-paginator>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+<br />
+<div class="text-center">
+  <button mat-raised-button color="primary" (click)="close()">Cerrar</button>
+</div>

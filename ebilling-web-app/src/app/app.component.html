@@ -5,10 +5,12 @@
       <mat-icon *ngIf="sidenav.opened">close</mat-icon>
     </button>
 
-    <h1 class="app-name">Facturación Electrónica</h1>
+    <p class="app-name">Wallparisoft</p>
 
     <span class="spacer"></span>
-
+    <a mat-flat-button color="primary" (click)="showInfoCompany()">
+      {{ company }}</a
+    >
     <button mat-icon-button [matMenuTriggerFor]="menu">
       <mat-icon>more_vert</mat-icon>
     </button>

@@ -28,4 +28,7 @@ public interface ICompanyService extends ICRUD<Company> {
     CompanyDto findCompanyById(Long id);
 
     CompanyDtoResponse getAllCompanies();
+
+    CompanyDtoResponse getCompaniesByIdCompanies(List<Long> idCompanies);
+
 }

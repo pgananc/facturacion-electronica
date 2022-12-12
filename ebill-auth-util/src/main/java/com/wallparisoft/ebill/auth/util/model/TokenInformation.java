@@ -16,4 +16,5 @@ public class TokenInformation {
 
   String userName;
   List<String> roles;
+  List<Long> idCompanies;
 }

@@ -15,9 +15,9 @@ import { CanActiveUserGuard } from './_service/canActivate/can-active-user.guard
 import { Not404Component } from './pages/error/not404/not404.component';
 import { ResetPasswordComponent } from './pages/login/reset-password/reset-password.component';
 import { TokenComponent } from './pages/login/reset-password/token/token.component';
-import {CompanyClientComponent} from "./pages/company/company-client/company-client.component";
+import { CompanyClientComponent } from './pages/company/company-client/company-client.component';
 import { ProfileComponent } from './pages/profile/profile.component';
-import {CompanyUserComponent} from "./pages/company/company-user/company-user.component";
+import { CompanyUserComponent } from './pages/company/company-user/company-user.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -80,12 +80,7 @@ const routes: Routes = [
     component: CompanyUserComponent,
     canActivate: [CanActiveUserGuard],
   },
-  { path: '**', component: Not404Component },
-  {
-    path: 'user-company',
-    component: CompanyUserComponent,
-    canActivate: [CanActiveUserGuard],
-  },
+
   { path: '**', component: Not404Component },
 ];
 

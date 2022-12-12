@@ -59,6 +59,7 @@ public class AuthServiceImpl implements IAuthService {
             Map<String, Object> claims = new HashMap<>();
             claims.put(USER_NAME, informationEntity.getUserName());
             claims.put("roles", informationEntity.getRoles());
+            claims.put("companies", informationEntity.getIdCompanies());
             String token = utilsToken.doGenerateToken(claims, Constants.EXPIRATION_TOKEN_JWT);
             RedisEntity redisEntity = new RedisEntity();
             redisEntity.setKey(token);

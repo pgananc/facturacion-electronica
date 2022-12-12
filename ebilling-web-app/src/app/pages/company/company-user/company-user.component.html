@@ -21,13 +21,15 @@
               <mat-form-field class="principal-full-width">
                 <mat-select placeholder="Seleccione" [(value)]="companyId">
                   <mat-option>Select</mat-option>
-                  <mat-option *ngFor="let company of companies" [value]="company.idCompany">
+                  <mat-option
+                    *ngFor="let company of companies"
+                    [value]="company.idCompany"
+                  >
                     {{ company.name }}
                   </mat-option>
                 </mat-select>
               </mat-form-field>
             </td>
-
           </tr>
         </table>
         <div class="flex-parent jc-center">
@@ -50,7 +52,8 @@
       mat-button
       color="second"
       class="botton-add"
-      routerLink="/company-client/new">
+      routerLink="/company-user/new"
+    >
       <mat-icon>add_circle</mat-icon>
     </button>
   </div>
@@ -58,14 +61,22 @@
   <div class="principal-container mat-elevation-z8">
     <mat-table [dataSource]="dataSourceUser" matSort>
       <ng-container matColumnDef="name">
-        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold">
+        <mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          class="text-color-bold"
+        >
           Nombre
         </mat-header-cell>
         <mat-cell *matCellDef="let userRow"> {{ userRow.name }} </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="username">
-        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold">
+        <mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          class="text-color-bold"
+        >
           Usuario
         </mat-header-cell>
         <mat-cell *matCellDef="let userRow"> {{ userRow.userName }} </mat-cell>
@@ -75,7 +86,8 @@
         <mat-header-cell
           *matHeaderCellDef
           mat-sort-header
-          class="text-color-bold">
+          class="text-color-bold"
+        >
           Correo electrónico
         </mat-header-cell>
         <mat-cell *matCellDef="let userRow"> {{ userRow.mail }} </mat-cell>
@@ -83,22 +95,23 @@
 
       <ng-container matColumnDef="actions">
         <mat-header-cell *matHeaderCellDef class="text-color-bold"
-        >Acciones
-        </mat-header-cell
-        >
+          >Acciones
+        </mat-header-cell>
         <mat-cell *matCellDef="let userRow">
           <button
             matTooltip="Eliminar"
             mat-button
             color="accent"
-            (click)="delete(companyId,userRow.idClient)"
+            (click)="delete(companyId, userRow.idClient)"
           >
             <mat-icon>delete</mat-icon>
           </button>
         </mat-cell>
       </ng-container>
 
-      <mat-header-row *matHeaderRowDef="displayedColumnsClient"></mat-header-row>
+      <mat-header-row
+        *matHeaderRowDef="displayedColumnsClient"
+      ></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumnsClient"></mat-row>
     </mat-table>
 
@@ -109,5 +122,4 @@
       (page)="showMore($event)"
     ></mat-paginator>
   </div>
-
 </div>

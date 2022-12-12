@@ -111,6 +111,16 @@ public class CompanyController {
         return response;
     }
 
+    @GetMapping("/ids/{idCompanies}")
+    @ResponseStatus(HttpStatus.OK)
+    public CompanyDtoResponse getCompaniesByIdCompanies(@PathVariable("idCompanies") Long[] idCompanies) {
+        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+        log.debug(EventLog.builder().service(traceElement.getClassName()).method(traceElement.getMethodName()).eventType(REQUEST.name()).level(LEVEL_001.name()).build());
+        CompanyDtoResponse response = companyService.getCompaniesByIdCompanies(List.of(idCompanies));
+        log.debug(EventLog.builder().service(traceElement.getClassName()).method(traceElement.getMethodName()).information(response.getCompanyDtos()).eventType(RESPONSE.name()).level(LEVEL_001.name()).build());
+        return response;
+    }
+
     private static BasicResponse getBasicResponse() {
         return BasicResponse.builder().status(HttpStatus.OK.getReasonPhrase()).build();
     }

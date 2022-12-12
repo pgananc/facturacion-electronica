@@ -1,20 +1,20 @@
-import {Injectable} from '@angular/core';
-import {Subject} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
-import {Company} from "../../_model/customer/company";
-import {CompanyResponse} from "../../_model/customer/companyResponse";
-import {environment} from "../../../environments/environment";
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Company } from '../../_model/customer/company';
+import { CompanyResponse } from '../../_model/customer/companyResponse';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CompanyService {
-  companyChange = new Subject<Company[]>();
+  companiesChange = new Subject<Company[]>();
+  companyChange = new Subject<Company>();
   messageChange = new Subject<string>();
   url: string = `${environment.HOST_CUSTOMERS}/api/company`;
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   save(company: Company) {
     return this.http.post(this.url, company);
@@ -43,7 +43,15 @@ export class CompanyService {
     );
   }
 
-  existsByIdentificationAndBranchOfficeCode(identification: string, branchOfficeCode: string) {
-    return this.http.get<boolean>(`${this.url}/exist/${identification}/branch/${branchOfficeCode}`);
+  existsByIdentificationAndBranchOfficeCode(
+    identification: string,
+    branchOfficeCode: string
+  ) {
+    return this.http.get<boolean>(
+      `${this.url}/exist/${identification}/branch/${branchOfficeCode}`
+    );
+  }
+  findByIds(ids: number[]) {
+    return this.http.get<CompanyResponse>(`${this.url}/ids/${ids}`);
   }
 }

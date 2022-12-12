@@ -1,2 +1,6 @@
 <router-outlet></router-outlet>
+<div [hidden]="isWait" class="loading">
+  <mat-progress-spinner mode="indeterminate"> </mat-progress-spinner>
+</div>
+
 <h1 class="text-welcome">Bienvenido</h1>

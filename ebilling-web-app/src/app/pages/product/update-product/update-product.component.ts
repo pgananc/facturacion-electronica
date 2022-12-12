@@ -1,7 +1,7 @@
-import {Component, OnInit} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute, Params, Router} from '@angular/router';
-import {switchMap} from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { switchMap } from 'rxjs';
 import {
   DURATION_TIME_MESSAGE,
   EXIST_DATA,
@@ -10,9 +10,9 @@ import {
   SUCCESS,
   UPDATE,
 } from '../../../_constants/constants';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {Product} from "../../../_model/product/product";
-import {ProductService} from "../../../_service/product/product.service";
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Product } from '../../../_model/product/product';
+import { ProductService } from '../../../_service/product/product.service';
 
 @Component({
   selector: 'app-update-product',
@@ -75,10 +75,7 @@ export class UpdateProductComponent implements OnInit {
   }
 
   validateSave() {
-    if (
-      this.edition &&
-      this.mainCodeLast === this.form.value['mainCode']
-    ) {
+    if (this.edition && this.mainCodeLast === this.form.value['mainCode']) {
       this.save();
     } else {
       this.validateMainCode();
@@ -106,12 +103,12 @@ export class UpdateProductComponent implements OnInit {
   save() {
     this.product.idProduct = this.idProduct;
     this.product.productType = this.productType;
-    this.product.description=this.form.value['description'];
+    this.product.description = this.form.value['description'];
     this.product.mainCode = this.form.value['mainCode'];
     this.product.auxiliarCode = this.form.value['auxiliarCode'];
     this.product.name = this.form.value['name'];
-    this.product.unitPrice=this.form.value['unitPrice'];
-    this.product.discount=this.form.value['discount'];
+    this.product.unitPrice = this.form.value['unitPrice'];
+    this.product.discount = this.form.value['discount'];
     this.product.status = this.form.value['status'];
 
     if (this.product.idProduct > 0) {

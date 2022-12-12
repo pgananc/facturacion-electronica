@@ -16,6 +16,8 @@ export class Not404Component implements OnInit {
     let token = sessionStorage.getItem(environment.TOKEN)!;
     const helper = new JwtHelperService();
     let decodedToken = helper.decodeToken(token);
-    this.userName = decodedToken.userName;
+    if (decodedToken != null) {
+      this.userName = decodedToken.userName;
+    }
   }
 }

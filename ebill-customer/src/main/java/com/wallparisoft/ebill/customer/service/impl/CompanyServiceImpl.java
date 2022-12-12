@@ -125,7 +125,7 @@ public class CompanyServiceImpl implements ICompanyService {
     @Override
     public List<CompanyDto> findCompaniesActiveAndContactActive() {
         List<CompanyDto> companyList = new ArrayList<>();
-        List<Company> companies = this.companyRepo.findCompaniesActive();
+         List<Company> companies = this.companyRepo.findByStatusIsTrueOrderByIdentification().orElse(new ArrayList<>());
         companies.parallelStream().forEach(x -> {
             CompanyDto companyDto = companyMapper.convertCompanyToCompanyDto(x);
             List<Contact> contacts = contactRepo.findCompanyContactActiveByIdCompany(x.getIdCompany());
@@ -167,5 +167,13 @@ public class CompanyServiceImpl implements ICompanyService {
     @Override
     public CompanyDtoResponse getAllCompanies() {
         return CompanyDtoResponse.builder().companyDtos(companyMapper.convertCompaniesToCompaniesDto(companyRepo.findAll())).build();
+    }
+
+    @Override
+    public CompanyDtoResponse getCompaniesByIdCompanies(List<Long> idCompanies) {
+        return CompanyDtoResponse
+                .builder()
+                .companyDtos(companyMapper.convertCompaniesToCompaniesDto(companyRepo.findByIdCompanyInAndStatus(idCompanies,true)))
+                .build();
     }
 }
