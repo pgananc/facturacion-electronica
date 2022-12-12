@@ -15,7 +15,7 @@ import { decodeToken } from './_functions/functions';
 })
 export class AppComponent {
   title = 'ebilling-web-app';
-  company = '';
+  companyName = '';
   companies: Company[];
 
   menus: Menu[] = [];
@@ -29,12 +29,12 @@ export class AppComponent {
 
   ngOnInit() {
     console.log('init app');
-    this.company = '';
+    this.companyName = '';
     this.menuService.menuChange.subscribe((data) => {
       this.menus = data;
     });
     this.companyService.companyChange.subscribe((data) => {
-      this.company = data.name;
+      this.companyName = data.name;
     });
   }
   openDialog(companies: Company[]) {
