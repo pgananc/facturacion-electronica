@@ -8,6 +8,7 @@ import { decodeToken } from '../../../_functions/functions';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-company-info',
@@ -16,7 +17,7 @@ import { MatSort } from '@angular/material/sort';
 })
 export class CompanyInfoComponent implements OnInit {
   company: Company;
-  displayedColumns = ['name', 'branchOfficeCode', 'principal', 'actions'];
+  displayedColumns = ['name', 'branchOfficeCode', 'actions'];
   showCompanies: boolean = false;
   dataSource: MatTableDataSource<Company>;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -24,6 +25,7 @@ export class CompanyInfoComponent implements OnInit {
   constructor(
     private companyService: CompanyService,
     private dialogRef: MatDialogRef<CompanyDialogComponent>,
+    private router: Router,
     @Inject(MAT_DIALOG_DATA) private data: Company[]
   ) {}
 
@@ -54,11 +56,10 @@ export class CompanyInfoComponent implements OnInit {
       );
       this.company = company;
       this.companyService.companyChange.next(company);
-    } else {
-      alert('Seleccione una compania');
     }
   }
   close() {
     this.dialogRef.close();
+    this.router.navigate(['/welcome']);
   }
 }

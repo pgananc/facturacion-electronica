@@ -52,6 +52,6 @@ export class CompanyService {
     );
   }
   findByIds(ids: number[]) {
-    return this.http.get<CompanyResponse>(`${this.url}/ids/${ids}`);
+    return this.http.get<CompanyResponse>(`${this.url}/companies/${ids}`);
   }
 }

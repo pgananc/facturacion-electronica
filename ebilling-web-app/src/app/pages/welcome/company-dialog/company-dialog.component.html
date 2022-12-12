@@ -22,22 +22,9 @@
         mat-sort-header
         class="text-color-bold"
       >
-        Codigo
+        Sucursal
       </mat-header-cell>
       <mat-cell *matCellDef="let row"> {{ row.branchOfficeCode }} </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="principal">
-      <mat-header-cell
-        *matHeaderCellDef
-        mat-sort-header
-        class="text-color-bold"
-      >
-        Principal
-      </mat-header-cell>
-      <mat-cell *matCellDef="let row">
-        {{ row.principal }}
-      </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="actions">

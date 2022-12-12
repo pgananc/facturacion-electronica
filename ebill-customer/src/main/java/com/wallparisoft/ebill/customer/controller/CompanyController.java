@@ -111,7 +111,7 @@ public class CompanyController {
         return response;
     }
 
-    @GetMapping("/ids/{idCompanies}")
+    @GetMapping("/companies/{idCompanies}")
     @ResponseStatus(HttpStatus.OK)
     public CompanyDtoResponse getCompaniesByIdCompanies(@PathVariable("idCompanies") Long[] idCompanies) {
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];

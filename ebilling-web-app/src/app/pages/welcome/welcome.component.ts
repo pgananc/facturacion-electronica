@@ -13,7 +13,7 @@ import { environment } from 'src/environments/environment';
 })
 export class WelcomeComponent implements OnInit {
   company: Company;
-  isWait: boolean = false;
+  isWait = false;
   constructor(
     private companyService: CompanyService,
     private dialog: MatDialog
@@ -21,10 +21,20 @@ export class WelcomeComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('init welcome');
+    let idCompany = sessionStorage.getItem(environment.ID_COMPANY);
+    this.isWait = false;
+    if (idCompany === null) {
+      this.loadDataCompanies();
+    } else {
+      this.isWait = true;
+    }
+  }
+
+  loadDataCompanies() {
     let token = decodeToken();
     this.companyService.findByIds(token.companies).subscribe((data) => {
       this.isWait = true;
-      if (data.code == 0 && data.companyDtos.length == 1) {
+      if (data.companyDtos.length == 1) {
         sessionStorage.setItem(
           environment.ID_COMPANY,
           data.companyDtos[0]?.idCompany.toString()
@@ -36,7 +46,7 @@ export class WelcomeComponent implements OnInit {
         this.company = new Company();
         this.company = data.companyDtos[0];
         this.companyService.companyChange.next(this.company);
-      } else if (data.code == 0 && data.companyDtos.length > 1) {
+      } else {
         this.openDialog(data.companyDtos);
       }
     });

@@ -39,7 +39,7 @@
     <mat-expansion-panel expanded="true">
       <mat-expansion-panel-header style="background-color: #673ab7">
         <mat-panel-title style="color: #fff"
-          >Compañía registradas</mat-panel-title
+          >Compañías registradas</mat-panel-title
         >
       </mat-expansion-panel-header>
       <div>
@@ -61,23 +61,10 @@
               mat-sort-header
               class="text-color-bold"
             >
-              Codigo
+              Sucursal
             </mat-header-cell>
             <mat-cell *matCellDef="let row">
               {{ row.branchOfficeCode }}
-            </mat-cell>
-          </ng-container>
-
-          <ng-container matColumnDef="principal">
-            <mat-header-cell
-              *matHeaderCellDef
-              mat-sort-header
-              class="text-color-bold"
-            >
-              Principal
-            </mat-header-cell>
-            <mat-cell *matCellDef="let row">
-              {{ row.principal }}
             </mat-cell>
           </ng-container>
 

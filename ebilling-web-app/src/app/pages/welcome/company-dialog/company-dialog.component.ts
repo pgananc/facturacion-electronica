@@ -11,7 +11,7 @@ import { MatSort } from '@angular/material/sort';
   styleUrls: ['./company-dialog.component.css'],
 })
 export class CompanyDialogComponent implements OnInit {
-  displayedColumns = ['name', 'branchOfficeCode', 'principal', 'actions'];
+  displayedColumns = ['name', 'branchOfficeCode', 'actions'];
   dataSource: MatTableDataSource<Company>;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -30,8 +30,6 @@ export class CompanyDialogComponent implements OnInit {
   selectCompany(company: Company) {
     if (company != null && company.idCompany > 0) {
       this.dialogRef.close(company);
-    } else {
-      alert('Seleccione una compania');
     }
   }
 }

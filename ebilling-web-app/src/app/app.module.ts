@@ -31,8 +31,8 @@ import { CompanyDialogComponent } from './pages/welcome/company-dialog/company-d
 import { CompanyInfoComponent } from './pages/company/company-info/company-info.component';
 
 export function tokenGetter() {
-  let tk = sessionStorage.getItem(environment.TOKEN);
-  return tk != null ? tk : '';
+  let token = sessionStorage.getItem(environment.TOKEN);
+  return token != null ? token : '';
 }
 @NgModule({
   declarations: [
@@ -81,9 +81,8 @@ export function tokenGetter() {
       useClass: ServerErrorsInterceptor,
       multi: true,
     },
-    {provide: LocationStrategy, useClass: HashLocationStrategy},
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {
-}
+export class AppModule {}

@@ -67,7 +67,7 @@ export class LoginComponent implements OnInit {
           this.password = '';
           sessionStorage.clear();
           this.loginService.messageChange.next(
-            'Usuario no tiene asignado una compania. Comuníquese con el administrador.'
+            'Usuario no tiene asignado una compañia. Comuníquese con el administrador.'
           );
         }
       }

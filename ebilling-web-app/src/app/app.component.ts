@@ -40,6 +40,7 @@ export class AppComponent {
   openDialog(companies: Company[]) {
     const dialogRef = this.dialog.open(CompanyInfoComponent, {
       width: '800px',
+      disableClose: true,
       data: companies,
     });
   }
