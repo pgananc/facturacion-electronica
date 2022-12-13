@@ -71,7 +71,7 @@ public class UserController {
                 .level(LEVEL_001.name())
                 .build());
         Page<UserDto> users = userService.
-                findUserByUserNameOrNameOrStatus(userDto.getName(),
+                findUserByIdCompanyUserNameOrNameOrStatus(userDto.getIdCompany(), userDto.getName(),
                         userDto.getUserName(), userDto.getStatus(), pageable);
         log.debug(EventLog.builder()
                 .service(traceElement.getClassName())
@@ -82,8 +82,8 @@ public class UserController {
         return new ResponseEntity<Page<UserDto>>(users, HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity<UserDtoResponse> findUsersActive() {
+    @GetMapping("/company/{idCompany}")
+    public ResponseEntity<UserDtoResponse> findUsersActive(@PathVariable("idCompany") Long idCompany) {
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
         log.debug(EventLog.builder()
                 .service(traceElement.getClassName())
@@ -91,7 +91,7 @@ public class UserController {
                 .eventType(REQUEST.name())
                 .level(LEVEL_001.name())
                 .build());
-        UserDtoResponse response = userService.findUsersActive();
+        UserDtoResponse response = userService.findUsersByCompanyAndStatusActive(idCompany);
 
         log.debug(EventLog.builder()
                 .service(traceElement.getClassName())
@@ -167,8 +167,9 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("exist/{userName}")
-    public ResponseEntity<Boolean> existsByUserName(@PathVariable(value = "userName") String userName) {
+    @GetMapping("exist/company/{idCompany}/user/{userName}")
+    public ResponseEntity<Boolean> existsByIdCompanyAndUserUserName(@PathVariable(value = "idCompany") Long idCompany,
+            @PathVariable(value = "userName") String userName) {
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
         log.debug(EventLog.builder()
                 .service(traceElement.getClassName())
@@ -176,7 +177,7 @@ public class UserController {
                 .eventType(REQUEST.name())
                 .level(LEVEL_001.name())
                 .build());
-        Boolean exists = userService.existsByUserName(userName);
+        Boolean exists = userService.existsByIdCompanyAndUserUserName(idCompany, userName);
 
         log.debug(EventLog.builder()
                 .service(traceElement.getClassName())
@@ -210,7 +211,7 @@ public class UserController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping("/company/{idCompany}")
+    @GetMapping("/not-company/{idCompany}")
     public ResponseEntity<UserDtoResponse> findActiveUsersAndNotInCompany(@PathVariable("idCompany") Long idCompany) {
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
         log.debug(EventLog.builder()

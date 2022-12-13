@@ -10,11 +10,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IUserCompanyRepo extends JpaRepository<UserCompany, Long> {
-    Optional<UserCompany> findByCompanyAndUser_IdUser(@Param("idCompany") Long idCompany, @Param("idUser") Long idUser);
+    Optional<UserCompany> findByIdCompanyAndUser_IdUser(@Param("idCompany") Long idCompany, @Param("idUser") Long idUser);
 
-    Page<UserCompany> findByCompany(@Param("idCompany") Long idCompany, Pageable pageable);
+    Page<UserCompany> findByIdCompany(@Param("idCompany") Long idCompany, Pageable pageable);
 
-    Optional<List<UserCompany>> findByCompany(@Param("idCompany") Long idCompany);
+    Optional<List<UserCompany>> findByIdCompany(@Param("idCompany") Long idCompany);
 
     Optional<List<UserCompany>> findByUser_IdUser(@Param("idUser") Long idUser);
+
+    boolean existsByIdCompanyAndUser_UserName(@Param("idCompany") Long idCompany, @Param("userName") String userName);
 }

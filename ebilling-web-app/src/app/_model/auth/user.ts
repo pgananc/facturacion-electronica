@@ -1,10 +1,11 @@
 import { Role } from './role';
 export class User {
-  idUser: Number = 0;
-  name: String = '';
-  userName: String = '';
-  password: String = '';
-  mail: String = '';
-  status: boolean = true;
+  idUser = 0;
+  name = '';
+  userName = '';
+  password = '';
+  mail = '';
+  status = true;
+  idCompany = 0;
   roleDtos: Role[] = [];
 }

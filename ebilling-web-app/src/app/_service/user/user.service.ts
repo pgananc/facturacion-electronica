@@ -10,7 +10,7 @@ import { UserResponse } from '../../_model/auth/userResponse';
 })
 export class UserService {
   userChange = new Subject<User[]>();
-  messangeChange = new Subject<string>();
+  messageChange = new Subject<string>();
   url: string = `${environment.HOST_AUTH}/api/user`;
   constructor(private http: HttpClient) {}
 
@@ -33,16 +33,18 @@ export class UserService {
     return this.http.delete(`${this.url}/${idUser}`);
   }
 
-  findAll() {
-    return this.http.get<UserResponse>(this.url);
+  findByIdCompany(idCompany: Number) {
+    return this.http.get<UserResponse>(`${this.url}/company/${idCompany}`);
   }
 
   findById(id: Number) {
     return this.http.get<UserResponse>(`${this.url}/${id}`);
   }
 
-  existsByUserName(userName: String) {
-    return this.http.get<boolean>(`${this.url}/exist/${userName}`);
+  existsByIdCompanyAndUserName(idCompany: Number, userName: String) {
+    return this.http.get<boolean>(
+      `${this.url}/exist/company/${idCompany}/user/${userName}`
+    );
   }
 
   resetPassword(token: string, clave: string) {
@@ -52,6 +54,6 @@ export class UserService {
   }
 
   findActiveUsersAndNotInCompany(idCompany: number) {
-    return this.http.get<UserResponse>(`${this.url}/company/${idCompany}`);
+    return this.http.get<UserResponse>(`${this.url}/not-company/${idCompany}`);
   }
 }

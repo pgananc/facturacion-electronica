@@ -35,7 +35,7 @@ public class UserCompanyServiceImpl implements IUserCompanyService {
 
     @Override
     public void delete(Long idCompany, Long idUser) {
-        UserCompany UserCompany = userCompanyRepo.findByCompanyAndUser_IdUser(idCompany, idUser)
+        UserCompany UserCompany = userCompanyRepo.findByIdCompanyAndUser_IdUser(idCompany, idUser)
                 .orElseThrow(() -> new ModelNotFoundException("Company Client not found for this id company :: " + idCompany + ", " +
                         "and id client :: " + idUser));
         userCompanyRepo.delete(UserCompany);
@@ -49,14 +49,14 @@ public class UserCompanyServiceImpl implements IUserCompanyService {
             return null;
         }catch (ModelNotFoundException me){
             UserCompany userCompany = UserCompany.builder()
-                    .company(idCompany).user(user).build();
+                    .idCompany(idCompany).user(user).build();
             return save(userCompany);
         }
     }
 
     @Override
     public Page<UserDto> getUsersFromACompanyPageable(Long idCompany, Pageable pageable) {
-        Page<UserCompany> UserCompanys = userCompanyRepo.findByCompany(idCompany, pageable);
+        Page<UserCompany> UserCompanys = userCompanyRepo.findByIdCompany(idCompany, pageable);
         if (UserCompanys == null) {
             throw new ModelNotFoundException("User Company not found for this company id :: " + idCompany);
         }
@@ -67,7 +67,7 @@ public class UserCompanyServiceImpl implements IUserCompanyService {
 
     @Override
     public UserCompanyDto getUsersFromACompany(Long idCompany) {
-        Optional<List<UserCompany>> UserCompanysOpt = userCompanyRepo.findByCompany(idCompany);
+        Optional<List<UserCompany>> UserCompanysOpt = userCompanyRepo.findByIdCompany(idCompany);
         if (UserCompanysOpt.isPresent()) {
             return userCompanyMapper.getUsersFromCompany(UserCompanysOpt.get());
         }
@@ -87,7 +87,7 @@ public class UserCompanyServiceImpl implements IUserCompanyService {
 
     @Override
     public UserCompanyDto findByIdCompanyAndIdUser(Long idCompany, Long idUser) {
-        UserCompany UserCompany = userCompanyRepo.findByCompanyAndUser_IdUser(idCompany, idUser)
+        UserCompany UserCompany = userCompanyRepo.findByIdCompanyAndUser_IdUser(idCompany, idUser)
                 .orElseThrow(() -> new ModelNotFoundException("User Company not found for this id company :: " + idCompany + ", " +
                         "and id client :: " + idUser));
         return userCompanyMapper.convertUserCompanyToUserCompanyDto(UserCompany);

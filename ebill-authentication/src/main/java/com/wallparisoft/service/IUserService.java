@@ -11,10 +11,10 @@ public interface IUserService extends ICRUD<User> {
 
     void delete(Long id);
 
-    Page<UserDto> findUserByUserNameOrNameOrStatus(String name, String userName,
+    Page<UserDto> findUserByIdCompanyUserNameOrNameOrStatus(Long idCompany, String name, String userName,
                                                    Boolean status, Pageable pageable);
 
-    UserDtoResponse findUsersActive();
+    UserDtoResponse findUsersByCompanyAndStatusActive(Long idCompany);
 
     UserDtoResponse findUserWithRolById( Long idUser);
 
@@ -22,7 +22,7 @@ public interface IUserService extends ICRUD<User> {
 
     void update(UserDto userDto, Long idUser);
 
-    Boolean existsByUserName(String userName);
+    Boolean existsByIdCompanyAndUserUserName(Long idCompany, String userName);
 
     User findByMailAndStatus(String userName);
 
