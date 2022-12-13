@@ -6,7 +6,9 @@ import com.wallparisoft.ebill.customer.entity.Client;
 import com.wallparisoft.ebill.customer.entity.Company;
 import com.wallparisoft.ebill.customer.entity.CompanyClient;
 import com.wallparisoft.ebill.customer.mapper.CompanyClientMapper;
+import com.wallparisoft.ebill.customer.repository.IClientRepo;
 import com.wallparisoft.ebill.customer.repository.ICompanyClientRepo;
+import com.wallparisoft.ebill.customer.repository.ICompanyRepo;
 import com.wallparisoft.ebill.customer.service.IClientService;
 import com.wallparisoft.ebill.customer.service.ICompanyClientService;
 import com.wallparisoft.ebill.customer.service.ICompanyService;
@@ -32,29 +34,32 @@ public class CompanyClientServiceImpl implements ICompanyClientService {
     @Autowired
     CompanyClientMapper companyClientMapper;
 
+    @Autowired
+    private ICompanyRepo companyRepo;
+
     @Override
     public CompanyClient save(CompanyClient entity) {
         return companyClientRepo.save(entity);
     }
 
     @Override
-    public void delete(Long idCompany, Long idClient) {
-        CompanyClient companyClient = companyClientRepo.findByCompany_IdCompanyAndClient_IdClient(idCompany, idClient)
-                .orElseThrow(() -> new ModelNotFoundException("Company Client not found for this id company :: " + idCompany + ", " +
+    public void delete(String companyIdentification, Long idClient) {
+        CompanyClient companyClient = companyClientRepo.findByCompanyIdentificationAndClient_IdClient(companyIdentification, idClient)
+                .orElseThrow(() -> new ModelNotFoundException("Company Client not found for this id company :: " + companyIdentification + ", " +
                         "and id client :: " + idClient));
         companyClientRepo.delete(companyClient);
     }
 
     @Override
-    public CompanyClient saveCompanyClient(Long idCompany, Long idClient) {
-        Company company = companyService.findById(idCompany);
+    public CompanyClient saveCompanyClient(String companyIdentification, Long idClient) {
+        Company company = companyRepo.findByIdentification(companyIdentification);
         Client client = clientService.findById(idClient);
         try {
-            findByIdCompanyAndIdClient(idCompany, idClient);
+            findByCompanyIdentificationAndIdClient(companyIdentification, idClient);
             return null;
         } catch (ModelNotFoundException me) {
             CompanyClient companyClient = CompanyClient.builder()
-                    .company(company)
+                    .companyIdentification(company.getIdentification())
                     .client(client)
                     .build();
             return save(companyClient);
@@ -62,10 +67,10 @@ public class CompanyClientServiceImpl implements ICompanyClientService {
     }
 
     @Override
-    public Page<ClientDto> getClientsFromACompanyPageable(Long idCompany, Pageable pageable) {
-        Page<CompanyClient> companyClients = companyClientRepo.findByCompany_IdCompany(idCompany, pageable);
+    public Page<ClientDto> getClientsFromACompanyPageable(String companyIdentification, Pageable pageable) {
+        Page<CompanyClient> companyClients = companyClientRepo.findByCompanyIdentification(companyIdentification, pageable);
         if (companyClients == null) {
-            throw new ModelNotFoundException("Company Client not found for this company id :: " + idCompany);
+            throw new ModelNotFoundException("Company Client not found for this company id :: " + companyIdentification);
         }
         CompanyClientDto companyClientDtos = companyClientMapper.getClientsFromCompany(companyClients.getContent());
 
@@ -73,12 +78,12 @@ public class CompanyClientServiceImpl implements ICompanyClientService {
     }
 
     @Override
-    public CompanyClientDto getClientsFromACompany(Long idCompany) {
-        Optional<List<CompanyClient>> companyClientsOpt = companyClientRepo.findByCompany_IdCompany(idCompany);
+    public CompanyClientDto getClientsFromACompany(String companyIdentification) {
+        Optional<List<CompanyClient>> companyClientsOpt = companyClientRepo.findByCompanyIdentification(companyIdentification);
         if (companyClientsOpt.isPresent()) {
             return companyClientMapper.getClientsFromCompany(companyClientsOpt.get());
         }
-        throw new ModelNotFoundException("Company Client not found for this company id :: " + idCompany);
+        throw new ModelNotFoundException("Company Client not found for this company id :: " + companyIdentification);
     }
 
     @Override
@@ -99,9 +104,9 @@ public class CompanyClientServiceImpl implements ICompanyClientService {
     }
 
     @Override
-    public CompanyClientDto findByIdCompanyAndIdClient(Long idCompany, Long idClient) {
-        CompanyClient companyClient = companyClientRepo.findByCompany_IdCompanyAndClient_IdClient(idCompany, idClient)
-                .orElseThrow(() -> new ModelNotFoundException("Company Client not found for this id company :: " + idCompany + ", " +
+    public CompanyClientDto findByCompanyIdentificationAndIdClient(String companyIdentification, Long idClient) {
+        CompanyClient companyClient = companyClientRepo.findByCompanyIdentificationAndClient_IdClient(companyIdentification, idClient)
+                .orElseThrow(() -> new ModelNotFoundException("Company Client not found for this id company :: " + companyIdentification + ", " +
                         "and id client :: " + idClient));
         return companyClientMapper.convertCompanyClientToCompanyClientDto(companyClient);
     }

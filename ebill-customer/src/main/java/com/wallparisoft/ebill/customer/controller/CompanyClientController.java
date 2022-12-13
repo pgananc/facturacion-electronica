@@ -38,7 +38,7 @@ public class CompanyClientController {
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
         log.debug(EventLog.builder().service(traceElement.getClassName())
                 .method(traceElement.getMethodName()).eventType(REQUEST.name()).level(LEVEL_001.name()).build());
-        CompanyClient companyClient = companyClientService.saveCompanyClient(companyClientRequestDto.getIdCompany(), companyClientRequestDto.getIdClient());
+        CompanyClient companyClient = companyClientService.saveCompanyClient(companyClientRequestDto.getCompanyIdentification(), companyClientRequestDto.getIdClient());
         BasicResponse response = getBasicResponse();
         log.debug(EventLog.builder().service(traceElement.getClassName())
                 .method(traceElement.getMethodName()).information(response.getMessage()).eventType(RESPONSE.name()).level(LEVEL_001.name()).build());
@@ -51,37 +51,37 @@ public class CompanyClientController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/company/{idCompany}/client/{idClient}")
-    public ResponseEntity<BasicResponse> delete(@PathVariable("idCompany") Long idCompany, @PathVariable("idClient") Long idClient) {
+    @DeleteMapping("/company/{companyIdentification}/client/{idClient}")
+    public ResponseEntity<BasicResponse> delete(@PathVariable("companyIdentification") String companyIdentification, @PathVariable("idClient") Long idClient) {
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
         log.debug(EventLog.builder().service(traceElement.getClassName())
-                .method(traceElement.getMethodName()).information("id company: " + idCompany + ", id client: " + idClient)
+                .method(traceElement.getMethodName()).information("id company: " + companyIdentification + ", id client: " + idClient)
                 .eventType(REQUEST.name()).level(LEVEL_001.name()).build());
-        companyClientService.delete(idCompany, idClient);
+        companyClientService.delete(companyIdentification, idClient);
         BasicResponse response = getBasicResponse();
         log.debug(EventLog.builder().service(traceElement.getClassName())
                 .method(traceElement.getMethodName()).information(response.getMessage()).eventType(RESPONSE.name()).level(LEVEL_001.name()).build());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/company/{idCompany}/client/{idClient}")
-    public ResponseEntity<CompanyClientResponse> getByIdCompanyAndIdClient(@PathVariable(value = "idCompany") Long idCompany,
+    @GetMapping("/company/{companyIdentification}/client/{idClient}")
+    public ResponseEntity<CompanyClientResponse> getByIdCompanyAndIdClient(@PathVariable(value = "companyIdentification") String companyIdentification,
                                                                            @PathVariable(value = "idClient") Long idClient) {
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
         log.debug(EventLog.builder().service(traceElement.getClassName())
                 .method(traceElement.getMethodName()).eventType(REQUEST.name()).level(LEVEL_001.name()).build());
-        CompanyClientDto companyClientDto = companyClientService.findByIdCompanyAndIdClient(idCompany, idClient);
+        CompanyClientDto companyClientDto = companyClientService.findByCompanyIdentificationAndIdClient(companyIdentification, idClient);
         CompanyClientResponse companyClientResponse = CompanyClientResponse.builder().companyClientDto(companyClientDto).build();
         log.debug(EventLog.builder().service(traceElement.getClassName())
                 .method(traceElement.getMethodName()).information(companyClientDto).eventType(RESPONSE.name()).level(LEVEL_001.name()).build());
         return new ResponseEntity<>(companyClientResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/company/{idCompany}")
-    public ResponseEntity<CompanyClientResponse> getClientsByIdCompany(@PathVariable(value = "idCompany") Long idCompany) {
+    @GetMapping("/company/{companyIdentification}")
+    public ResponseEntity<CompanyClientResponse> getClientsByIdCompany(@PathVariable(value = "companyIdentification") String companyIdentification) {
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
         log.debug(EventLog.builder().service(traceElement.getClassName()).method(traceElement.getMethodName()).eventType(REQUEST.name()).level(LEVEL_001.name()).build());
-        CompanyClientDto companyClientDto = companyClientService.getClientsFromACompany(idCompany);
+        CompanyClientDto companyClientDto = companyClientService.getClientsFromACompany(companyIdentification);
         CompanyClientResponse companyClientResponse = CompanyClientResponse.builder().companyClientDto(companyClientDto).build();
         log.debug(EventLog.builder().service(traceElement.getClassName()).method(traceElement.getMethodName())
                 .information(companyClientDto).eventType(RESPONSE.name()).level(LEVEL_001.name()).build());
@@ -89,10 +89,10 @@ public class CompanyClientController {
     }
 
     @PostMapping("/pageable")
-    public ResponseEntity<Page<ClientDto>> listPageable(Pageable pageable, @Valid @RequestBody Long companyId) {
+    public ResponseEntity<Page<ClientDto>> listPageable(Pageable pageable, @Valid @RequestBody String companyIdentification) {
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
-        log.debug(EventLog.builder().service(traceElement.getClassName()).method(traceElement.getMethodName()).information("Object client: ".concat(companyId.toString())).eventType(REQUEST.name()).level(LEVEL_001.name()).build());
-        Page<ClientDto> clientsFromACompanyPageable = companyClientService.getClientsFromACompanyPageable(companyId, pageable);
+        log.debug(EventLog.builder().service(traceElement.getClassName()).method(traceElement.getMethodName()).information("Object client: ".concat(companyIdentification)).eventType(REQUEST.name()).level(LEVEL_001.name()).build());
+        Page<ClientDto> clientsFromACompanyPageable = companyClientService.getClientsFromACompanyPageable(companyIdentification, pageable);
         log.info(EventLog.builder().service(traceElement.getClassName()).method(traceElement.getMethodName()).eventType(RESPONSE.name()).level(LEVEL_001.name()).build());
         return new ResponseEntity<>(clientsFromACompanyPageable, HttpStatus.OK);
     }

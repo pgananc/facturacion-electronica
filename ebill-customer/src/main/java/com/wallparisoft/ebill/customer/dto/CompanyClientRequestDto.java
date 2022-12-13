@@ -10,5 +10,6 @@ import java.io.Serializable;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CompanyClientRequestDto implements Serializable {
     Long idCompany;
+    String companyIdentification;
     Long idClient;
 }

@@ -13,5 +13,6 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CompanyClientDto implements Serializable {
     Long idCompany;
+    String companyIdentification;
     List<ClientDto> clients;
 }

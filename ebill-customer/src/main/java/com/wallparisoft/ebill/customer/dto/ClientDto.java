@@ -25,6 +25,7 @@ public class ClientDto implements Serializable {
 
     private Boolean status;
     private Long idCompany;
+    private String companyIdentification;
     List<ContactDto> contacts;
 
 }

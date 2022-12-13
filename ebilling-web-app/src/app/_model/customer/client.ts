@@ -1,13 +1,14 @@
-import {Contact} from './contact';
+import { Contact } from './contact';
 
 export class Client {
   idClient = 0;
   idType = 0;
-  idTypeEnum:any;
+  idTypeEnum: any;
   identification = '';
-  name: string = '';
+  name = '';
   clientType = 0;
-  clientTypeEnum:any;
+  clientTypeEnum: any;
   status = true;
+  companyIdentification = '';
   contacts: Contact[] = [];
 }

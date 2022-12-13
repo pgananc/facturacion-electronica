@@ -16,7 +16,7 @@ public abstract class CompanyClientMapper {
     public CompanyClientDto convertCompanyClientToCompanyClientDto(CompanyClient companyClient) {
         return CompanyClientDto
                 .builder()
-                .idCompany(companyClient.getCompany().getIdCompany())
+                .companyIdentification(companyClient.getCompanyIdentification())
                 .clients(List.of(ClientDto.builder()
                         .idClient(companyClient.getClient().getIdClient())
                         .clientType(companyClient.getClient().getClientType())
@@ -29,7 +29,7 @@ public abstract class CompanyClientMapper {
 
     public CompanyClientDto getClientsFromCompany(List<CompanyClient> companyClients) {
         CompanyClientDto companyClientDto = CompanyClientDto.builder()
-                .idCompany(companyClients.get(0).getCompany().getIdCompany())
+                .companyIdentification(companyClients.get(0).getCompanyIdentification())
                 .clients(new ArrayList<>()).build();
         for (CompanyClient companyClient : companyClients) {
             companyClientDto.getClients()

@@ -22,8 +22,10 @@ export class ClientService {
     return this.http.patch(`${this.url}/${id}`, client);
   }
 
-  findAll() {
-    return this.http.get<ClientResponse>(this.url);
+  findByCompany(companyIdentification: string) {
+    return this.http.get<ClientResponse>(
+      `${this.url}/company/${companyIdentification}`
+    );
   }
 
   findById(id: Number) {
@@ -45,7 +47,12 @@ export class ClientService {
     );
   }
 
-  existsByIdentification(identification: String) {
-    return this.http.get<boolean>(`${this.url}/exist/${identification}`);
+  existsByCompanyIdentificationAndClientIdentification(
+    companyIdentification: string,
+    identification: string
+  ) {
+    return this.http.get<boolean>(
+      `${this.url}/exist/company/${companyIdentification}/client/${identification}`
+    );
   }
 }

@@ -21,9 +21,9 @@ public class CompanyClient {
     @Column(name = "id_company_client")
     private Long idCompanyClient;
 
-    @ManyToOne
-    @JoinColumn(name = "identification", referencedColumnName = "identification")
-    private Company company;
+
+    @Column(name = "company_identification")
+    private String companyIdentification;
 
     @ManyToOne
     @JoinColumn(name = "id_client", referencedColumnName = "id_client")

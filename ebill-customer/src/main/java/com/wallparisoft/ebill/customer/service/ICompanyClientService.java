@@ -7,13 +7,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ICompanyClientService extends ICRUD<CompanyClient> {
-    CompanyClientDto findByIdCompanyAndIdClient(Long idCompany, Long idClient);
+    CompanyClientDto findByCompanyIdentificationAndIdClient(String companyIdentification, Long idClient);
 
-    void delete(Long idCompany, Long idClient);
+    void delete(String companyIdentification, Long idClient);
 
-    CompanyClient saveCompanyClient(Long idCompany, Long idClient);
+    CompanyClient saveCompanyClient(String companyIdentification, Long idClient);
 
-    Page<ClientDto> getClientsFromACompanyPageable(Long idCompany, Pageable pageable);
+    Page<ClientDto> getClientsFromACompanyPageable(String companyIdentification, Pageable pageable);
 
-    CompanyClientDto getClientsFromACompany(Long idCompany);
+    CompanyClientDto getClientsFromACompany(String companyIdentification);
+
 }
