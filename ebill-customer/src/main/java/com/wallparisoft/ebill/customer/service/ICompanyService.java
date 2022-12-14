@@ -31,5 +31,4 @@ public interface ICompanyService extends ICRUD<Company> {
 
     CompanyDtoResponse getCompaniesByIdCompanies(List<Long> idCompanies);
 
-
 }

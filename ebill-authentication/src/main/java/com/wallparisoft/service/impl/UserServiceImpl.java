@@ -53,7 +53,7 @@ public class UserServiceImpl implements IUserService {
     @Autowired
     IUserCompanyRepo userCompanyRepo;
     @Value("${spring.mail.username}")
-    private String mailNotification;
+    String mailNotification;
 
     public UserServiceImpl(IUserRepository userRepository, IRoleRepository roleRepository, IUserRoleRepository userRoleRepository, ITokenRepository tokenRepository, IParamsRepository paramsRepository, EmailUtil emailUtil, UserMapper userMapper, RoleMapper roleMapper) {
         this.userRepository = userRepository;
