@@ -15,6 +15,7 @@ import com.wallparisoft.response.UserDtoResponse;
 import com.wallparisoft.service.IUserService;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -48,10 +49,11 @@ public class UserServiceImpl implements IUserService {
 
     final EmailUtil emailUtil;
     final UserMapper userMapper;
-    private final RoleMapper roleMapper;
-
+    final RoleMapper roleMapper;
+    @Autowired
+    IUserCompanyRepo userCompanyRepo;
     @Value("${spring.mail.username}")
-    private String mailNotification;
+    String mailNotification;
 
     public UserServiceImpl(IUserRepository userRepository, IRoleRepository roleRepository, IUserRoleRepository userRoleRepository, ITokenRepository tokenRepository, IParamsRepository paramsRepository, EmailUtil emailUtil, UserMapper userMapper, RoleMapper roleMapper) {
         this.userRepository = userRepository;
@@ -89,9 +91,9 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public Page<UserDto> findUserByUserNameOrNameOrStatus(String name, String userName, Boolean status, Pageable pageable) {
+    public Page<UserDto> findUserByIdCompanyUserNameOrNameOrStatus(Long idCompany, String name, String userName, Boolean status, Pageable pageable) {
         Page<User> users = userRepository.
-                findUserByUserNameOrNameOrStatus("%" + name.toUpperCase() + "%", "%" + userName.toUpperCase() + "%", status, pageable);
+                findUserByIdCompanyUserNameOrNameOrStatus(idCompany,"%" + name.toUpperCase() + "%", "%" + userName.toUpperCase() + "%", status, pageable);
         List<UserDto> userDtos = new ArrayList<>();
         users.getContent().parallelStream().forEach(user -> {
             UserDto userDto = userMapper.convertUserToUserDto(user);
@@ -101,11 +103,12 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public UserDtoResponse findUsersActive() {
+    public UserDtoResponse findUsersByCompanyAndStatusActive(Long idCompany) {
         List<UserDto> userDtoList = new ArrayList<>();
-        List<User> userList = this.userRepository.findUsersActive();
+        List<User> userList = this.userRepository.findUsersByCompanyAndStatusActive(idCompany);
         userList.parallelStream().forEach(user -> {
             UserDto clientDto = userMapper.convertUserToUserDto(user);
+            clientDto.setIdCompany(idCompany);
             userDtoList.add(clientDto);
         });
         return UserDtoResponse.builder()
@@ -144,6 +147,12 @@ public class UserServiceImpl implements IUserService {
             userRoleRepository.save(userRole);
 
         });
+        UserCompany userCompany = UserCompany
+                                .builder()
+                                .user(userSave)
+                                .idCompany(userDto.getIdCompany())
+                                .build();
+        userCompanyRepo.save(userCompany);
     }
 
     @Transactional
@@ -169,8 +178,8 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public Boolean existsByUserName(String userName) {
-        return userRepository.existsByUserName(userName);
+    public Boolean existsByIdCompanyAndUserUserName(Long idCompany, String userName) {
+        return userCompanyRepo.existsByIdCompanyAndUser_UserName(idCompany, userName);
     }
 
     @Override

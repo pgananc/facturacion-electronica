@@ -16,7 +16,7 @@ import { Company } from 'src/app/_model/customer/company';
 })
 export class LoginComponent implements OnInit {
   userName: string = '';
-  password: String = '';
+  password: string = '';
   message: String = '';
   error: String = '';
 
@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit {
     user.password = this.password;
     this.loginService.login(user).subscribe((data) => {
       if (data.code == 0) {
-        this.loginService.messageChange.next('User / password incorrect');
+        this.loginService.messageChange.next('Usuario / clave incorrecta');
       } else if (
         data.token != null &&
         data.token.token != null &&

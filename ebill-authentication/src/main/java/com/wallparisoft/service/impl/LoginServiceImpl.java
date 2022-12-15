@@ -73,7 +73,7 @@ public class LoginServiceImpl implements ILoginService {
         List<Long> idCompanies = new ArrayList<>();
         if (userCompanyList.isPresent()) {
             idCompanies = userCompanyList.get().stream().map(userCompany -> {
-                return userCompany.getCompany();
+                return userCompany.getIdCompany();
             }).collect(Collectors.toList());
         }
         TokenInformation informationEntity = new TokenInformation();

@@ -28,4 +28,6 @@ public interface ICompanyRepo extends JpaRepository<Company, Long> {
 
     List<Company> findByIdCompanyInAndStatus(@Param("idCompany") List<Long> idCompany, @Param("status") boolean status);
 
+    Company findByIdentification(@Param("identification") String identification);
+
 }

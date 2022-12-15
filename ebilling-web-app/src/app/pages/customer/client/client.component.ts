@@ -16,6 +16,7 @@ import {
   EMPTY_DATA,
   DURATION_TIME_MESSAGE,
 } from '../../../_constants/constants';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-client',
@@ -62,26 +63,25 @@ export class ClientComponent implements OnInit {
     client.name = this.form.value['name'];
     client.clientType = this.clientType;
     client.status = this.status;
+    client.companyIdentification = sessionStorage.getItem(
+      environment.IDENTIFICATION
+    )!;
     this.clientService.searchPageable(0, 10, client).subscribe((data) => {
       this.quantity = data.totalElements;
       this.dataSource = new MatTableDataSource(data.content);
       this.dataSource.sort = this.sort;
-      //this.dataSource.paginator = this.paginator;
     });
   }
 
   delete(idClient: number) {
     this.clientService.delete(idClient).subscribe(() => {
-      this.clientService.findAll().subscribe((data) => {
-        if (data.code == 0) {
-          this.clientService.clientChange.next(data.clientDtos);
-          this.clientService.messageChange.next(
-            DELETE.MESSAGE_DELETE_CLIENT.message
-          );
-        } else {
-          console.log(data.message);
-        }
-      });
+      const clientDtos = this.dataSource.data.filter(
+        (client) => client.idClient !== idClient
+      );
+      this.clientService.clientChange.next(clientDtos);
+      this.clientService.messageChange.next(
+        DELETE.MESSAGE_DELETE_CLIENT.message
+      );
     });
   }
   applyFilter(event: Event) {
@@ -95,6 +95,9 @@ export class ClientComponent implements OnInit {
     client.name = this.form.value['name'];
     client.clientType = this.clientType;
     client.status = this.status;
+    client.companyIdentification = sessionStorage.getItem(
+      environment.IDENTIFICATION
+    )!;
     this.clientService.searchPageable(0, 10, client).subscribe((data) => {
       if (data != null) {
         this.quantity = data.totalElements;
@@ -122,13 +125,15 @@ export class ClientComponent implements OnInit {
     client.name = this.form.value['name'];
     client.clientType = this.clientType;
     client.status = this.status;
+    client.companyIdentification = sessionStorage.getItem(
+      environment.IDENTIFICATION
+    )!;
     this.clientService
       .searchPageable(e.pageIndex, e.pageSize, client)
       .subscribe((data) => {
         this.quantity = data.totalElements;
         this.dataSource = new MatTableDataSource(data.content);
         this.dataSource.sort = this.sort;
-        //this.dataSource.paginator = this.paginator;
       });
   }
 }

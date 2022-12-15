@@ -20,11 +20,11 @@ public interface IClientService extends ICRUD<Client> {
     List<ClientDto> findClientByIdAndContact(Long idClient);
 
 
-    Page<ClientDto> findClientByIdentificationOrNameOrType(String identification, String name, Integer clientType, Boolean status, Pageable pageable);
+    public Page<ClientDto> findClientByIdentificationOrNameOrType(String companyIdentification, String identification, String name
+            , Integer clientType, Boolean status, Pageable pageable);
+    List<ClientDto> findByCompanyIdentificationAndClientsActive(String companyIdentification);
 
-    List<ClientDto> findClientsActive();
-
-    boolean existsByIdentification(String identification);
+    boolean existsByCompanyIdentificationAndClientIdentification(String companyIdentification, String identification);
 
 
 }

@@ -16,7 +16,7 @@ public abstract class UserCompanyMapper {
     public UserCompanyDto convertUserCompanyToUserCompanyDto(UserCompany companyClient) {
         return UserCompanyDto
                 .builder()
-                .idCompany(companyClient.getCompany())
+                .idCompany(companyClient.getIdCompany())
                 .userDtos(List.of(UserDto.builder()
                         .idUser(companyClient.getUser().getIdUser())
                         .userName(companyClient.getUser().getUserName())
@@ -30,7 +30,7 @@ public abstract class UserCompanyMapper {
 
     public UserCompanyDto getUsersFromCompany(List<UserCompany> userCompanies) {
         UserCompanyDto userCompanyDto = UserCompanyDto.builder()
-                .idCompany(userCompanies.get(0).getCompany())
+                .idCompany(userCompanies.get(0).getIdCompany())
                 .userDtos(new ArrayList<>()).build();
         for (UserCompany companyClient : userCompanies) {
             userCompanyDto.getUserDtos()

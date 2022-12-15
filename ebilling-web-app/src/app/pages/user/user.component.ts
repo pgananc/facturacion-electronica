@@ -13,6 +13,7 @@ import {
   DURATION_TIME_MESSAGE,
   DELETE,
 } from '../../_constants/constants';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-user',
@@ -48,7 +49,7 @@ export class UserComponent implements OnInit {
       this.dataSource.sort = this.sort;
       this.dataSource.paginator = this.paginator;
     });
-    this.userService.messangeChange.subscribe((data) => {
+    this.userService.messageChange.subscribe((data) => {
       this.snackBar.open(data, HEADER_MESSAGE.MESSAGE_HEADER_INFO.message, {
         duration: 2000,
       });
@@ -57,11 +58,12 @@ export class UserComponent implements OnInit {
     user.userName = this.form.value['name'];
     user.name = this.form.value['userName'];
     user.status = this.status;
+    const idCompany = Number(sessionStorage.getItem(environment.ID_COMPANY!));
+    user.idCompany = idCompany;
     this.userService.searchPageable(0, 10, user).subscribe((data) => {
       this.quantity = data.totalElements;
       this.dataSource = new MatTableDataSource(data.content);
       this.dataSource.sort = this.sort;
-      //this.dataSource.paginator = this.paginator;
     });
   }
 
@@ -70,6 +72,8 @@ export class UserComponent implements OnInit {
     user.name = this.form.value['name'];
     user.userName = this.form.value['userName'];
     user.status = this.status;
+    const idCompany = Number(sessionStorage.getItem(environment.ID_COMPANY!));
+    user.idCompany = idCompany;
     this.userService.searchPageable(0, 10, user).subscribe((data) => {
       if (data != null) {
         this.quantity = data.totalElements;
@@ -85,16 +89,11 @@ export class UserComponent implements OnInit {
 
   delete(idUser: number) {
     this.userService.delete(idUser).subscribe(() => {
-      this.userService.findAll().subscribe((data) => {
-        if (data.code == 0) {
-          this.userService.userChange.next(data.userDtos);
-          this.userService.messangeChange.next(
-            DELETE.MESSAGE_DELETE_USER.message
-          );
-        } else {
-          console.log(data.message);
-        }
-      });
+      const userDtos = this.dataSource.data.filter(
+        (user) => user.idUser !== idUser
+      );
+      this.userService.userChange.next(userDtos);
+      this.userService.messageChange.next(DELETE.MESSAGE_DELETE_USER.message);
     });
   }
 

@@ -33,6 +33,7 @@ import {
   SUCCESS,
   IDENTIFICATION_TYPE,
 } from '../../../../_constants/constants';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-update-client',
@@ -139,8 +140,14 @@ export class UpdateClientComponent implements OnInit {
   }
 
   validateIdentification() {
+    const companyIdentification = sessionStorage.getItem(
+      environment.IDENTIFICATION
+    )!;
     this.clientService
-      .existsByIdentification(this.form.value['identification'])
+      .existsByCompanyIdentificationAndClientIdentification(
+        companyIdentification,
+        this.form.value['identification']
+      )
       .subscribe((data) => {
         if (data) {
           this.snackBar.open(
@@ -164,12 +171,16 @@ export class UpdateClientComponent implements OnInit {
     this.client.name = this.form.value['name'];
     this.client.status = this.form.value['status'];
     this.client.contacts = this.addContacts();
+    const companyIdentification = sessionStorage.getItem(
+      environment.IDENTIFICATION
+    )!;
+    this.client.companyIdentification = companyIdentification;
     if (this.client != null && this.client.idClient > 0) {
       this.clientService
         .update(this.client, this.client.idClient)
         .pipe(
           switchMap(() => {
-            return this.clientService.findAll();
+            return this.clientService.findByCompany(companyIdentification);
           })
         )
         .subscribe((data) => {
@@ -183,7 +194,7 @@ export class UpdateClientComponent implements OnInit {
         .save(this.client)
         .pipe(
           switchMap(() => {
-            return this.clientService.findAll();
+            return this.clientService.findByCompany(companyIdentification);
           })
         )
         .subscribe((data) => {

@@ -14,6 +14,7 @@ import {
   HEADER_MESSAGE,
   DURATION_TIME_MESSAGE,
 } from '../../../_constants/constants';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-update-user',
@@ -90,8 +91,9 @@ export class UpdateUserComponent implements OnInit {
   }
 
   validateUserName() {
+    const idCompany = Number(sessionStorage.getItem(environment.ID_COMPANY)!);
     this.userService
-      .existsByUserName(this.form.value['email'])
+      .existsByIdCompanyAndUserName(idCompany, this.form.value['email'])
       .subscribe((data) => {
         if (data) {
           this.snackBar.open(
@@ -108,24 +110,26 @@ export class UpdateUserComponent implements OnInit {
   }
 
   save() {
+    const idCompany = Number(sessionStorage.getItem(environment.ID_COMPANY))!;
     this.user.idUser = this.idUser;
     this.user.name = this.form.value['name'];
     this.user.userName = this.form.value['email'];
     this.user.password = this.form.value['password'];
     this.user.status = this.form.value['status'];
     this.user.mail = this.form.value['email'];
+    this.user.idCompany = idCompany;
     this.user.roleDtos = this.addRoles();
     if (this.user != null && this.user.idUser > 0) {
       this.userService
         .update(this.user, this.user.idUser)
         .pipe(
           switchMap(() => {
-            return this.userService.findAll();
+            return this.userService.findByIdCompany(idCompany);
           })
         )
         .subscribe((data) => {
           this.userService.userChange.next(data.userDtos);
-          this.userService.messangeChange.next(
+          this.userService.messageChange.next(
             UPDATE.MESSAGE_UPDATE_USER.message
           );
         });
@@ -134,12 +138,12 @@ export class UpdateUserComponent implements OnInit {
         .save(this.user)
         .pipe(
           switchMap(() => {
-            return this.userService.findAll();
+            return this.userService.findByIdCompany(idCompany);
           })
         )
         .subscribe((data) => {
           this.userService.userChange.next(data.userDtos);
-          this.userService.messangeChange.next(
+          this.userService.messageChange.next(
             SUCCESS.MESSAGE_REGISTER_USER.message
           );
         });

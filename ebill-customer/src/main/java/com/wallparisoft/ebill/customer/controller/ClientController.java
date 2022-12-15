@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 import static com.wallparisoft.ebill.utils.log.EventType.REQUEST;
@@ -75,8 +76,8 @@ public class ClientController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity<ClientDtoResponse> findClientsAndContact() {
+    @GetMapping("/company/{companyIdentification}")
+    public ResponseEntity<ClientDtoResponse> findByCompanyIdentificationAndClientsActive(@PathVariable("companyIdentification") String companyIdentification) {
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
         log.debug(EventLog.builder()
                 .service(traceElement.getClassName())
@@ -84,7 +85,7 @@ public class ClientController {
                 .eventType(REQUEST.name())
                 .level(LEVEL_001.name())
                 .build());
-        List<ClientDto> clients = clientService.findClientsActive();
+        List<ClientDto> clients = clientService.findByCompanyIdentificationAndClientsActive(companyIdentification);
         ClientDtoResponse response = ClientDtoResponse.builder()
                 .status(HttpStatus.OK.getReasonPhrase())
                 .clientDtos(clients)
@@ -158,7 +159,7 @@ public class ClientController {
                 .level(LEVEL_001.name())
                 .build());
         Page<ClientDto> clients = clientService.
-                findClientByIdentificationOrNameOrType(clientDto.getIdentification(),
+                findClientByIdentificationOrNameOrType(clientDto.getCompanyIdentification(), clientDto.getIdentification(),
                         clientDto.getName(), clientDto.getClientType(),clientDto.getStatus(),pageable);
         log.debug(EventLog.builder()
                 .service(traceElement.getClassName())
@@ -170,8 +171,8 @@ public class ClientController {
     }
 
 
-    @GetMapping("exist/{identification}")
-    public ResponseEntity<Boolean> existsByIdentification(@PathVariable(value = "identification") String identification) {
+    @GetMapping("exist/company/{companyIdentification}/client/{identification}")
+    public ResponseEntity<Boolean> existsByIdentification(@PathVariable("companyIdentification") String companyIdentification, @PathVariable(value = "identification") String identification) {
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
         log.debug(EventLog.builder()
                 .service(traceElement.getClassName())
@@ -179,7 +180,7 @@ public class ClientController {
                 .eventType(REQUEST.name())
                 .level(LEVEL_001.name())
                 .build());
-        Boolean exists = clientService.existsByIdentification(identification);
+        Boolean exists = clientService.existsByCompanyIdentificationAndClientIdentification(companyIdentification, identification);
 
         log.debug(EventLog.builder()
                 .service(traceElement.getClassName())

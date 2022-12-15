@@ -27,7 +27,7 @@ public class UserCompany {
     private User user;
 
     @Column(name = "id_company", nullable = false)
-    private Long company;
+    private Long idCompany;
 
     @Column(name = "creation_date")
     private LocalDateTime creationDate;

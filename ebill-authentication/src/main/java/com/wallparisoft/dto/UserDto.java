@@ -19,6 +19,6 @@ public class UserDto {
 	private String mail;
 	private String name;
 	private Boolean status;
-
+	private Long idCompany;
 	private List<RoleDto> roleDtos;
 }
