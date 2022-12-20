@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,11 +57,14 @@ public class UserCompanyServiceImpl implements IUserCompanyService {
 
     @Override
     public Page<UserDto> getUsersFromACompanyPageable(Long idCompany, Pageable pageable) {
-        Page<UserCompany> UserCompanys = userCompanyRepo.findByIdCompany(idCompany, pageable);
-        if (UserCompanys == null) {
+        Page<UserCompany> userCompanies = userCompanyRepo.findByIdCompany(idCompany, pageable);
+        if (userCompanies == null) {
             throw new ModelNotFoundException("User Company not found for this company id :: " + idCompany);
         }
-        UserCompanyDto userCompanyDto = userCompanyMapper.getUsersFromCompany(UserCompanys.getContent());
+        UserCompanyDto userCompanyDto=  UserCompanyDto.builder().userDtos(new ArrayList<>()).build();
+        if(!userCompanies.isEmpty()){
+            userCompanyDto = userCompanyMapper.getUsersFromCompany(userCompanies.getContent());
+        }
 
         return new PageImpl<>(userCompanyDto.getUserDtos(), pageable, userCompanyDto.getUserDtos().size());
     }

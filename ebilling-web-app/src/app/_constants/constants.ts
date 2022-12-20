@@ -134,14 +134,14 @@ export const MESSAGE_ERROR_SERVER = {
 
 //=========================CATALOGOS CLIENTES===========================
 export const CLIENT_TYPE = [
-  { code: 1, value: 'Cliente' },
-  { code: 2, value: 'Sujeto' },
-  { code: 3, value: 'Destinatario' },
+  {code: 1, value: 'Cliente'},
+  {code: 2, value: 'Sujeto'},
+  {code: 3, value: 'Destinatario'},
 ];
 export const IDENTIFICATION_TYPE = [
-  { code: 1, value: 'RUC' },
-  { code: 2, value: 'Cedula' },
-  { code: 3, value: 'Pasaporte' },
+  {code: 1, value: 'RUC'},
+  {code: 2, value: 'Cedula'},
+  {code: 3, value: 'Pasaporte'},
 ];
 
 export const CONTACT_TYPE_PHONE = {
@@ -179,9 +179,12 @@ export const IDENTIFICATION_TYPE_DEFAULT_LENGTH = {
 
 //=========================CATALOGOS PRODUCTOS===========================
 export const PRODUCT_TYPE = [
-  { code: 1, value: 'Bien' },
-  { code: 2, value: 'Servicio' },
+  {code: 1, value: 'Bien'},
+  {code: 2, value: 'Servicio'},
 ];
 
-//=========================TIEMPO DE DURACION DE MENSAJE===========================
-export const DURATION_TIME_MESSAGE = { code: 1, value: 5000 };
+//=========================TIEMPO DE DURACION DE MENSAJE=================
+export const DURATION_TIME_MESSAGE = {code: 1, value: 5000};
+
+//========================= ROLES =======================================
+export const SUPER_ADMIN_ROLE = {name: 'super_admin', description: 'Super Admin'};

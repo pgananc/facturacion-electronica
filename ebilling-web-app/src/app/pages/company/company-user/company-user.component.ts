@@ -4,13 +4,15 @@ import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute} from '@angular/router';
-import {DURATION_TIME_MESSAGE, EMPTY_DATA, HEADER_MESSAGE} from '../../../_constants/constants';
+import {DURATION_TIME_MESSAGE, EMPTY_DATA, HEADER_MESSAGE, SUPER_ADMIN_ROLE} from '../../../_constants/constants';
 import {FormGroup} from '@angular/forms';
 import {Company} from "../../../_model/customer/company";
 import {CompanyService} from "../../../_service/customer/company.service";
 import {User} from "../../../_model/auth/user";
 import {CompanyUserService} from "../../../_service/auth/companyUser.service";
 import {UserService} from "../../../_service/user/user.service";
+import {environment} from "../../../../environments/environment";
+import {decodeToken} from "../../../_functions/functions";
 
 @Component({
   selector: 'app-company',
@@ -28,6 +30,7 @@ export class CompanyUserComponent implements OnInit {
   status = true;
   quantityCurrentUsers = 0;
   quantityAvailableUsers = 0;
+  showCurrentUsersCompany:boolean;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
@@ -42,6 +45,13 @@ export class CompanyUserComponent implements OnInit {
   }
 
   ngOnInit() {
+    const roles:[]=decodeToken().roles;
+    if(roles.find(role=>role !== SUPER_ADMIN_ROLE.description)){
+      this.companyId=parseInt(sessionStorage.getItem(environment.ID_COMPANY)!);
+      this.search();
+    }
+
+    //this.showCurrentUsersCompany=
     this.form = new FormGroup({});
     if (this.companies.length === 0) {
       this.companyService.findAll().subscribe(data => {
@@ -56,6 +66,10 @@ export class CompanyUserComponent implements OnInit {
     });
   }
 
+  setCompanyId(){
+    sessionStorage.setItem("companyIdCompanyUser",this.companyId.toString());
+    console.log(`value company id: `+this.companyId);
+  }
 
   delete(companyId: number, userId: number) {
     this.companyUserService.delete(companyId, userId).subscribe((data) => {

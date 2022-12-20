@@ -1,81 +1,97 @@
-<mat-toolbar>
-  <mat-toolbar-row>
-    <span style="margin: auto">{{
+<mat-expansion-panel hideToggle expanded >
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      {{
       edition ? "Actualización Usuario" : " Registro Usuario"
-    }}</span>
-  </mat-toolbar-row>
-</mat-toolbar>
-<form
-  class="principal-container"
-  [formGroup]="form"
-  (ngSubmit)="validateSave()"
-  #frmClient="ngForm"
->
-  <mat-form-field class="principal-full-width">
-    <input
-      matInput
-      placeholder="Nombre y Apellido"
-      required
-      formControlName="name"
-      name="name"
-    />
-  </mat-form-field>
+      }}
+    </mat-panel-title>
+  </mat-expansion-panel-header>
 
-  <mat-form-field class="principal-full-width">
-    <input
-      matInput
-      placeholder="Mail"
-      required
-      formControlName="email"
-      id="email"
-      email="true"
-    />
-  </mat-form-field>
-  <div
-    class="text-invalid principal-full-width"
-    *ngIf="f['email'].errors?.['email']"
+  <form
+    class="principal-container"
+    [formGroup]="form"
+    (ngSubmit)="validateSave()"
+    #frmClient="ngForm"
   >
-    Formato de email incorrecto.
-  </div>
+    <mat-form-field class="principal-full-width">
+      <input
+        matInput
+        placeholder="Nombre y Apellido"
+        required
+        formControlName="name"
+        name="name"
+      />
+    </mat-form-field>
 
-  <mat-form-field class="principal-full-width">
-    <input
-      type="password"
-      matInput
-      placeholder="Password"
-      required
-      formControlName="password"
-    />
-  </mat-form-field>
+    <mat-form-field class="principal-full-width">
+      <input
+        matInput
+        placeholder="Identificación"
+        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
+        required
+        formControlName="identification"
+        name="identification"
+      />
+    </mat-form-field>
 
-  <mat-form-field class="principal-full-width">
-    <mat-select placeholder="Roles" [(value)]="idRole" required="true">
-      <mat-option *ngFor="let role of roles" [value]="role.idRole">
-        {{ role.name }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <mat-checkbox
-    labelPosition="before"
-    formControlName="status"
-    class="principal-full-width"
-    >Estado</mat-checkbox
-  >
-  <div class="flex-parent jc-center">
-    <button
-      class="margin-right botton-width"
-      mat-raised-button
-      color="primary"
-      type="submit"
-      [disabled]="frmClient.invalid"
+    <mat-form-field class="principal-full-width">
+      <input
+        matInput
+        placeholder="Mail"
+        required
+        formControlName="email"
+        id="email"
+        email="true"
+      />
+    </mat-form-field>
+    <div
+      class="text-invalid principal-full-width"
+      *ngIf="f['email'].errors?.['email']"
     >
-      <mat-icon>done</mat-icon>
-      <span>Ok</span>
-    </button>
-    <button mat-raised-button color="accent" routerLink="/user" type="button">
-      <mat-icon>close</mat-icon>
-      <span>Cancel</span>
-    </button>
-  </div>
-</form>
+      Formato de email incorrecto.
+    </div>
+
+    <mat-form-field class="principal-full-width">
+      <input
+        type="password"
+        matInput
+        placeholder="Password"
+        required
+        formControlName="password"
+      />
+    </mat-form-field>
+
+    <mat-form-field class="principal-full-width">
+      <mat-select placeholder="Roles" [(value)]="idRole" required="true">
+        <mat-option *ngFor="let role of roles" [value]="role.idRole">
+          {{ role.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-checkbox
+      labelPosition="before"
+      formControlName="status"
+      class="principal-full-width"
+    >Estado</mat-checkbox
+    >
+    <div class="flex-parent jc-center">
+      <button
+        class="margin-right botton-width"
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="frmClient.invalid"
+      >
+        <mat-icon>done</mat-icon>
+        <span>Ok</span>
+      </button>
+      <button mat-raised-button color="accent" routerLink="/user" type="button">
+        <mat-icon>close</mat-icon>
+        <span>Cancel</span>
+      </button>
+    </div>
+  </form>
+
+</mat-expansion-panel>
+

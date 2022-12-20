@@ -1,20 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { User } from '../../../_model/auth/user';
-import { UserService } from '../../../_service/user/user.service';
-import { ActivatedRoute, Route, Router, Params } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import {Component, OnInit} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {User} from '../../../_model/auth/user';
+import {UserService} from '../../../_service/user/user.service';
+import {ActivatedRoute, Params, Router} from '@angular/router';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
-import { RoleService } from '../../../_service/role/role.service';
-import { Role } from '../../../_model/auth/role';
-import { switchMap } from 'rxjs';
-import { UPDATE, SUCCESS } from '../../../_constants/constants';
+import {RoleService} from '../../../_service/role/role.service';
+import {Role} from '../../../_model/auth/role';
+import {switchMap} from 'rxjs';
 import {
+  DURATION_TIME_MESSAGE,
   EXIST_DATA,
   HEADER_MESSAGE,
-  DURATION_TIME_MESSAGE,
+  SUCCESS,
+  SUPER_ADMIN_ROLE,
+  UPDATE
 } from '../../../_constants/constants';
-import { environment } from 'src/environments/environment';
+import {environment} from 'src/environments/environment';
+import {decodeToken} from "../../../_functions/functions";
 
 @Component({
   selector: 'app-update-user',
@@ -36,13 +39,15 @@ export class UpdateUserComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.user = new User();
     this.form = new FormGroup({
       id: new FormControl(0),
       name: new FormControl(''),
+      identification: new FormControl(''),
       password: new FormControl(''),
       email: new FormControl('', [Validators.email]),
       status: new FormControl(true),
@@ -66,6 +71,7 @@ export class UpdateUserComponent implements OnInit {
           this.form = new FormGroup({
             id: new FormControl(user.idUser),
             name: new FormControl(user.name),
+            identification: new FormControl(user.userName),
             password: new FormControl(user.password),
             email: new FormControl(user.mail),
             status: new FormControl(user.status),
@@ -79,9 +85,11 @@ export class UpdateUserComponent implements OnInit {
     this.roleService.findAll().subscribe((data) => {
       if (data.code == 0 && data.roleDtos.length > 0) {
         this.roles = data.roleDtos;
+        this.roles=this.roles.filter(role=>role.name!==SUPER_ADMIN_ROLE.name);
       }
     });
   }
+
   validateSave() {
     if (this.edition && this.userNameLast === this.form.value['email']) {
       this.save();
@@ -110,10 +118,17 @@ export class UpdateUserComponent implements OnInit {
   }
 
   save() {
-    const idCompany = Number(sessionStorage.getItem(environment.ID_COMPANY))!;
+    const roles: [] = decodeToken().roles;
+    let idCompany = 0;
+    if (roles.find(role => role !== SUPER_ADMIN_ROLE)) {
+      idCompany = parseInt(sessionStorage.getItem(environment.ID_COMPANY)!);
+    } else {
+      idCompany = parseInt(sessionStorage.getItem('companyIdCompanyUser')!);
+    }
+    console.log(`id company a guardar: ` + idCompany);
     this.user.idUser = this.idUser;
     this.user.name = this.form.value['name'];
-    this.user.userName = this.form.value['email'];
+    this.user.userName = this.form.value['identification'];
     this.user.password = this.form.value['password'];
     this.user.status = this.form.value['status'];
     this.user.mail = this.form.value['email'];

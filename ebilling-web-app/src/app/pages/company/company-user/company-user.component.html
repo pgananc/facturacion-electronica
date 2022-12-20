@@ -43,8 +43,21 @@
       </form>
     </mat-expansion-panel>
   </mat-accordion>
-
-  <div class="principal-container mat-elevation-z8">
+  <div>
+    <form (ngSubmit)="setCompanyId()">
+    <button
+      matTooltip="Agregar"
+      mat-button
+      color="second"
+      class="botton-add"
+      routerLink="/user/new"
+      type="submit"
+    >
+      <mat-icon>add_circle</mat-icon>
+    </button>
+    </form>
+  </div>
+  <div >
     <mat-card>
       <mat-card-content>Usuarios de la Compañía</mat-card-content>
     </mat-card>
