@@ -1,0 +1,145 @@
+<div class="drafts-page">
+  <!-- Header principal con botón de recarga -->
+  <mat-toolbar class="toolbar-primary">
+    <span class="toolbar-title">Borradores de Facturas</span>
+    <span class="toolbar-spacer"></span>
+    <button
+      mat-icon-button
+      matTooltip="Recargar borradores"
+      (click)="loadDrafts()"
+      [disabled]="isLoading"
+    >
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <!-- Descripción -->
+  <mat-card class="info-card">
+    <mat-card-content>
+      <div class="info-content">
+        <mat-icon class="info-icon">info</mat-icon>
+        <div>
+          <p class="info-text">
+            Los borradores son facturas guardadas <strong>sin procesar</strong>.
+            Para completar la facturación, edite el borrador y presione
+            <strong>"Guardar"</strong> (no "Guardar borrador") para firmar y
+            enviar al SRI.
+          </p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Loader -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p class="loading-text">Cargando borradores...</p>
+  </div>
+
+  <!-- Tabla de borradores -->
+  <div class="table-wrapper" *ngIf="!isLoading">
+    <mat-toolbar class="toolbar-primary-sm">Listado de Borradores</mat-toolbar>
+
+    <div class="table-container" style="position: relative; min-height: 300px">
+      <!-- Overlay para empty state -->
+      <div
+        *ngIf="dataSource.data.length === 0"
+        class="empty-state-overlay"
+      >
+        <mat-icon class="empty-icon">inbox</mat-icon>
+        <p class="empty-title">No hay borradores de facturas guardados</p>
+        <p class="empty-subtitle">
+          Los borradores se guardan desde la página de facturación usando el
+          botón <strong>"Guardar borrador"</strong>
+        </p>
+      </div>
+
+    <mat-table [dataSource]="dataSource" matSort class="bordered-table">
+      <!-- Identificación del Cliente -->
+      <ng-container matColumnDef="clientIdentification">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Identificación
+        </mat-header-cell>
+        <mat-cell class="celda-ajustable" *matCellDef="let row">
+          {{ getClientIdentification(row) }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Nombre del Cliente -->
+      <ng-container matColumnDef="clientName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Cliente
+        </mat-header-cell>
+        <mat-cell
+          class="celda-ajustable"
+          *matCellDef="let row"
+          [matTooltip]="getClientName(row)"
+          matTooltipPosition="above"
+        >
+          {{ getClientName(row) }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Total -->
+      <ng-container matColumnDef="totalAmount">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Total
+        </mat-header-cell>
+        <mat-cell class="celda-ajustable" *matCellDef="let row">
+          {{ formatCurrency(row.totalAmount) }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Fecha de Creación -->
+      <ng-container matColumnDef="creationDate">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Creado
+        </mat-header-cell>
+        <mat-cell class="celda-ajustable" *matCellDef="let row">
+          {{ formatDate(row.creationDate) }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Acciones -->
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef> Acciones </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <!-- Botón Editar -->
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="Editar borrador y completar facturación"
+            (click)="editDraft(row)"
+            class="action-btn edit-btn"
+            [disabled]="isLoading"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+
+          <!-- Botón Eliminar -->
+          <button
+            mat-icon-button
+            color="warn"
+            matTooltip="Eliminar borrador permanentemente"
+            (click)="deleteDraft(row)"
+            class="action-btn delete-btn"
+            [disabled]="isLoading"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+    </div>
+
+    <mat-paginator
+      [pageSize]="10"
+      [pageSizeOptions]="[5, 10, 25, 50]"
+      [length]="dataSource.data.length"
+    >
+    </mat-paginator>
+  </div>
+</div>

@@ -1,6 +1,6 @@
-export class Role {
-  idRole: Number = 0;
-  name: String = '';
-  description: String = '';
-  status: boolean = true;
+export interface Role {
+  idRole: number;
+  name: string;
+  description?: string;
+  status: boolean;
 }

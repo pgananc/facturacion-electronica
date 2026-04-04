@@ -1,0 +1,281 @@
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <h2 mat-dialog-title>
+      {{ isEditMode ? "Editar Plan" : "Nuevo Plan" }}
+    </h2>
+  </div>
+
+  <mat-dialog-content>
+    <form [formGroup]="form" class="plan-form">
+      <!-- Sección: Información Básica -->
+      <mat-card class="form-section">
+        <mat-card-header>
+          <mat-card-title>Información Básica</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Código</mat-label>
+              <mat-icon matPrefix>code</mat-icon>
+              <input
+                matInput
+                formControlName="code"
+                placeholder="FREE, BASIC, PRO"
+                [readonly]="isEditMode"
+              />
+              <mat-hint
+                >Ej: FREE, BASIC, PRO (solo mayúsculas y guiones
+                bajos)</mat-hint
+              >
+              <mat-error *ngIf="form.get('code')?.hasError('required')">
+                El código es requerido
+              </mat-error>
+              <mat-error *ngIf="form.get('code')?.hasError('pattern')">
+                Solo mayúsculas y guiones bajos (ej: FREE, BASIC_PRO)
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Nombre</mat-label>
+              <mat-icon matPrefix>label</mat-icon>
+              <input
+                matInput
+                formControlName="name"
+                placeholder="Plan Gratuito"
+              />
+              <mat-error *ngIf="form.get('name')?.hasError('required')">
+                El nombre es requerido
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Descripción</mat-label>
+              <mat-icon matPrefix>description</mat-icon>
+              <textarea
+                matInput
+                formControlName="description"
+                rows="3"
+                placeholder="Descripción del plan..."
+              ></textarea>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Sección: Precios -->
+      <mat-card class="form-section">
+        <mat-card-header>
+          <mat-card-title>Precios</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Precio Anual</mat-label>
+              <mat-icon matPrefix>attach_money</mat-icon>
+              <input
+                matInput
+                type="number"
+                formControlName="priceAnnual"
+                placeholder="0.00"
+                min="0"
+                step="0.01"
+              />
+              <mat-error *ngIf="form.get('priceAnnual')?.hasError('required')">
+                El precio anual es requerido
+              </mat-error>
+              <mat-error *ngIf="form.get('priceAnnual')?.hasError('min')">
+                El precio debe ser mayor o igual a 0
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Precio Mensual</mat-label>
+              <mat-icon matPrefix>attach_money</mat-icon>
+              <input
+                matInput
+                type="number"
+                formControlName="priceMonthly"
+                placeholder="0.00"
+                min="0"
+                step="0.01"
+              />
+              <mat-error *ngIf="form.get('priceMonthly')?.hasError('required')">
+                El precio mensual es requerido
+              </mat-error>
+              <mat-error *ngIf="form.get('priceMonthly')?.hasError('min')">
+                El precio debe ser mayor o igual a 0
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Sección: Límites -->
+      <mat-card class="form-section">
+        <mat-card-header>
+          <mat-card-title>Límites de Uso</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Límite Documentos/Año</mat-label>
+              <mat-icon matPrefix>description</mat-icon>
+              <input
+                matInput
+                type="number"
+                formControlName="documentLimitYearly"
+                placeholder="Dejar vacío para ilimitado"
+                min="-1"
+              />
+              <mat-hint>Dejar vacío o -1 para ilimitado</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Límite Usuarios</mat-label>
+              <mat-icon matPrefix>people</mat-icon>
+              <input
+                matInput
+                type="number"
+                formControlName="userLimit"
+                placeholder="Dejar vacío para ilimitado"
+                min="-1"
+              />
+              <mat-hint>Dejar vacío o -1 para ilimitado</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Límite Sucursales</mat-label>
+              <mat-icon matPrefix>store</mat-icon>
+              <input
+                matInput
+                type="number"
+                formControlName="establishmentLimit"
+                placeholder="Dejar vacío para ilimitado"
+                min="-1"
+              />
+              <mat-hint>Dejar vacío o -1 para ilimitado</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Límite Puntos de Emisión</mat-label>
+              <mat-icon matPrefix>location_on</mat-icon>
+              <input
+                matInput
+                type="number"
+                formControlName="issuancePointLimit"
+                placeholder="Dejar vacío para ilimitado"
+                min="-1"
+              />
+              <mat-hint>Dejar vacío o -1 para ilimitado</mat-hint>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Sección: Características -->
+      <mat-card class="form-section">
+        <mat-card-header>
+          <mat-card-title>Características</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="features-grid">
+            <mat-checkbox formControlName="hasApiAccess">
+              Acceso API
+            </mat-checkbox>
+            <mat-checkbox formControlName="hasMultiUser">
+              Múltiples Usuarios
+            </mat-checkbox>
+            <mat-checkbox formControlName="hasAdvancedReports">
+              Reportes Avanzados
+            </mat-checkbox>
+            <mat-checkbox formControlName="hasElectronicInvoice">
+              Facturación Electrónica
+            </mat-checkbox>
+            <mat-checkbox formControlName="hasCreditNote">
+              Notas de Crédito
+            </mat-checkbox>
+            <mat-checkbox formControlName="hasDebitNote">
+              Notas de Débito
+            </mat-checkbox>
+            <mat-checkbox formControlName="hasRetention">
+              Retenciones
+            </mat-checkbox>
+            <mat-checkbox formControlName="hasGuide">
+              Guías de Remisión
+            </mat-checkbox>
+            <mat-checkbox formControlName="hasPrioritySupport">
+              Soporte Prioritario
+            </mat-checkbox>
+            <mat-checkbox formControlName="hasCustomBranding">
+              Personalización de Marca
+            </mat-checkbox>
+            <mat-checkbox formControlName="hasAutomatedBackups">
+              Respaldos Automáticos
+            </mat-checkbox>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Sección: Configuración -->
+      <mat-card class="form-section">
+        <mat-card-header>
+          <mat-card-title>Configuración</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Orden de Visualización</mat-label>
+              <mat-icon matPrefix>sort</mat-icon>
+              <input
+                matInput
+                type="number"
+                formControlName="displayOrder"
+                placeholder="0"
+                min="0"
+              />
+              <mat-error *ngIf="form.get('displayOrder')?.hasError('required')">
+                El orden es requerido
+              </mat-error>
+              <mat-error *ngIf="form.get('displayOrder')?.hasError('min')">
+                El orden debe ser mayor o igual a 0
+              </mat-error>
+            </mat-form-field>
+
+            <mat-checkbox formControlName="isActive" class="active-checkbox">
+              Plan Activo
+            </mat-checkbox>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </form>
+  </mat-dialog-content>
+
+  <!-- Actions -->
+  <div class="dialog-actions" mat-dialog-actions>
+    <button
+      mat-raised-button
+      color="primary"
+      type="button"
+      [disabled]="form.invalid || isLoading"
+      (click)="validateSave()"
+      class="btn-save"
+    >
+      <mat-icon *ngIf="!isLoading">save</mat-icon>
+      <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+      <span *ngIf="!isLoading">{{ isEditMode ? "Actualizar" : "Crear" }}</span>
+      <span *ngIf="isLoading">Guardando...</span>
+    </button>
+
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="cancel()"
+      [disabled]="isLoading"
+      class="btn-cancel"
+    >
+      <mat-icon>close</mat-icon>
+      <span>Cancelar</span>
+    </button>
+  </div>
+</div>

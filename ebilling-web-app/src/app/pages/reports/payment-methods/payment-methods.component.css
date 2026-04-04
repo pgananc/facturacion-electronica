@@ -1,0 +1,248 @@
+@import '../../../_shared/shared-styles.css';
+@import '../../../_shared/table-styles.css';
+@import '../../../_shared/responsive-styles.css';
+
+/* ===== UTILIDADES DE ESPACIADO ===== */
+.mt-24 { margin-top: 24px; }
+.mt-16 { margin-top: 16px; }
+.mb-16 { margin-bottom: 16px; }
+
+/* ===== LAYOUT PRINCIPAL (igual que client/product) ===== */
+.sales-by-period-page { 
+  min-height: 100%; 
+  background-color: var(--background-color, #f9fafb); 
+  padding: 12px 0 0 0;
+}
+
+@media screen and (max-width: 959px) { 
+  .sales-by-period-page { padding: 0; } 
+}
+
+.report-container { 
+  max-width: 1320px; 
+  margin: 0 auto; 
+  padding: 0 20px 20px 20px;
+  box-sizing: border-box; 
+  width: 100%; 
+}
+
+@media screen and (max-width: 959px) { 
+  .report-container { padding: 0 16px 16px 16px; } 
+}
+
+/* ===== FILTROS ===== */
+.search-card {
+  margin-top: 12px !important;
+  position: relative;
+}
+
+.search-card mat-card-content {
+  padding: 16px !important;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px 20px;
+  max-width: 100%;
+  margin-bottom: 16px;
+}
+
+@media screen and (max-width: 768px) {
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.filter-grid mat-form-field {
+  width: 100%;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.filter-actions button {
+  min-width: 120px;
+  height: 40px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.filter-actions button mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+@media screen and (max-width: 600px) {
+  .filter-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .filter-actions button {
+    width: 100%;
+  }
+}
+
+/* ===== MÉTRICAS ===== */
+.metric-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 24px !important;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.metric-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.metric-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: var(--primary-color, #0ea5e9);
+  flex-shrink: 0;
+}
+
+.metric-content {
+  flex: 1;
+}
+
+.metric-content h3 {
+  font-size: 14px;
+  font-weight: 500;
+  color: #757575;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metric-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #212121;
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* ===== TABLA ===== */
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.mat-table {
+  min-width: 800px;
+  width: 100%;
+}
+
+/* Ajustes de ancho para columnas */
+.mat-column-paymentMethodType {
+  min-width: 200px;
+  max-width: 300px;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.mat-column-paymentMethodCode {
+  min-width: 120px;
+  max-width: 150px;
+}
+
+.mat-column-totalAmount,
+.mat-column-totalTransactions,
+.mat-column-percentage {
+  min-width: 130px;
+  max-width: 160px;
+  text-align: right;
+}
+
+.mat-column-totalAmount {
+  font-weight: 600;
+  color: var(--primary-color, #0ea5e9);
+}
+
+.total-cell {
+  font-weight: 600;
+  color: var(--primary-color, #0ea5e9);
+}
+
+/* Ajustar alineación de headers numéricos */
+.mat-column-totalAmount .mat-header-cell,
+.mat-column-totalTransactions .mat-header-cell,
+.mat-column-percentage .mat-header-cell {
+  text-align: right;
+  justify-content: flex-end;
+}
+
+/* ===== LOADING OVERLAY ===== */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: 8px;
+}
+
+.loading-text {
+  margin-top: 16px;
+  font-size: 14px;
+  color: #757575;
+  font-weight: 500;
+}
+
+/* ===== NO DATA MESSAGE ===== */
+.no-data-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 20px;
+  color: #757575;
+  font-size: 14px;
+}
+
+.no-data-message mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  color: #bdbdbd;
+}
+
+.no-data-row {
+  height: auto !important;
+}
+
+.no-data-row td {
+  border: none !important;
+}
+
+.toolbar-blue-sm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toolbar-blue-sm .spacer {
+  flex: 1 1 auto;
+}

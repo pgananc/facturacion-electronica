@@ -13,7 +13,7 @@ export class Not404Component implements OnInit {
   constructor(private loginService: LoginService) {}
 
   ngOnInit(): void {
-    let token = sessionStorage.getItem(environment.TOKEN)!;
+    let token = localStorage.getItem(environment.TOKEN)!;
     const helper = new JwtHelperService();
     let decodedToken = helper.decodeToken(token);
     if (decodedToken != null) {

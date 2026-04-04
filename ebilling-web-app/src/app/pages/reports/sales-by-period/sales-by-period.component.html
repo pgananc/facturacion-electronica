@@ -1,0 +1,306 @@
+<div class="report-page sales-by-period-page">
+  <!-- Contenedor principal centrado -->
+  <div class="report-container">
+    <!-- ✅ Título con icono (sin botón de acción) -->
+    <mat-toolbar class="toolbar-primary">
+      <mat-icon>date_range</mat-icon>
+      <span>Reporte de Ventas por Período</span>
+    </mat-toolbar>
+
+    <!-- ✅ Card de filtros con look & feel de client/product -->
+    <mat-card class="card-padding mt-16 search-card">
+      <!-- Loading spinner durante búsqueda -->
+      <div *ngIf="isLoading" class="loading-overlay">
+        <mat-spinner diameter="60"></mat-spinner>
+        <p class="loading-text">Cargando reporte...</p>
+      </div>
+
+      <mat-card-content>
+        <form [formGroup]="filterForm" (ngSubmit)="search()">
+          <!-- Grid de filtros (2 columnas en desktop) -->
+          <div class="filter-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Fecha Desde</mat-label>
+              <input
+                matInput
+                [matDatepicker]="dateFromPicker"
+                formControlName="dateFrom"
+                placeholder="Seleccione fecha"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="dateFromPicker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #dateFromPicker></mat-datepicker>
+              <mat-icon matPrefix>calendar_today</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Fecha Hasta</mat-label>
+              <input
+                matInput
+                [matDatepicker]="dateToPicker"
+                formControlName="dateTo"
+                placeholder="Seleccione fecha"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="dateToPicker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #dateToPicker></mat-datepicker>
+              <mat-icon matPrefix>calendar_today</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" *ngIf="isAdmin">
+              <mat-label>Empresa</mat-label>
+              <mat-select
+                formControlName="companyId"
+                (selectionChange)="onCompanyChange()"
+              >
+                <mat-option
+                  *ngFor="let company of companies"
+                  [value]="company.idCompany"
+                >
+                  {{ company.name }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>business</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Sucursal</mat-label>
+              <mat-select
+                formControlName="branchId"
+                (selectionChange)="onBranchChange()"
+              >
+                <mat-option [value]="null">Todas</mat-option>
+                <mat-option *ngFor="let branch of branches" [value]="branch.id">
+                  {{ branch.code }} - {{ branch.name }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>store</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Punto de Emisión</mat-label>
+              <mat-select formControlName="emissionPointId">
+                <mat-option [value]="null">Todos</mat-option>
+                <mat-option
+                  *ngFor="let point of emissionPoints"
+                  [value]="point.id"
+                >
+                  {{ point.code }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>location_on</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Estado</mat-label>
+              <mat-select formControlName="status">
+                <mat-option [value]="null">Todos</mat-option>
+                <mat-option *ngFor="let status of statuses" [value]="status">
+                  {{ getStatusLabel(status) }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>info</mat-icon>
+            </mat-form-field>
+          </div>
+
+          <!-- ✅ Botones centrados -->
+          <div class="filter-actions">
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="isLoading"
+            >
+              <mat-icon>search</mat-icon>
+              Buscar
+            </button>
+            <button
+              mat-stroked-button
+              color="primary"
+              type="button"
+              (click)="clearFilters()"
+              [disabled]="isLoading"
+            >
+              <mat-icon>refresh</mat-icon>
+              Limpiar
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- ✅ Métricas (solo si hay datos) -->
+    <div
+      class="metrics-container"
+      *ngIf="metrics.totalComprobantes > 0 && !isLoading"
+    >
+      <mat-card class="metric-card">
+        <mat-card-content>
+          <mat-icon class="metric-icon">attach_money</mat-icon>
+          <div class="metric-content">
+            <h3>Total Facturado</h3>
+            <p class="metric-value">
+              {{ formatCurrency(metrics.totalInvoiced) }}
+            </p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="metric-card">
+        <mat-card-content>
+          <mat-icon class="metric-icon">receipt</mat-icon>
+          <div class="metric-content">
+            <h3>Número de Comprobantes</h3>
+            <p class="metric-value">{{ metrics.totalComprobantes }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="metric-card">
+        <mat-card-content>
+          <mat-icon class="metric-icon">trending_up</mat-icon>
+          <div class="metric-content">
+            <h3>Ticket Promedio</h3>
+            <p class="metric-value">
+              {{ formatCurrency(metrics.averageTicket) }}
+            </p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- ✅ Tabla con look & feel de client/product -->
+    <mat-card class="card-padding mt-24" *ngIf="!isLoading">
+      <mat-card-content>
+        <div class="table-wrapper">
+          <mat-toolbar class="toolbar-blue-sm">
+            <span>Resultados</span>
+            <span class="spacer"></span>
+            <button
+              mat-icon-button
+              color="primary"
+              (click)="downloadExcel()"
+              [disabled]="isDownloadingExcel || isLoading || dataSource.data.length === 0"
+              matTooltip="Descargar Excel"
+            >
+              <mat-icon>table_chart</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="primary"
+              (click)="downloadPdf()"
+              [disabled]="isDownloadingPdf || isLoading || dataSource.data.length === 0"
+              matTooltip="Descargar PDF"
+            >
+              <mat-icon>picture_as_pdf</mat-icon>
+            </button>
+          </mat-toolbar>
+          <mat-table
+            [dataSource]="dataSource"
+            matSort
+            class="mat-elevation-z1 bordered-table"
+          >
+            <ng-container matColumnDef="invoiceNumber">
+              <mat-header-cell *matHeaderCellDef mat-sort-header
+                >Número de Factura</mat-header-cell
+              >
+              <mat-cell *matCellDef="let row">{{ row.invoiceNumber }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="issueDate">
+              <mat-header-cell *matHeaderCellDef mat-sort-header
+                >Fecha</mat-header-cell
+              >
+              <mat-cell *matCellDef="let row">{{
+                formatDate(row.issueDate)
+              }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="clientName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header
+                >Cliente</mat-header-cell
+              >
+              <mat-cell *matCellDef="let row">{{ row.clientName }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="clientIdentification">
+              <mat-header-cell *matHeaderCellDef mat-sort-header
+                >RUC/CI</mat-header-cell
+              >
+              <mat-cell *matCellDef="let row">{{
+                row.clientIdentification
+              }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="subtotal">
+              <mat-header-cell *matHeaderCellDef mat-sort-header
+                >Subtotal</mat-header-cell
+              >
+              <mat-cell *matCellDef="let row">{{
+                formatCurrency(row.subtotal)
+              }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="iva">
+              <mat-header-cell *matHeaderCellDef mat-sort-header
+                >IVA</mat-header-cell
+              >
+              <mat-cell *matCellDef="let row">{{
+                formatCurrency(row.iva)
+              }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="total">
+              <mat-header-cell *matHeaderCellDef mat-sort-header
+                >Total</mat-header-cell
+              >
+              <mat-cell *matCellDef="let row" class="total-cell">{{
+                formatCurrency(row.total)
+              }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="authorizationStatusSri">
+              <mat-header-cell *matHeaderCellDef mat-sort-header
+                >Estado SRI</mat-header-cell
+              >
+              <mat-cell *matCellDef="let row" class="status-text">
+                {{ getStatusLabel(row.authorizationStatusSri) }}
+              </mat-cell>
+            </ng-container>
+
+            <mat-header-row
+              *matHeaderRowDef="displayedColumns"
+            ></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+
+            <!-- ✅ Mensaje sin datos -->
+            <tr class="mat-row no-data-row" *matNoDataRow>
+              <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+                <div class="no-data-message">
+                  <mat-icon>info</mat-icon>
+                  <span
+                    >No se encontraron resultados para los filtros
+                    seleccionados</span
+                  >
+                </div>
+              </td>
+            </tr>
+          </mat-table>
+
+          <!-- ✅ Paginador -->
+          <mat-paginator
+            [length]="totalElements"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="pageSizeOptions"
+            (page)="onPageChange($event)"
+            showFirstLastButtons
+          ></mat-paginator>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

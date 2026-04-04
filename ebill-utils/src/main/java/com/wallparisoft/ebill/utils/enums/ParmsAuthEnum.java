@@ -1,23 +1,24 @@
 package com.wallparisoft.ebill.utils.enums;
 
-import lombok.Data;
-
-
 public enum ParmsAuthEnum {
+  COD001_MAIL_TEMPLATE_RESTORE_PASSWORD("MAIL_REST_PASS"),
+  COD002_TIME_DURATION_TOKEN("TIME_DURATION_TOKEN"),
+  COD003_URL_REST_PASS("URL_REST_PASS"),
+  COD004_MAIL_TEMPLATE_CODE_CLIENT("MAIL_TOKEN_CLIENT"),
+  COD005_TIME_DURATION_TOKEN_CLIENT("TIME_DURATION_TOKEN_CLIENT"),
+  COD006_LENGTH_TOKEN("LENGTH_TOKEN"),
+  COD007_URL_VIEW_INVOICES("URL_VIEW_INVOICES"),
+  COD007_CLIENT_TOKEN_MAX_ATTEMPTS("CLIENT_TOKEN_MAX_ATTEMPTS"),
+  COD008_CLIENT_TOKEN_COOLDOWN_MINUTES("CLIENT_TOKEN_COOLDOWN_MINUTES"),
+  COD009_CLIENT_TOKEN_REDIS_KEY_PREFIX("CLIENT_TOKEN_REDIS_KEY_PREFIX");
 
-    COD001_MAIL_TEMPLATE_RESTORE_PASSWORD("MAIL_REST_PASS"),
-    COD002_TIME_DURATION_TOKEN("TIME_DURATION_TOKEN"),
-    COD003_URL_REST_PASS("URL_REST_PASS");
+  private String code;
 
-    private String code;
+  ParmsAuthEnum(String code) {
+    this.code = code;
+  }
 
-
-    private ParmsAuthEnum(String code){
-        this.code= code;
-
-    }
-
-    public String getCode() {
-        return code;
-    }
+  public String getCode() {
+    return code;
+  }
 }

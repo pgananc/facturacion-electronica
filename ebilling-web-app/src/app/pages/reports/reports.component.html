@@ -1,0 +1,131 @@
+<div class="reports-container">
+  <mat-toolbar class="toolbar-primary">
+    <mat-icon>assessment</mat-icon>
+    <span>Reportes</span>
+  </mat-toolbar>
+
+  <div class="reports-content">
+    <!-- Reportes Operativos -->
+    <mat-card class="report-section-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>business_center</mat-icon>
+          Reportes Operativos (Día a Día)
+        </mat-card-title>
+        <mat-card-subtitle
+          >Reportes para uso diario de usuarios</mat-card-subtitle
+        >
+      </mat-card-header>
+      <mat-card-content>
+        <div class="report-grid">
+          <mat-card
+            class="report-card"
+            (click)="navigateToReport('sales-by-period')"
+          >
+            <mat-card-content>
+              <mat-icon class="report-icon">receipt_long</mat-icon>
+              <h3>Ventas por Período</h3>
+              <p>
+                Consulta de facturas con filtros por fecha, empresa, sucursal,
+                estado, etc.
+              </p>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card
+            class="report-card"
+            (click)="navigateToReport('sales-by-client')"
+          >
+            <mat-card-content>
+              <mat-icon class="report-icon">people</mat-icon>
+              <h3>Ventas por Cliente</h3>
+              <p>Top clientes por monto y suma de ventas por RUC/CI</p>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card
+            class="report-card"
+            (click)="navigateToReport('sales-by-product')"
+          >
+            <mat-card-content>
+              <mat-icon class="report-icon">inventory_2</mat-icon>
+              <h3>Ventas por Producto/Servicio</h3>
+              <p>Cantidad vendida y total facturado por producto</p>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card
+            class="report-card"
+            (click)="navigateToReport('credit-notes')"
+          >
+            <mat-card-content>
+              <mat-icon class="report-icon">assignment_return</mat-icon>
+              <h3>Notas de Crédito</h3>
+              <p>Reporte de notas de crédito y facturas afectadas</p>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card
+            class="report-card"
+            (click)="navigateToReport('pending-invoices')"
+          >
+            <mat-card-content>
+              <mat-icon class="report-icon">error_outline</mat-icon>
+              <h3>Facturas Pendientes/Errores SRI</h3>
+              <p>Monitoreo de facturas con problemas de integración</p>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Reportes Comerciales / Gerenciales -->
+    <mat-card class="report-section-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>dashboard</mat-icon>
+          Reportes Comerciales / Gerenciales
+        </mat-card-title>
+        <mat-card-subtitle
+          >Análisis y métricas para toma de decisiones</mat-card-subtitle
+        >
+      </mat-card-header>
+      <mat-card-content>
+        <div class="report-grid">
+          <mat-card
+            class="report-card"
+            (click)="navigateToReport('sales-dashboard')"
+          >
+            <mat-card-content>
+              <mat-icon class="report-icon">dashboard</mat-icon>
+              <h3>Dashboard de Ventas</h3>
+              <p>Gráficos y KPIs de ventas por mes, sucursal y producto</p>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card
+            class="report-card"
+            (click)="navigateToReport('branch-comparison')"
+          >
+            <mat-card-content>
+              <mat-icon class="report-icon">compare_arrows</mat-icon>
+              <h3>Comparativo por Sucursal</h3>
+              <p>Ranking de sucursales por total facturado</p>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card
+            class="report-card"
+            (click)="navigateToReport('payment-methods')"
+          >
+            <mat-card-content>
+              <mat-icon class="report-icon">payment</mat-icon>
+              <h3>Formas de Pago</h3>
+              <p>Análisis de pagos por efectivo, transferencia, tarjeta</p>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

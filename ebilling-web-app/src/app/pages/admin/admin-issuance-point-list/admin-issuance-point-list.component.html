@@ -1,0 +1,268 @@
+<!-- Contenedor principal -->
+<div class="admin-issuance-point-page">
+  <!-- Contenedor principal centrado -->
+  <div class="admin-issuance-point-container">
+    <!-- Título con acción -->
+    <mat-toolbar class="toolbar-primary toolbar-with-action">
+      <span>Gestión Global de Puntos de Emisión</span>
+      <span class="spacer"></span>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="openCreateDialog()"
+        class="btn-new-issuance-point"
+        [disabled]="isLoading"
+        matTooltip="Agregar nuevo punto de emisión"
+      >
+        <mat-icon>add_circle</mat-icon>
+        Nuevo Punto de Emisión
+      </button>
+    </mat-toolbar>
+
+    <!-- Filtro de búsqueda -->
+    <mat-card class="card-padding mt-16 search-card">
+      <!-- Loading spinner durante búsqueda -->
+      <div *ngIf="isLoading" class="loading-overlay">
+        <mat-spinner diameter="60"></mat-spinner>
+        <p class="loading-text">Cargando puntos de emisión...</p>
+      </div>
+
+      <mat-card-content>
+        <form>
+          <!-- Grid de campos de búsqueda (2 columnas) -->
+          <div class="search-grid">
+            <!-- Compañía -->
+            <mat-form-field appearance="outline" class="search-field">
+              <mat-label>Compañía</mat-label>
+              <mat-icon matPrefix>business</mat-icon>
+              <mat-select
+                [(ngModel)]="searchCompanyId"
+                name="searchCompanyId"
+                placeholder="Seleccione una compañía"
+                (selectionChange)="onCompanyChange()"
+              >
+                <mat-option
+                  *ngFor="let company of companies"
+                  [value]="company.idCompany"
+                >
+                  {{ company.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Sucursal -->
+            <mat-form-field appearance="outline" class="search-field">
+              <mat-label>Sucursal</mat-label>
+              <mat-icon matPrefix>location_city</mat-icon>
+              <mat-select
+                [(ngModel)]="searchEstablishmentId"
+                name="searchEstablishmentId"
+                placeholder="Seleccione una sucursal"
+                [disabled]="!searchCompanyId || establishments.length === 0"
+              >
+                <mat-option
+                  *ngFor="let est of establishments"
+                  [value]="est.idEstablishment"
+                >
+                  {{ est.code }} - {{ est.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Código -->
+            <mat-form-field appearance="outline" class="search-field">
+              <mat-label>Código</mat-label>
+              <mat-icon matPrefix>qr_code</mat-icon>
+              <input
+                matInput
+                [(ngModel)]="searchCode"
+                name="searchCode"
+                placeholder="Filtrar por código"
+                (keyup)="applyLocalFilters()"
+              />
+            </mat-form-field>
+          </div>
+
+          <!-- Botones de acción -->
+          <div class="search-actions">
+            <button
+              mat-raised-button
+              color="primary"
+              type="button"
+              class="btn-search-compact"
+              (click)="applyFilters()"
+              [disabled]="!searchCompanyId || !searchEstablishmentId"
+            >
+              <mat-icon>search</mat-icon>
+              Buscar
+            </button>
+            <button
+              mat-stroked-button
+              color="primary"
+              type="button"
+              class="btn-clear-compact"
+              (click)="clearFilters()"
+            >
+              <mat-icon>clear</mat-icon>
+              Limpiar
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Tabla -->
+    <mat-card class="card-padding mt-24">
+      <mat-card-content>
+        <div class="table-wrapper">
+          <mat-toolbar class="toolbar-primary-sm"
+            >Listado de Puntos de Emisión</mat-toolbar
+          >
+          <div class="table-container" style="position: relative; min-height: 300px">
+            <!-- Overlay para empty state -->
+            <div
+              *ngIf="dataSource.data.length === 0 && !isLoading"
+              class="empty-state-overlay"
+            >
+              <mat-icon class="empty-icon">receipt_long</mat-icon>
+              <p class="empty-title">
+                {{
+                  searchCompanyId && searchEstablishmentId
+                    ? "No existen puntos de emisión para esta sucursal"
+                    : "Seleccione una compañía y sucursal para ver sus puntos de emisión"
+                }}
+              </p>
+              <p class="empty-subtitle" *ngIf="!searchCompanyId || !searchEstablishmentId">
+                Use el filtro de búsqueda para seleccionar una compañía y sucursal.
+              </p>
+            </div>
+
+            <mat-table
+              [dataSource]="dataSource"
+              matSort
+              class="mat-elevation-z1 bordered-table"
+              *ngIf="!isLoading"
+            >
+      <!-- Columna: Compañía -->
+      <ng-container matColumnDef="companyName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold header-dark">
+          COMPAÑÍA
+        </mat-header-cell>
+        <mat-cell
+          class="celda-ajustable"
+          *matCellDef="let row"
+          [matTooltip]="row.companyName || ''"
+        >
+          {{ row.companyName }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Columna: Código Sucursal -->
+      <ng-container matColumnDef="establishmentCode">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold header-dark">
+          CÓD. SUCURSAL
+        </mat-header-cell>
+        <mat-cell class="celda-ajustable" *matCellDef="let row">
+          {{ row.establishmentCode }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Columna: Nombre Sucursal -->
+      <ng-container matColumnDef="establishmentName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold header-dark">
+          SUCURSAL
+        </mat-header-cell>
+        <mat-cell
+          class="celda-ajustable"
+          *matCellDef="let row"
+          [matTooltip]="row.establishmentName || ''"
+        >
+          {{ row.establishmentName }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Columna: Código -->
+      <ng-container matColumnDef="code">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold header-dark">
+          CÓDIGO
+        </mat-header-cell>
+        <mat-cell class="celda-ajustable" *matCellDef="let row">
+          {{ row.code }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Columna: Secuencial -->
+      <ng-container matColumnDef="sequential">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold header-dark">
+          SECUENCIAL
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{ row.sequentialInvoice | number : "1.0-0" }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Columna: Estado -->
+      <ng-container matColumnDef="status">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold header-dark">
+          ESTADO
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <span
+            class="badge"
+            [class.badge-active]="row.status"
+            [class.badge-inactive]="!row.status"
+          >
+            {{ row.status ? "Activo" : "Inactivo" }}
+          </span>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Columna: Acciones -->
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef class="text-color-bold header-dark">
+          ACCIONES
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <div class="actions-container">
+            <button
+              mat-icon-button
+              color="primary"
+              matTooltip="Editar punto de emisión"
+              (click)="openEditDialog(row)"
+              class="action-btn edit-btn"
+              [disabled]="isLoading"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="warn"
+              matTooltip="Eliminar punto de emisión"
+              (click)="delete(row)"
+              class="action-btn delete-btn"
+              [disabled]="isLoading"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </mat-cell>
+      </ng-container>
+
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row
+                *matRowDef="let row; columns: displayedColumns"
+                class="table-row"
+              ></mat-row>
+            </mat-table>
+
+            <mat-paginator
+              [pageSize]="10"
+              [pageSizeOptions]="[5, 10, 25, 50]"
+              showFirstLastButtons
+            ></mat-paginator>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

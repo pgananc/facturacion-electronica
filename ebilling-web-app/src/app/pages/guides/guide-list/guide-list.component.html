@@ -1,0 +1,249 @@
+<div class="guides-page">
+  <!-- Header principal con botón de crear y recarga -->
+  <mat-toolbar class="toolbar-primary">
+    <span class="toolbar-title">Guías de Remisión</span>
+    <span class="toolbar-spacer"></span>
+    <button
+      mat-icon-button
+      matTooltip="Recargar guías"
+      (click)="loadGuides()"
+      [disabled]="isLoading"
+      class="mr-8"
+    >
+      <mat-icon>refresh</mat-icon>
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="createGuide()"
+      [disabled]="isLoading"
+      class="btn-new-guide"
+    >
+      <mat-icon>add_circle</mat-icon>
+      Nueva Guía
+    </button>
+  </mat-toolbar>
+
+  <!-- Formulario de búsqueda -->
+  <mat-card class="search-card">
+    <mat-card-content>
+      <form [formGroup]="searchForm">
+        <div class="search-grid-horizontal">
+          <mat-form-field appearance="outline" class="search-field-compact">
+            <mat-label>Número de guía</mat-label>
+            <input matInput formControlName="guideNumber" />
+          </mat-form-field>
+
+          <div class="search-actions">
+            <button
+              mat-raised-button
+              color="primary"
+              type="button"
+              class="search-btn"
+              (click)="search()"
+              [disabled]="isLoading"
+            >
+              <mat-icon>search</mat-icon>
+              Buscar
+            </button>
+            <button
+              mat-stroked-button
+              type="button"
+              class="clear-btn"
+              (click)="clear()"
+              [disabled]="isLoading"
+            >
+              <mat-icon>clear</mat-icon>
+              Limpiar
+            </button>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Loader -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p class="loading-text">Cargando guías...</p>
+  </div>
+
+  <!-- Tabla de guías -->
+  <div class="table-wrapper" *ngIf="!isLoading">
+    <mat-toolbar class="toolbar-primary-sm">Listado de Guías</mat-toolbar>
+
+    <div
+      class="table-container"
+      style="position: relative; min-height: 300px"
+    >
+      <!-- Overlay para empty state -->
+      <div
+        *ngIf="dataSource.data.length === 0 && !isLoading"
+        class="empty-state-overlay"
+      >
+        <mat-icon class="empty-icon">inbox</mat-icon>
+        <p class="empty-title">No hay guías de remisión registradas</p>
+        <p class="empty-subtitle">
+          Use el botón <strong>"Nueva Guía"</strong> para crear una guía de
+          remisión
+        </p>
+      </div>
+
+      <mat-table
+        [dataSource]="dataSource"
+        matSort
+        class="bordered-table"
+      >
+      <!-- Número de guía -->
+      <ng-container matColumnDef="guideNumber">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Número de Guía
+        </mat-header-cell>
+        <mat-cell class="celda-ajustable" *matCellDef="let row">
+          {{ row.guideNumber }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Fecha de emisión -->
+      <ng-container matColumnDef="issueDate">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Fecha Emisión
+        </mat-header-cell>
+        <mat-cell class="celda-ajustable" *matCellDef="let row">
+          {{ formatDate(row.issueDate) }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Cliente/Destinatario -->
+      <ng-container matColumnDef="buyerName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Destinatario
+        </mat-header-cell>
+        <mat-cell
+          class="celda-ajustable"
+          *matCellDef="let row"
+          [matTooltip]="row.buyerName"
+          matTooltipPosition="above"
+        >
+          {{ row.buyerName }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Identificación del transportista -->
+      <ng-container matColumnDef="buyerIdentification">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Identificación
+        </mat-header-cell>
+        <mat-cell class="celda-ajustable" *matCellDef="let row">
+          {{ row.carrier?.identification || row.carrierIdentification }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Transportista -->
+      <ng-container matColumnDef="carrierName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Transportista
+        </mat-header-cell>
+        <mat-cell
+          class="celda-ajustable"
+          *matCellDef="let row"
+          [matTooltip]="row.carrier?.name || row.carrierName"
+          matTooltipPosition="above"
+        >
+          {{ row.carrier?.name || row.carrierName }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Estado -->
+      <ng-container matColumnDef="guideStatus">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Estado
+        </mat-header-cell>
+        <mat-cell class="celda-ajustable" *matCellDef="let row">
+          <span
+            class="status-badge"
+            [ngClass]="getStatusClass(row.authorizationSri?.authorizationStatusSri || row.authorizationStatusSri || row.guideStatus)"
+          >
+            {{ getStatusText(row.authorizationSri?.authorizationStatusSri || row.authorizationStatusSri || row.guideStatus) }}
+          </span>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Acciones -->
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef> Acciones </mat-header-cell>
+        <mat-cell *matCellDef="let row" class="actions-cell">
+          <!-- Botón Descargar PDF (solo si está autorizado) -->
+          <button
+            mat-icon-button
+            color="warn"
+            matTooltip="Descargar PDF"
+            [attr.aria-label]="'Descargar PDF de guía ' + row.guideNumber"
+            (click)="downloadPdf(row)"
+            class="action-btn pdf-btn"
+            [disabled]="isLoading"
+            *ngIf="isAuthorized(row)"
+          >
+            <mat-icon>picture_as_pdf</mat-icon>
+          </button>
+
+          <!-- Botón Descargar XML (solo si está autorizado) -->
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="Descargar XML"
+            [attr.aria-label]="'Descargar XML de guía ' + row.guideNumber"
+            (click)="downloadXml(row)"
+            class="action-btn xml-btn"
+            [disabled]="isLoading"
+            *ngIf="isAuthorized(row)"
+          >
+            <mat-icon>code</mat-icon>
+          </button>
+
+          <!-- Botón Editar (solo borradores) -->
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="Editar borrador"
+            [attr.aria-label]="'Editar guía ' + row.guideNumber"
+            (click)="editGuide(row)"
+            class="action-btn edit-btn"
+            [disabled]="isLoading"
+            *ngIf="isDraft(row)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+
+          <!-- Botón Eliminar (solo borradores) -->
+          <button
+            mat-icon-button
+            color="warn"
+            matTooltip="Eliminar borrador"
+            [attr.aria-label]="'Eliminar guía ' + row.guideNumber"
+            (click)="deleteGuide(row)"
+            class="action-btn delete-btn"
+            [disabled]="isLoading"
+            *ngIf="isDraft(row)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+    </div>
+
+    <mat-paginator
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[10, 20, 50, 100]"
+      [length]="quantity"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    >
+    </mat-paginator>
+  </div>
+</div>
+

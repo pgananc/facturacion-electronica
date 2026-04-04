@@ -1,44 +1,165 @@
-<form #loginForm="ngForm">
-  <div class="inputGroup inputGroup2" style="text-align: center">
-    <label for="login">Login</label>
-  </div>
-  <div class="inputGroup inputGroup1">
-    <label for="userName">Usuario</label>
-    <input
-      type="text"
-      id="userName"
-      name="userName"
-      [(ngModel)]="userName"
-      class="userName"
-      maxlength="256"
-      required
-    />
-
-    <span class="indicator"></span>
-  </div>
-  <div class="inputGroup inputGroup2">
-    <label for="password">Contraseña</label>
-    <input
-      type="password"
-      id="password"
-      name="password"
-      [(ngModel)]="password"
-      class="password"
-      required
-      minlength="8"
-      maxlength="16"
-    />
-  </div>
-  <div class="inputGroup inputGroup3">
-    <button id="login" type="button" (click)="login()">
-      Iniciar sesión
-      <i class="fa fa-sign-in" aria-hidden="true"></i>
-    </button>
-    <div style="text-align: center">
-      <a routerLink="/reset-password">¿Olvidaste tu contraseña?</a>
+<div class="login-container">
+  <mat-card class="login-card">
+    <!-- Logo de la empresa -->
+    <div class="logo-container">
+      <img
+        src="/assets/logo.jpg"
+        alt="Wallparisoft Logo"
+        class="logo-image"
+        width="180"
+        height="120"
+        loading="eager"
+      />
     </div>
-  </div>
 
-  <mat-card *ngIf="message">{{ message }}</mat-card>
-  <mat-card *ngIf="error">{{ error }}</mat-card>
-</form>
+    <mat-card-title class="text-center">Iniciar Sesión</mat-card-title>
+
+    <form [formGroup]="loginForm" (ngSubmit)="login()">
+      <!-- Campo Usuario -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Usuario</mat-label>
+        <mat-icon matPrefix>person</mat-icon>
+        <input
+          matInput
+          id="userName"
+          formControlName="userName"
+          maxlength="256"
+          autocomplete="username"
+        />
+        <mat-error
+          *ngIf="f['userName'].hasError('required') && f['userName'].touched"
+        >
+          El usuario es requerido
+        </mat-error>
+        <mat-error
+          *ngIf="f['userName'].hasError('maxlength') && f['userName'].touched"
+        >
+          El usuario no puede exceder 256 caracteres
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Campo Contraseña con toggle show/hide -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Contraseña</mat-label>
+        <mat-icon matPrefix>lock</mat-icon>
+        <input
+          matInput
+          [type]="hidePassword ? 'password' : 'text'"
+          id="password"
+          formControlName="password"
+          autocomplete="current-password"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="togglePasswordVisibility()"
+          [attr.aria-label]="'Mostrar contraseña'"
+          [attr.aria-pressed]="!hidePassword"
+          [disabled]="isBlocked"
+        >
+          <mat-icon>{{
+            hidePassword ? "visibility_off" : "visibility"
+          }}</mat-icon>
+        </button>
+        <mat-error
+          *ngIf="f['password'].hasError('required') && f['password'].touched"
+        >
+          La contraseña es requerida
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Remember Me Checkbox -->
+      <div class="remember-me-container">
+        <mat-checkbox
+          [(ngModel)]="rememberMe"
+          [ngModelOptions]="{ standalone: true }"
+          [disabled]="isBlocked"
+        >
+          Recordar usuario
+        </mat-checkbox>
+      </div>
+
+      <!-- Rate Limiting Warning -->
+      <div *ngIf="isBlocked" class="rate-limit-warning">
+        <mat-icon>lock_clock</mat-icon>
+        <span>
+          Demasiados intentos fallidos. Intenta nuevamente en
+          <strong>{{ blockTimeFormatted }}</strong>
+        </span>
+      </div>
+
+      <!-- Rate Limiting Info (cuando hay intentos fallidos pero no está bloqueado) -->
+      <div
+        *ngIf="!isBlocked && failedAttempts > 0 && failedAttempts < maxAttempts"
+        class="rate-limit-info"
+      >
+        <mat-icon>info</mat-icon>
+        <span>
+          Intentos fallidos: {{ failedAttempts }}/{{ maxAttempts }} ({{
+            remainingAttempts
+          }}
+          {{
+            remainingAttempts === 1 ? "intento restante" : "intentos restantes"
+          }})
+        </span>
+      </div>
+
+      <!-- Botón de envío con loading state y success state -->
+      <div class="button-container">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="isLoading || isSuccess || loginForm.invalid || isBlocked"
+          [class.success-button]="isSuccess"
+          aria-label="Iniciar sesión"
+        >
+          <mat-spinner
+            *ngIf="isLoading && !isSuccess"
+            diameter="20"
+            class="btn-spinner"
+          ></mat-spinner>
+          <mat-icon
+            *ngIf="isSuccess"
+            class="success-icon"
+            [class.success-icon-animate]="isSuccess"
+            >check_circle</mat-icon
+          >
+          <mat-icon *ngIf="!isLoading && !isSuccess">login</mat-icon>
+          <span>{{
+            isLoading
+              ? "Iniciando sesión..."
+              : isSuccess
+                ? "¡Bienvenido!"
+                : "Iniciar sesión"
+          }}</span>
+        </button>
+      </div>
+
+      <!-- Links de acción -->
+      <div class="link-container">
+        <a mat-button routerLink="/reset-password" class="forgot-password-link">
+          ¿Olvidaste tu contraseña?
+        </a>
+      </div>
+    </form>
+
+    <!-- Sección de Consulta Pública -->
+    <mat-divider class="login-divider"></mat-divider>
+    <div class="public-access-section">
+      <p class="public-access-text">
+        ¿Eres cliente y necesitas consultar tus facturas?
+      </p>
+      <button
+        mat-stroked-button
+        color="primary"
+        routerLink="/invoice-consultation"
+        class="public-consultation-btn"
+      >
+        <mat-icon>receipt_long</mat-icon>
+        <span>Consultar mis Facturas</span>
+      </button>
+    </div>
+  </mat-card>
+</div>

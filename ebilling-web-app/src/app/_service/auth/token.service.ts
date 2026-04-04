@@ -10,7 +10,7 @@ import { environment } from 'src/environments/environment';
 export class TokenService {
   url: string = `${environment.HOST_AUTH}/api/token`;
   messageChange = new Subject<string>();
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private readonly http: HttpClient, private readonly router: Router) {}
 
   validateTokenReset(token: string) {
     return this.http.get<boolean>(

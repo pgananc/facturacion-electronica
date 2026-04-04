@@ -1,0 +1,191 @@
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <h2 mat-dialog-title>Detalle de Suscripción</h2>
+  </div>
+
+  <mat-dialog-content>
+    <!-- Información de la Empresa -->
+    <mat-card class="info-card company-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>business</mat-icon>
+          Información de la Empresa
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="info-grid">
+          <div class="info-item">
+            <strong>Nombre:</strong>
+            <span>{{ data.businessName || data.companyName || "N/A" }}</span>
+          </div>
+          <div class="info-item">
+            <strong>RUC:</strong>
+            <span class="ruc-value">{{ data.ruc || "N/A" }}</span>
+          </div>
+          <div class="info-item">
+            <strong>ID Empresa:</strong>
+            <span>{{ data.idCompany }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Plan Actual -->
+    <mat-card class="info-card plan-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>workspace_premium</mat-icon>
+          Plan Actual
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="plan-details">
+          <div class="plan-header">
+            <span
+              class="plan-badge"
+              [class]="'plan-' + data.plan.code.toLowerCase()"
+            >
+              {{ data.plan.name }}
+            </span>
+            <span class="plan-code">({{ data.plan.code }})</span>
+          </div>
+          <div class="plan-info-grid">
+            <div class="plan-info-item">
+              <mat-icon>description</mat-icon>
+              <div>
+                <strong>Límite de Documentos:</strong>
+                <span>{{ getDocumentLimitText() }} documentos/año</span>
+              </div>
+            </div>
+            <div class="plan-info-item" *ngIf="data.plan.monthlyPrice">
+              <mat-icon>attach_money</mat-icon>
+              <div>
+                <strong>Precio Mensual:</strong>
+                <span>${{ data.plan.monthlyPrice | number : "1.2-2" }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Estado y Uso -->
+    <mat-card class="info-card usage-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>analytics</mat-icon>
+          Estado y Uso
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="status-section">
+          <div class="status-badge-container">
+            <span
+              class="status-badge"
+              [class]="getStatusClass(data.subscriptionStatus)"
+            >
+              {{ data.statusDetail || data.subscriptionStatus }}
+            </span>
+          </div>
+        </div>
+        <div class="usage-section">
+          <div class="usage-header">
+            <strong>Uso de Documentos</strong>
+            <span class="usage-percent" [class]="getUsageStatusClass()">
+              {{ data.percentUsed | number : "1.1-1" }}%
+            </span>
+          </div>
+          <mat-progress-bar
+            mode="determinate"
+            [value]="data.percentUsed"
+            [class]="getUsageStatusClass()"
+            class="usage-progress"
+          ></mat-progress-bar>
+          <div class="usage-details">
+            <div class="usage-item">
+              <mat-icon>check_circle</mat-icon>
+              <span
+                >Usados:
+                <strong>{{ data.currentYearUsage | number }}</strong></span
+              >
+            </div>
+            <div class="usage-item">
+              <mat-icon>inventory_2</mat-icon>
+              <span
+                >Restantes:
+                <strong>{{ data.remainingDocuments | number }}</strong></span
+              >
+            </div>
+            <div class="usage-item">
+              <mat-icon>summarize</mat-icon>
+              <span
+                >Total: <strong>{{ getDocumentLimitText() }}</strong></span
+              >
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Fechas Importantes -->
+    <mat-card class="info-card dates-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>event</mat-icon>
+          Fechas Importantes
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="dates-grid">
+          <div class="date-item">
+            <mat-icon>play_circle</mat-icon>
+            <div>
+              <strong>Fecha de Inicio:</strong>
+              <span class="date-value">{{
+                data.startDate | date : "dd/MM/yyyy"
+              }}</span>
+            </div>
+          </div>
+          <div class="date-item">
+            <mat-icon>schedule</mat-icon>
+            <div>
+              <strong>Fecha de Expiración:</strong>
+              <span
+                class="date-value expiration-date"
+                [class]="getExpirationStatusClass()"
+              >
+                {{ data.expiresAt | date : "dd/MM/yyyy" }}
+              </span>
+            </div>
+          </div>
+          <div class="date-item highlight">
+            <mat-icon>timer</mat-icon>
+            <div>
+              <strong>Tiempo Restante:</strong>
+              <span
+                class="date-value days-remaining"
+                [class]="getExpirationStatusClass()"
+              >
+                {{ getExpirationStatusText() }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-dialog-content>
+
+  <!-- Actions -->
+  <div class="dialog-actions" mat-dialog-actions>
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="onClose()"
+      class="btn-cancel"
+    >
+      <mat-icon>close</mat-icon>
+      <span>Cerrar</span>
+    </button>
+  </div>
+</div>

@@ -27,11 +27,15 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatChipsModule } from '@angular/material/chips';
+import { CdkTableModule } from '@angular/cdk/table';
 
 @NgModule({
   declarations: [],
   imports: [
     CommonModule,
+    CdkTableModule,
     MatToolbarModule,
     MatIconModule,
     MatPaginatorModule,
@@ -54,8 +58,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatTreeModule,
     MatProgressBarModule,
     MatProgressSpinnerModule,
+    MatAutocompleteModule,
+    MatChipsModule,
   ],
   exports: [
+    CdkTableModule,
     MatToolbarModule,
     MatIconModule,
     MatPaginatorModule,
@@ -79,6 +86,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatProgressBarModule,
     MatDialogModule,
     MatProgressSpinnerModule,
+    MatAutocompleteModule,
+    MatChipsModule,
   ],
   providers: [
     { provide: MatPaginatorIntl, useClass: MatPaginatorImpl },

@@ -1,10 +1,8 @@
 package com.wallparisoft.ebill.auth.util.model;
 
+import java.util.List;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import javax.management.relation.Role;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -13,8 +11,8 @@ import java.util.List;
 @Builder
 @ToString
 public class TokenInformation {
-
+  String idUser;
   String userName;
   List<String> roles;
-  List<Long> idCompanies;
+  List<CompanyEstablishment> companyEstablishments;
 }

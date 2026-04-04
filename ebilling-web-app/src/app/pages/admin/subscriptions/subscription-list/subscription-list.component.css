@@ -1,0 +1,385 @@
+@import '../../../../_shared/toolbar-styles.css';
+@import '../../../../_shared/shared-styles.css';
+@import '../../../../_shared/table-styles.css';
+@import '../../../../_shared/responsive-styles.css';
+
+/* Contenedor principal - Estilo consistente con productos y clientes */
+.subscription-page {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  background-color: var(--background-color, #f9fafb);
+  min-height: calc(100vh - 64px);
+}
+
+/* ===== BOTÓN NUEVA SUSCRIPCIÓN (Estilo replicado de clientes) ===== */
+.spacer {
+  flex: 1 1 auto;
+}
+
+/* Los estilos del botón están en shared-styles.css */
+.btn-new-subscription {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-new-subscription mat-icon {
+  margin-right: 0;
+}
+
+.search-card {
+  margin-bottom: 24px;
+}
+
+/* ===== LAYOUT HORIZONTAL: INPUTS + BOTONES EN UNA LÍNEA ===== */
+.search-grid-horizontal {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 12px);
+  max-width: 100%;
+}
+
+.search-field-compact {
+  flex: 1;
+  margin: 0 !important;
+}
+
+.search-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 12px);
+  margin-left: auto;
+  flex-shrink: 0;
+  padding-bottom: 22px;
+}
+
+@media screen and (max-width: 599px) {
+  .search-grid-horizontal {
+    flex-wrap: wrap;
+  }
+
+  .search-field-compact {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .search-actions {
+    flex-direction: column;
+    width: 100%;
+    padding-bottom: 0;
+  }
+
+  .search-btn {
+    width: 100%;
+  }
+}
+
+.table-wrapper {
+  margin-top: 24px;
+  position: relative;
+}
+
+.table-container {
+  position: relative;
+  overflow-x: auto;
+}
+
+.bordered-table {
+  width: 100%;
+}
+
+.subscription-table {
+  width: 100%;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  z-index: 10;
+  gap: 16px;
+}
+
+.table-row {
+  transition: background-color 0.2s;
+}
+
+/* Anchos de columnas */
+.mat-column-businessName {
+  width: 18%;
+  min-width: 160px;
+  text-align: center; /* ✅ Centrar texto de empresa */
+}
+
+.mat-column-ruc {
+  width: 12%;
+  min-width: 120px;
+}
+
+.mat-column-plan {
+  width: 12%;
+  min-width: 100px;
+}
+
+.mat-column-status {
+  width: 12%;
+  min-width: 100px;
+}
+
+.mat-column-usage {
+  width: 20%;
+  min-width: 180px;
+}
+
+.mat-column-remaining {
+  width: 10%;
+  min-width: 90px;
+}
+
+.mat-column-expiresAt {
+  width: 12%;
+  min-width: 100px;
+}
+
+.mat-column-actions {
+  width: 14%;
+  min-width: 120px;
+}
+
+/* Centrar columnas numéricas y acciones */
+.mat-column-plan,
+.mat-column-status,
+.mat-column-remaining,
+.mat-column-expiresAt,
+.mat-column-actions {
+  text-align: center !important;
+  justify-content: center !important;
+}
+
+.mat-column-plan .mat-cell,
+.mat-column-status .mat-cell,
+.mat-column-remaining .mat-cell,
+.mat-column-expiresAt .mat-cell,
+.mat-column-actions .mat-cell {
+  justify-content: center !important;
+}
+
+/* Estilos de celdas */
+.company-cell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* ✅ Centrar verticalmente */
+  align-items: center; /* ✅ Centrar horizontalmente */
+  text-align: center; /* ✅ Centrar texto */
+}
+
+.company-cell strong {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Estilos para columna RUC */
+.ruc-cell {
+  font-size: 13px;
+  color: #666;
+  font-family: 'Courier New', monospace; /* ✅ Fuente monoespaciada para números */
+}
+
+/* Badges de planes */
+.plan-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.plan-free {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.plan-basic {
+  background-color: #fff3e0;
+  color: #f57c00;
+}
+
+.plan-professional,
+.plan-pro {
+  background-color: #e8f5e9;
+  color: #388e3c;
+}
+
+.plan-enterprise {
+  background-color: #f3e5f5;
+  color: #7b1fa2;
+}
+
+/* Badges de estado */
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.status-active {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-trial {
+  background-color: #fff9c4;
+  color: #f57f17;
+}
+
+.status-expired {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.status-cancelled {
+  background-color: #f5f5f5;
+  color: #616161;
+}
+
+/* Uso de documentos */
+.usage-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 150px;
+}
+
+.usage-text {
+  font-size: 12px;
+  color: #666;
+}
+
+.usage-normal ::ng-deep .mat-progress-bar-fill::after {
+  background-color: #4caf50;
+}
+
+.usage-warning ::ng-deep .mat-progress-bar-fill::after {
+  background-color: #ff9800;
+}
+
+.usage-critical ::ng-deep .mat-progress-bar-fill::after {
+  background-color: #f44336;
+}
+
+/* Acciones peligrosas */
+.danger-action {
+  color: #d32f2f;
+}
+
+.danger-action mat-icon {
+  color: #d32f2f;
+}
+
+/* ===== EMPTY STATE OVERLAY (FUERA DE LA TABLA) ===== */
+.empty-state-overlay {
+  position: absolute;
+  top: 52%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 5;
+  padding: 48px 24px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  margin-top: 20px;
+}
+
+.empty-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: #b0bec5;
+  margin-bottom: 16px;
+}
+
+.empty-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #424242;
+  margin: 0 0 8px 0;
+}
+
+.empty-subtitle {
+  font-size: 14px;
+  color: #757575;
+  margin: 0;
+  max-width: 400px;
+}
+
+/* ===== TABLE CONTAINER CON SCROLL HORIZONTAL ===== */
+.table-container {
+  position: relative;
+  overflow-x: auto;
+  min-height: 300px;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .subscription-list-container {
+    padding: 16px;
+  }
+
+  .filters-container {
+    flex-direction: column;
+  }
+
+  .filters-container mat-form-field,
+  .filters-container button {
+    width: 100%;
+  }
+}
+
+/* ===== TABLA RESPONSIVE - OCULTAR COLUMNAS EN MOBILE ===== */
+@media screen and (max-width: 600px) {
+  /* Ocultar columnas menos importantes en mobile */
+  .mat-column-ruc,
+  .mat-column-plan,
+  .mat-column-remaining,
+  .mat-column-expiresAt {
+    display: none !important;
+  }
+  
+  /* Ajustar ancho de columnas visibles */
+  .mat-column-businessName {
+    width: 35% !important;
+    min-width: 140px !important;
+  }
+  
+  .mat-column-status {
+    width: 20% !important;
+    min-width: 100px !important;
+  }
+  
+  .mat-column-usage {
+    width: 25% !important;
+    min-width: 120px !important;
+  }
+  
+  .mat-column-actions {
+    width: 20% !important;
+    min-width: 100px !important;
+  }
+}

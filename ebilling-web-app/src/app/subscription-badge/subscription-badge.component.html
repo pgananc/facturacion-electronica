@@ -1,0 +1,119 @@
+<div
+  class="subscription-badge-container"
+  *ngIf="subscription"
+  [class.compact-mode]="compactMode"
+>
+  <!-- Badge del Plan (oculto en modo compacto) -->
+  <div
+    class="plan-badge"
+    [style.background-color]="planColor"
+    *ngIf="!compactMode"
+  >
+    <mat-icon class="plan-icon">workspace_premium</mat-icon>
+    <span class="plan-name">{{ planName }}</span>
+  </div>
+
+  <!-- Barra de Progreso (solo si tiene límite) -->
+  <div
+    class="usage-container"
+    *ngIf="!hasUnlimitedPlan"
+    [class.compact-layout]="compactMode"
+  >
+    <div class="usage-header">
+      <span class="usage-label">Documentos</span>
+      <span
+        class="usage-value"
+        [class.near-limit]="isNearLimit"
+        [class.at-limit]="isAtLimit"
+      >
+        {{ documentsUsed }} / {{ documentsLimit }}
+      </span>
+    </div>
+
+    <!-- Layout horizontal inline para toolbar -->
+    <div class="usage-content-wrapper" *ngIf="compactMode">
+      <mat-icon
+        class="usage-icon"
+        [matTooltip]="'Uso de documentos de tu suscripción'"
+        >description</mat-icon
+      >
+      <span
+        class="usage-label-compact"
+        [matTooltip]="'Documentos de tu plan de suscripción'"
+        >Docs:</span
+      >
+      <span
+        class="usage-value"
+        [class.near-limit]="isNearLimit"
+        [class.at-limit]="isAtLimit"
+        [matTooltip]="
+          'Documentos usados: ' + documentsUsed + ' de ' + documentsLimit
+        "
+      >
+        {{ documentsUsed }} / {{ documentsLimit }}
+      </span>
+      <mat-progress-bar
+        mode="determinate"
+        [value]="percentUsed"
+        [color]="isAtLimit ? 'warn' : isNearLimit ? 'accent' : 'primary'"
+        class="usage-progress-bar"
+        [matTooltip]="percentUsed + '% de documentos usados'"
+      ></mat-progress-bar>
+      <span
+        class="usage-percent"
+        [class.near-limit]="isNearLimit"
+        [class.at-limit]="isAtLimit"
+      >
+        {{ percentUsed }}%
+      </span>
+      <span
+        class="usage-remaining"
+        *ngIf="!isAtLimit"
+        [matTooltip]="documentsRemaining + ' documentos restantes en tu plan'"
+      >
+        ({{ documentsRemaining }} rest.)
+      </span>
+      <span
+        class="usage-limit-reached"
+        *ngIf="isAtLimit"
+        [matTooltip]="
+          'Has alcanzado el límite de documentos. Actualiza tu plan.'
+        "
+      >
+        <mat-icon>block</mat-icon>
+      </span>
+    </div>
+
+    <!-- Layout vertical normal (sidebar) -->
+    <ng-container *ngIf="!compactMode">
+      <mat-progress-bar
+        mode="determinate"
+        [value]="percentUsed"
+        [color]="isAtLimit ? 'warn' : isNearLimit ? 'accent' : 'primary'"
+        class="usage-progress-bar"
+      ></mat-progress-bar>
+      <div class="usage-footer">
+        <span
+          class="usage-percent"
+          [class.near-limit]="isNearLimit"
+          [class.at-limit]="isAtLimit"
+        >
+          {{ percentUsed }}% usado
+        </span>
+        <span class="usage-remaining" *ngIf="!isAtLimit">
+          {{ documentsRemaining }} restantes
+        </span>
+        <span class="usage-limit-reached" *ngIf="isAtLimit">
+          <mat-icon>block</mat-icon>
+          Límite alcanzado
+        </span>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- Mensaje para planes ilimitados -->
+  <div class="unlimited-badge" *ngIf="hasUnlimitedPlan">
+    <mat-icon>all_inclusive</mat-icon>
+    <span>Plan Ilimitado</span>
+  </div>
+</div>

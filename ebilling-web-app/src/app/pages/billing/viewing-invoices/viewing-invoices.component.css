@@ -1,0 +1,8 @@
+@import '../../../_shared/toolbar-styles.css';
+@import '../../../_shared/shared-styles.css';
+@import '../../../_shared/table-styles.css';
+@import '../../../_shared/responsive-styles.css';
+
+.invoice-page { padding: 24px; max-width: 1400px; margin: 0 auto; background-color: var(--background-color, #f9fafb); min-height: calc(100vh - 64px); }
+.back-button { color: #fff !important; margin-right: 16px; }
+.back-button:hover { background-color: rgba(255, 255, 255, 0.1) !important; }

@@ -1,0 +1,347 @@
+<div class="invoice-list-page">
+  <!-- Contenedor principal centrado -->
+  <div class="invoice-list-container">
+    <!-- Título con acción -->
+    <mat-toolbar class="toolbar-primary toolbar-with-action">
+      <span>Consulta Facturas</span>
+      <span class="spacer"></span>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="openCreateInvoice()"
+        class="btn-new-invoice"
+      >
+        <mat-icon>add_circle</mat-icon>
+        Nueva Factura
+      </button>
+    </mat-toolbar>
+
+    <!-- Filtro de búsqueda -->
+    <mat-card class="card-padding mt-16 search-card">
+      <!-- Loading spinner durante búsqueda -->
+      <div *ngIf="isLoading" class="loading-overlay">
+        <mat-spinner diameter="60"></mat-spinner>
+        <p class="loading-text">Buscando facturas...</p>
+      </div>
+
+      <mat-card-content>
+        <form [formGroup]="searchForm" (ngSubmit)="search()">
+          <!-- Layout horizontal compacto -->
+          <div class="search-grid-horizontal">
+            <!-- Número de Factura -->
+            <mat-form-field appearance="outline" class="search-field-compact">
+              <mat-label>N° Factura</mat-label>
+              <mat-icon matPrefix>description</mat-icon>
+              <input
+                matInput
+                placeholder="Ej: 001-001-000000001"
+                formControlName="numeroFactura"
+              />
+            </mat-form-field>
+
+            <!-- Número de Autorización -->
+            <mat-form-field appearance="outline" class="search-field-compact">
+              <mat-label>N° Autorización</mat-label>
+              <mat-icon matPrefix>verified</mat-icon>
+              <input
+                matInput
+                placeholder="Ej: 1234567890"
+                formControlName="numeroAutorizacion"
+              />
+            </mat-form-field>
+
+            <!-- Identificación del Cliente -->
+            <mat-form-field appearance="outline" class="search-field-compact">
+              <mat-label>Identificación</mat-label>
+              <mat-icon matPrefix>badge</mat-icon>
+              <input
+                matInput
+                placeholder="Ingrese identificación"
+                formControlName="identificacionCliente"
+              />
+            </mat-form-field>
+
+            <!-- Fecha Desde -->
+            <mat-form-field appearance="outline" class="search-field-compact">
+              <mat-label>Fecha Desde *</mat-label>
+              <mat-icon matPrefix>calendar_today</mat-icon>
+              <input
+                matInput
+                [matDatepicker]="pickerFrom"
+                formControlName="creationDateFrom"
+                placeholder="DD/MM/YYYY"
+                required
+              />
+              <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+              <mat-datepicker #pickerFrom></mat-datepicker>
+              <mat-error *ngIf="searchForm.get('creationDateFrom')?.hasError('required')">
+                La fecha desde es obligatoria
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Fecha Hasta -->
+            <mat-form-field appearance="outline" class="search-field-compact">
+              <mat-label>Fecha Hasta *</mat-label>
+              <mat-icon matPrefix>event</mat-icon>
+              <input
+                matInput
+                [matDatepicker]="pickerTo"
+                formControlName="creationDateTo"
+                placeholder="DD/MM/YYYY"
+                required
+              />
+              <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+              <mat-datepicker #pickerTo></mat-datepicker>
+              <mat-error *ngIf="searchForm.get('creationDateTo')?.hasError('required')">
+                La fecha hasta es obligatoria
+              </mat-error>
+            </mat-form-field>
+
+            <div class="search-actions">
+              <button
+                mat-raised-button
+                color="primary"
+                type="submit"
+                [disabled]="isLoading"
+                class="btn-search-compact"
+              >
+                <mat-icon>search</mat-icon>
+                Buscar
+              </button>
+
+              <button
+                mat-stroked-button
+                color="primary"
+                type="button"
+                (click)="clearFilters()"
+                class="btn-clear-compact"
+              >
+                <mat-icon>clear</mat-icon>
+                Limpiar
+              </button>
+            </div>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Tabla -->
+    <mat-card class="card-padding mt-24">
+      <mat-card-content>
+        <div class="table-wrapper">
+          <mat-toolbar class="toolbar-primary-sm"
+            >Listado de Facturas</mat-toolbar
+          >
+          
+          <div
+            class="table-container"
+            style="position: relative; min-height: 300px"
+          >
+            <!-- Overlay para empty state -->
+            <div
+              *ngIf="dataSource.data.length === 0 && !isLoading"
+              class="empty-state-overlay"
+            >
+              <mat-icon class="empty-icon">receipt</mat-icon>
+              <p class="empty-title">No se encontraron facturas</p>
+              <p class="empty-subtitle">
+                Intente ajustar los filtros de búsqueda o cree una nueva
+                factura.
+              </p>
+            </div>
+
+            <mat-table
+              [dataSource]="dataSource"
+              matSort
+              class="mat-elevation-z1 bordered-table"
+            >
+            <!-- Número de Factura -->
+            <ng-container matColumnDef="invoiceNumber">
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="text-color-bold header-dark"
+                >N° Factura</mat-header-cell
+              >
+              <mat-cell class="celda-ajustable" *matCellDef="let row">{{
+                row.invoiceNumber || '-'
+              }}</mat-cell>
+            </ng-container>
+
+            <!-- Identificación del Cliente -->
+            <ng-container matColumnDef="clientIdentification">
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="text-color-bold header-dark"
+                >Identificación</mat-header-cell
+              >
+              <mat-cell class="celda-ajustable" *matCellDef="let row">{{
+                row.clientIdentification || '-'
+              }}</mat-cell>
+            </ng-container>
+
+            <!-- Nombre del Cliente -->
+            <ng-container matColumnDef="clientName">
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="text-color-bold header-dark"
+                >Cliente</mat-header-cell
+              >
+              <mat-cell
+                class="celda-ajustable"
+                *matCellDef="let row"
+                [matTooltip]="row.clientName || '-'"
+                matTooltipPosition="above"
+              >
+                {{ row.clientName || '-' }}
+              </mat-cell>
+            </ng-container>
+
+            <!-- Total -->
+            <ng-container matColumnDef="totalAmount">
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="text-color-bold header-dark"
+                >Total</mat-header-cell
+              >
+              <mat-cell class="celda-ajustable" *matCellDef="let row">{{
+                formatCurrency(row.totalAmount)
+              }}</mat-cell>
+            </ng-container>
+
+            <!-- Estado -->
+            <ng-container matColumnDef="status">
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="text-color-bold header-dark"
+                >Estado</mat-header-cell
+              >
+              <mat-cell class="celda-ajustable" *matCellDef="let row">
+                <span
+                  class="status-badge"
+                  [ngClass]="getStatusClass(row)"
+                >
+                  {{ getStatusText(row) }}
+                </span>
+              </mat-cell>
+            </ng-container>
+
+            <!-- Fecha de Emisión -->
+            <ng-container matColumnDef="issueDate">
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="text-color-bold header-dark"
+                >Fecha</mat-header-cell
+              >
+              <mat-cell class="celda-ajustable" *matCellDef="let row">{{
+                formatDate(row.issueDate)
+              }}</mat-cell>
+            </ng-container>
+
+            <!-- Acciones -->
+            <ng-container matColumnDef="actions">
+              <mat-header-cell
+                *matHeaderCellDef
+                class="text-color-bold header-dark"
+                >Acciones</mat-header-cell
+              >
+              <mat-cell class="actions-cell" *matCellDef="let row">
+                <!-- No mostrar acciones si está devuelta -->
+                <ng-container *ngIf="!isReturned(row)">
+                  <!-- Acciones para facturas autorizadas -->
+                  <ng-container *ngIf="isAuthorized(row) && row.idInvoice && row.invoiceNumber">
+                    <!-- Imprimir Recibo -->
+                    <button
+                      mat-icon-button
+                      color="primary"
+                      matTooltip="Imprimir Recibo"
+                      matTooltipPosition="above"
+                      (click)="printTicket(row.idInvoice!)"
+                      class="action-btn print-btn"
+                    >
+                      <mat-icon>print</mat-icon>
+                    </button>
+
+                    <!-- Descargar PDF -->
+                    <button
+                      mat-icon-button
+                      matTooltip="Descargar PDF"
+                      matTooltipPosition="above"
+                      (click)="downloadPdf(row.idInvoice!, row.invoiceNumber!)"
+                      class="action-btn pdf-btn"
+                    >
+                      <mat-icon>picture_as_pdf</mat-icon>
+                    </button>
+
+                    <!-- Descargar XML -->
+                    <button
+                      mat-icon-button
+                      matTooltip="Descargar XML"
+                      matTooltipPosition="above"
+                      (click)="downloadXml(row.idInvoice!, row.invoiceNumber!)"
+                      class="action-btn xml-btn"
+                    >
+                      <mat-icon>code</mat-icon>
+                    </button>
+                  </ng-container>
+
+                  <!-- Acciones para borradores -->
+                  <ng-container *ngIf="isDraft(row) && row.idInvoice">
+                    <!-- Botón Editar -->
+                    <button
+                      mat-icon-button
+                      color="primary"
+                      matTooltip="Editar borrador"
+                      matTooltipPosition="above"
+                      [attr.aria-label]="'Editar factura ' + (row.invoiceNumber || '')"
+                      (click)="editDraft(row)"
+                      class="action-btn edit-btn"
+                      [disabled]="isLoading"
+                    >
+                      <mat-icon>edit</mat-icon>
+                    </button>
+
+                    <!-- Botón Eliminar -->
+                    <button
+                      mat-icon-button
+                      color="warn"
+                      matTooltip="Eliminar borrador"
+                      matTooltipPosition="above"
+                      [attr.aria-label]="'Eliminar factura ' + (row.invoiceNumber || '')"
+                      (click)="deleteDraft(row)"
+                      class="action-btn delete-btn"
+                      [disabled]="isLoading"
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </ng-container>
+                </ng-container>
+              </mat-cell>
+            </ng-container>
+
+            <mat-header-row
+              *matHeaderRowDef="displayedColumns"
+            ></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+          </mat-table>
+          </div>
+
+          <!-- Paginador -->
+          <mat-paginator
+            [pageSizeOptions]="[5, 10, 25, 50]"
+            [pageSize]="pageSize"
+            [length]="totalElements"
+            [pageIndex]="currentPage"
+            showFirstLastButtons
+          ></mat-paginator>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+

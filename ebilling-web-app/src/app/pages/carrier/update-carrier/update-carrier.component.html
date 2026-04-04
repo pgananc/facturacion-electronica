@@ -1,0 +1,184 @@
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <h2 mat-dialog-title>
+      {{ edition ? 'Actualizar Transportista' : 'Nuevo Transportista' }}
+    </h2>
+  </div>
+
+  <!-- Content -->
+  <div class="dialog-content" mat-dialog-content>
+    <form [formGroup]="form" (ngSubmit)="validateSave()" #frmCarrier="ngForm">
+      <!-- Tipo Identificación -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Tipo Identificación</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >badge</mat-icon
+        >
+        <mat-select
+          formControlName="identificationType"
+          required
+          placeholder="Seleccione tipo de identificación"
+        >
+          <mat-option *ngFor="let it of idTypes" [value]="it.code">
+            {{ it.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="f['identificationType'].hasError('required')">
+          Tipo de identificación es requerido
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Identificación -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Identificación</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >fingerprint</mat-icon
+        >
+        <input
+          matInput
+          placeholder="Número de identificación"
+          required
+          formControlName="identification"
+          name="identification"
+        />
+        <mat-error *ngIf="f['identification'].hasError('required')">
+          Identificación es requerida
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Nombre -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nombre / Razón Social</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >person</mat-icon
+        >
+        <input
+          matInput
+          placeholder="Nombre completo o razón social"
+          formControlName="name"
+          name="name"
+        />
+        <mat-error *ngIf="f['name'].hasError('required')">
+          Nombre es requerido
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Dirección -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Dirección</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >location_on</mat-icon
+        >
+        <textarea
+          matInput
+          placeholder="Dirección del transportista"
+          formControlName="address"
+          name="address"
+          rows="2"
+        ></textarea>
+      </mat-form-field>
+
+      <!-- Teléfono -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Teléfono</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >phone</mat-icon
+        >
+        <input
+          matInput
+          placeholder="Teléfono de contacto"
+          formControlName="phone"
+          name="phone"
+        />
+      </mat-form-field>
+
+      <!-- Correo electrónico -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Correo electrónico</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >email</mat-icon
+        >
+        <input
+          matInput
+          type="email"
+          placeholder="correo@ejemplo.com"
+          formControlName="email"
+          name="email"
+        />
+        <mat-error *ngIf="f['email'].hasError('email')">
+          Debe ser un correo electrónico válido
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Número de licencia -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Número de Licencia</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >card_membership</mat-icon
+        >
+        <input
+          matInput
+          placeholder="Número de licencia de conducir"
+          formControlName="licenseNumber"
+          name="licenseNumber"
+        />
+      </mat-form-field>
+
+      <!-- Tipo de vehículo -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Tipo de Vehículo</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >local_shipping</mat-icon
+        >
+        <input
+          matInput
+          placeholder="Ej: CAMION, FURGON, etc."
+          formControlName="vehicleType"
+          name="vehicleType"
+        />
+      </mat-form-field>
+
+      <!-- Estado -->
+      <div class="status-section">
+        <label class="custom-checkbox-container">
+          <input
+            type="checkbox"
+            formControlName="status"
+            class="custom-checkbox-input"
+          />
+          <span class="custom-checkbox-box"></span>
+          <span class="custom-checkbox-label">Transportista Activo</span>
+        </label>
+        <div class="status-hint">
+          Los transportistas activos aparecerán en las búsquedas y podrán ser
+          seleccionados para guías de remisión
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Actions -->
+  <div mat-dialog-actions class="dialog-actions">
+    <button
+      mat-stroked-button
+      color="primary"
+      (click)="cancel()"
+      class="btn-cancel"
+    >
+      <mat-icon>close</mat-icon>
+      Cancelar
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="validateSave()"
+      [disabled]="form.invalid"
+      class="btn-save"
+    >
+      <mat-icon>{{ edition ? 'update' : 'save' }}</mat-icon>
+      {{ edition ? 'Actualizar' : 'Guardar' }}
+    </button>
+  </div>
+</div>
+

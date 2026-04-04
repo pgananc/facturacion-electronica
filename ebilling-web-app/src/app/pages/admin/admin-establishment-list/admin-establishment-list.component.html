@@ -1,0 +1,309 @@
+<!-- Contenedor principal -->
+<div class="admin-establishment-page">
+  <!-- Contenedor principal centrado -->
+  <div class="admin-establishment-container">
+    <!-- Título con acción -->
+    <mat-toolbar class="toolbar-primary toolbar-with-action">
+      <span>Gestión Global de Sucursales</span>
+      <span class="spacer"></span>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="openCreateDialog()"
+        class="btn-new-establishment"
+        [disabled]="isLoading"
+        matTooltip="Agregar nueva sucursal"
+      >
+        <mat-icon>add_circle</mat-icon>
+        Nueva Sucursal
+      </button>
+    </mat-toolbar>
+
+    <!-- Filtro de búsqueda -->
+    <mat-card class="card-padding mt-16 search-card">
+      <!-- Loading spinner durante búsqueda -->
+      <div *ngIf="isLoading" class="loading-overlay">
+        <mat-spinner diameter="60"></mat-spinner>
+        <p class="loading-text">Cargando sucursales...</p>
+      </div>
+
+      <mat-card-content>
+        <form>
+          <!-- Grid de campos de búsqueda (2 columnas) -->
+          <div class="search-grid">
+            <!-- Compañía -->
+            <mat-form-field appearance="outline" class="search-field">
+              <mat-label>Compañía</mat-label>
+              <mat-icon matPrefix>business</mat-icon>
+              <mat-select
+                [(ngModel)]="searchCompanyId"
+                name="searchCompanyId"
+                placeholder="Seleccione una compañía"
+              >
+                <mat-option
+                  *ngFor="let company of companies"
+                  [value]="company.idCompany"
+                >
+                  {{ company.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Código sucursal -->
+            <mat-form-field appearance="outline" class="search-field">
+              <mat-label>Código sucursal</mat-label>
+              <mat-icon matPrefix>qr_code</mat-icon>
+              <input
+                matInput
+                [(ngModel)]="searchCode"
+                name="searchCode"
+                placeholder="Ingrese código (ej: 001)"
+                (keyup)="applyLocalFilters()"
+              />
+            </mat-form-field>
+
+            <!-- Nombre -->
+            <mat-form-field appearance="outline" class="search-field">
+              <mat-label>Nombre</mat-label>
+              <mat-icon matPrefix>location_city</mat-icon>
+              <input
+                matInput
+                [(ngModel)]="searchName"
+                name="searchName"
+                placeholder="Ingrese nombre de la sucursal"
+                (keyup)="applyLocalFilters()"
+              />
+            </mat-form-field>
+          </div>
+
+          <!-- Botones de acción -->
+          <div class="search-actions">
+            <button
+              mat-raised-button
+              color="primary"
+              type="button"
+              class="btn-search-compact"
+              (click)="applyFilters()"
+              [disabled]="!searchCompanyId"
+            >
+              <mat-icon>search</mat-icon>
+              Buscar
+            </button>
+            <button
+              mat-stroked-button
+              color="primary"
+              type="button"
+              class="btn-clear-compact"
+              (click)="clearFilters()"
+            >
+              <mat-icon>clear</mat-icon>
+              Limpiar
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Tabla -->
+    <mat-card class="card-padding mt-24">
+      <mat-card-content>
+        <div class="table-wrapper">
+          <mat-toolbar class="toolbar-primary-sm"
+            >Listado de Sucursales</mat-toolbar
+          >
+          <div
+            class="table-container"
+            style="position: relative; min-height: 300px"
+          >
+            <!-- Overlay para empty state -->
+            <div
+              *ngIf="dataSource.data.length === 0 && !isLoading"
+              class="empty-state-overlay"
+            >
+              <mat-icon class="empty-icon">location_city</mat-icon>
+              <p class="empty-title">
+                {{
+                  searchCompanyId
+                    ? "No existen sucursales registradas para esta compañía"
+                    : "Seleccione una compañía para ver sus sucursales"
+                }}
+              </p>
+              <p class="empty-subtitle" *ngIf="!searchCompanyId">
+                Use el filtro de búsqueda para seleccionar una compañía y ver
+                sus sucursales.
+              </p>
+            </div>
+
+            <mat-table
+              [dataSource]="dataSource"
+              matSort
+              class="mat-elevation-z1 bordered-table"
+              *ngIf="!isLoading"
+            >
+              <!-- Columna: Compañía -->
+              <ng-container matColumnDef="companyName">
+                <mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="text-color-bold header-dark"
+                >
+                  COMPAÑÍA
+                </mat-header-cell>
+                <mat-cell
+                  class="celda-ajustable"
+                  *matCellDef="let row"
+                  [matTooltip]="row.companyName || ''"
+                  matTooltipPosition="above"
+                >
+                  {{ row.companyName }}
+                </mat-cell>
+              </ng-container>
+
+              <!-- Columna: Código -->
+              <ng-container matColumnDef="code">
+                <mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="text-color-bold header-dark"
+                >
+                  CÓDIGO
+                </mat-header-cell>
+                <mat-cell class="celda-ajustable" *matCellDef="let row">
+                  {{ row.code }}
+                </mat-cell>
+              </ng-container>
+
+              <!-- Columna: Nombre -->
+              <ng-container matColumnDef="name">
+                <mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="text-color-bold header-dark"
+                >
+                  NOMBRE
+                </mat-header-cell>
+                <mat-cell
+                  class="celda-ajustable"
+                  *matCellDef="let row"
+                  [matTooltip]="row.name || ''"
+                  matTooltipPosition="above"
+                >
+                  {{ row.name }}
+                </mat-cell>
+              </ng-container>
+
+              <!-- Columna: Dirección -->
+              <ng-container matColumnDef="address">
+                <mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="text-color-bold header-dark"
+                >
+                  DIRECCIÓN
+                </mat-header-cell>
+                <mat-cell
+                  class="celda-ajustable"
+                  *matCellDef="let row"
+                  [matTooltip]="row.address || ''"
+                  matTooltipPosition="above"
+                >
+                  {{ row.address }}
+                </mat-cell>
+              </ng-container>
+
+              <!-- Columna: Tipo -->
+              <ng-container matColumnDef="type">
+                <mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="text-color-bold header-dark"
+                >
+                  TIPO
+                </mat-header-cell>
+                <mat-cell class="celda-ajustable" *matCellDef="let row">
+                  <span
+                    class="badge"
+                    [class.badge-matriz]="row.type === 'MATRIZ'"
+                    [class.badge-sucursal]="row.type === 'SUCURSAL'"
+                  >
+                    {{ row.type }}
+                  </span>
+                </mat-cell>
+              </ng-container>
+
+              <!-- Columna: Estado -->
+              <ng-container matColumnDef="status">
+                <mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="text-color-bold header-dark"
+                >
+                  ESTADO
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                  <span
+                    class="badge"
+                    [class.badge-active]="row.status"
+                    [class.badge-inactive]="!row.status"
+                  >
+                    {{ row.status ? "Activo" : "Inactivo" }}
+                  </span>
+                </mat-cell>
+              </ng-container>
+
+              <!-- Columna: Acciones -->
+              <ng-container matColumnDef="actions">
+                <mat-header-cell
+                  *matHeaderCellDef
+                  class="text-color-bold header-dark"
+                >
+                  ACCIONES
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                  <div class="actions-container">
+                    <button
+                      mat-icon-button
+                      color="primary"
+                      matTooltip="Editar sucursal"
+                      (click)="openEditDialog(row)"
+                      class="action-btn edit-btn"
+                      [disabled]="isLoading"
+                    >
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button
+                      *ngIf="row.status"
+                      mat-icon-button
+                      color="warn"
+                      matTooltip="Eliminar sucursal"
+                      (click)="delete(row)"
+                      class="action-btn delete-btn"
+                      [disabled]="isLoading"
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                    <span *ngIf="!row.status" class="action-spacer"></span>
+                  </div>
+                </mat-cell>
+              </ng-container>
+
+              <mat-header-row
+                *matHeaderRowDef="displayedColumns"
+              ></mat-header-row>
+              <mat-row
+                *matRowDef="let row; columns: displayedColumns"
+                class="table-row"
+              ></mat-row>
+            </mat-table>
+
+            <mat-paginator
+              [pageSize]="10"
+              [pageSizeOptions]="[5, 10, 25, 50]"
+              showFirstLastButtons
+            ></mat-paginator>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

@@ -4,6 +4,5 @@ public enum EventType {
   REQUEST,
   RESPONSE;
 
-  private EventType() {
-  }
+  EventType() {}
 }

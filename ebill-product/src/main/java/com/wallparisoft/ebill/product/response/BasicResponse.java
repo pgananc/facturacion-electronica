@@ -10,8 +10,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 public class BasicResponse {
-    private int code; //200 //
-    private String status; //OK
-    private String message;
-
+  private int code; // 200 //
+  private String status; // OK
+  private String message;
 }

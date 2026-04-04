@@ -1,0 +1,223 @@
+/* ======================
+   VALIDATION SNACKBAR - DISEÑO PROFESIONAL
+====================== */
+.validation-snackbar {
+  min-width: 400px;
+  max-width: 600px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  background-color: #ffffff;
+  position: relative;
+  animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.snackbar-content {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Contenedor del icono con animación */
+.icon-container {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: iconPulse 0.6s ease-out;
+}
+
+@keyframes iconPulse {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.snackbar-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+}
+
+/* Contenedor del mensaje */
+.message-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.message-text {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #212121;
+}
+
+/* Botón cerrar */
+.close-button {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  transition: all 0.3s ease;
+}
+
+.close-button:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+  transform: rotate(90deg);
+}
+
+.close-button mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  color: #757575;
+}
+
+/* Barra de progreso animada */
+.progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background-color: rgba(0, 0, 0, 0.1);
+  animation: progressShrink 5s linear forwards;
+}
+
+@keyframes progressShrink {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+/* ======================
+   TIPOS DE SNACKBAR
+====================== */
+
+/* Error (rojo) */
+.snackbar-error {
+  border-left: 6px solid #d32f2f;
+}
+
+.snackbar-error .icon-container {
+  background-color: rgba(211, 47, 47, 0.1);
+}
+
+.snackbar-error .snackbar-icon {
+  color: #d32f2f;
+}
+
+.snackbar-error .progress-bar {
+  background: linear-gradient(90deg, #d32f2f 0%, #f44336 100%);
+}
+
+/* Warning (naranja) */
+.snackbar-warning {
+  border-left: 6px solid #f57c00;
+}
+
+.snackbar-warning .icon-container {
+  background-color: rgba(245, 124, 0, 0.1);
+}
+
+.snackbar-warning .snackbar-icon {
+  color: #f57c00;
+}
+
+.snackbar-warning .progress-bar {
+  background: linear-gradient(90deg, #f57c00 0%, #ff9800 100%);
+}
+
+/* Info (cyan) */
+.snackbar-info {
+  border-left: 6px solid var(--primary-color, #0ea5e9);
+}
+
+.snackbar-info .icon-container {
+  background-color: rgba(14, 165, 233, 0.1);
+}
+
+.snackbar-info .snackbar-icon {
+  color: var(--primary-color, #0ea5e9);
+}
+
+.snackbar-info .progress-bar {
+  background: linear-gradient(90deg, var(--primary-color, #0ea5e9) 0%, var(--primary-light, #38bdf8) 100%);
+}
+
+/* Success (verde) */
+.snackbar-success {
+  border-left: 6px solid #388e3c;
+}
+
+.snackbar-success .icon-container {
+  background-color: rgba(56, 142, 60, 0.1);
+}
+
+.snackbar-success .snackbar-icon {
+  color: #388e3c;
+}
+
+.snackbar-success .progress-bar {
+  background: linear-gradient(90deg, #388e3c 0%, #4caf50 100%);
+}
+
+/* ======================
+   RESPONSIVE
+====================== */
+@media (max-width: 767px) {
+  .validation-snackbar {
+    min-width: unset;
+    width: 100%;
+    border-radius: 8px;
+  }
+
+  .snackbar-content {
+    padding: 12px 16px;
+    gap: 12px;
+  }
+
+  .icon-container {
+    width: 40px;
+    height: 40px;
+  }
+
+  .snackbar-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+
+  .message-text {
+    font-size: 14px;
+  }
+}
+

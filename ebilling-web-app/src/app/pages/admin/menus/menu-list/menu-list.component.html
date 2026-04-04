@@ -1,0 +1,184 @@
+<div class="menu-management-page">
+  <!-- Header -->
+  <mat-toolbar class="toolbar-primary toolbar-with-action">
+    <span>Gestión de Menús</span>
+    <span class="spacer"></span>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="openCreateDialog()"
+      class="btn-new-menu"
+      [disabled]="isLoading"
+    >
+      <mat-icon>add_circle</mat-icon>
+      Nuevo Menú
+    </button>
+  </mat-toolbar>
+
+  <!-- Contenido -->
+  <mat-card class="card-padding mt-12">
+    <mat-card-content>
+      <!-- Loading -->
+      <div *ngIf="isLoading && menus.length === 0" class="loading-overlay">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Cargando menús...</p>
+      </div>
+
+      <!-- Tabla de menús -->
+      <div *ngIf="!isLoading || menus.length > 0" class="table-wrapper">
+        <mat-toolbar class="toolbar-primary-sm">Listado de Menús</mat-toolbar>
+
+        <mat-table
+          [dataSource]="dataSource"
+          matSort
+          class="bordered-table"
+          *ngIf="menus.length > 0"
+        >
+          <!-- Nombre -->
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>
+              Nombre
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <div
+                class="menu-name-cell"
+                [style.padding-left.px]="(row.level || 0) * 24"
+              >
+                <mat-icon
+                  *ngIf="row.level && row.level > 0"
+                  class="submenu-indicator"
+                >
+                  subdirectory_arrow_right
+                </mat-icon>
+                <strong>{{ row.name }}</strong>
+              </div>
+            </mat-cell>
+          </ng-container>
+
+          <!-- Icono -->
+          <ng-container matColumnDef="icon">
+            <mat-header-cell *matHeaderCellDef>Icono</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <mat-icon>{{ row.icon }}</mat-icon>
+              <span class="icon-name">{{ row.icon }}</span>
+            </mat-cell>
+          </ng-container>
+
+          <!-- URL -->
+          <ng-container matColumnDef="url">
+            <mat-header-cell *matHeaderCellDef>URL</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <span class="url-cell">{{ row.url || "-" }}</span>
+            </mat-cell>
+          </ng-container>
+
+          <!-- Feature Code -->
+          <ng-container matColumnDef="featureCode">
+            <mat-header-cell *matHeaderCellDef>Feature Code</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <span
+                *ngIf="row.featureCode"
+                class="feature-code-badge"
+                [matTooltip]="
+                  row.feature
+                    ? 'Módulo: ' +
+                      (row.feature.module || 'N/A') +
+                      ' | Roles: ' +
+                      (row.feature.allowedRoles?.length || 0) +
+                      ' | Planes: ' +
+                      (row.feature.requiredPlans?.length || 0)
+                    : row.featureCode
+                "
+              >
+                {{ row.featureCode }}
+              </span>
+              <span *ngIf="!row.featureCode" class="no-feature-code">-</span>
+            </mat-cell>
+          </ng-container>
+
+          <!-- Estado -->
+          <ng-container matColumnDef="active">
+            <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <mat-slide-toggle
+                [checked]="row.active"
+                (change)="toggleActive(row)"
+                [disabled]="isLoading"
+                color="primary"
+              >
+                {{ row.active ? "Activo" : "Inactivo" }}
+              </mat-slide-toggle>
+            </mat-cell>
+          </ng-container>
+
+          <!-- Acciones -->
+          <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+            <mat-cell *matCellDef="let row" class="actions-cell">
+              <button
+                mat-icon-button
+                matTooltip="Agregar submenú"
+                matTooltipPosition="above"
+                (click)="openCreateDialog(row)"
+                color="primary"
+              >
+                <mat-icon>add</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                matTooltip="Editar"
+                matTooltipPosition="above"
+                (click)="openEditDialog(row)"
+                color="primary"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                matTooltip="Eliminar"
+                matTooltipPosition="above"
+                (click)="deleteMenu(row)"
+                color="warn"
+                [disabled]="row.subMenus && row.subMenus.length > 0"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+
+          <!-- Empty state -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+              <div class="empty-state-container">
+                <div class="empty-state">
+                  <mat-icon class="empty-icon">menu</mat-icon>
+                  <p class="empty-title">No hay menús registrados</p>
+                  <p class="empty-subtitle">
+                    Crea un nuevo menú usando el botón "Nuevo Menú" en la parte
+                    superior.
+                  </p>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </mat-table>
+
+        <!-- Empty state cuando no hay datos -->
+        <div
+          *ngIf="menus.length === 0 && !isLoading"
+          class="empty-state-overlay"
+        >
+          <mat-icon class="empty-icon">menu</mat-icon>
+          <p class="empty-title">No hay menús registrados</p>
+          <p class="empty-subtitle">
+            Crea un nuevo menú usando el botón "Nuevo Menú" en la parte
+            superior.
+          </p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

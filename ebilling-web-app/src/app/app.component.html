@@ -1,55 +1,177 @@
 <div class="container">
-  <mat-toolbar color="primary" class="toolbar" *ngIf="loginService.isLogin()">
-    <button mat-icon-button (click)="sidenav.toggle()">
-      <mat-icon *ngIf="!sidenav.opened">menu</mat-icon>
-      <mat-icon *ngIf="sidenav.opened">close</mat-icon>
-    </button>
-
-    <p class="app-name">WallpariSoft</p>
-
-    <span class="spacer"></span>
-    <a mat-flat-button color="primary" (click)="showInfoCompany()">
-      {{ companyName }}</a
-    >
-    <button mat-icon-button [matMenuTriggerFor]="menu">
-      <mat-icon>more_vert</mat-icon>
-    </button>
-
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item routerLink="/profile">
-        <mat-icon>account_box</mat-icon>
-        <span>Perfil</span>
+  <!-- solo muestro toolbar + sidenav si showLayout es true (usuario logueado Y NO en ruta pública) -->
+  <ng-container *ngIf="showLayout; else publicContent">
+    <mat-toolbar color="primary" class="toolbar">
+      <!-- botones de abrir/cerrar sidenav -->
+      <button
+        mat-icon-button
+        *ngIf="!sidenav.opened"
+        (click)="sidenav.open()"
+        [attr.aria-label]="'Abrir menú de navegación'"
+        type="button"
+      >
+        <mat-icon>menu</mat-icon>
       </button>
       <button
-        mat-menu-item
-        (click)="sidenav.opened = false"
-        (click)="loginService.closeSession()"
+        mat-icon-button
+        *ngIf="sidenav.opened"
+        (click)="sidenav.close()"
+        [attr.aria-label]="'Cerrar menú de navegación'"
+        type="button"
       >
-        <mat-icon>exit_to_app</mat-icon>
-        <span>Cerrar sesión</span>
+        <mat-icon>close</mat-icon>
       </button>
-    </mat-menu>
-  </mat-toolbar>
-
-  <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav #sidenav style="width: 200px">
-      <img src="assets/logo.jpg" width="128" style="margin-left: 20px" />
-
-      <div *ngFor="let m of menus">
+      <div class="toolbar-logo-wrapper">
+        <img
+          src="assets/logo-wallparisoft-texto.png"
+          alt="WallpariSoft"
+          class="toolbar-logo"
+          width="200"
+          height="72"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </div>
+      <span class="spacer"></span>
+      <!-- Badge de Suscripción (modo compacto) -->
+      <app-subscription-badge
+        class="toolbar-subscription-badge"
+        [compactMode]="true"
+      ></app-subscription-badge>
+      <a mat-flat-button color="primary" (click)="showInfoCompany()">
+        {{ companyName || "Sin compañía" }}
+      </a>
+      <!-- Menú usuario -->
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item routerLink="/profile">
+          <mat-icon>account_box</mat-icon>
+          <span>Perfil</span>
+        </button>
+        <button mat-menu-item routerLink="/setting" *ngIf="canShowConfigMenu">
+          <mat-icon>settings</mat-icon>
+          <span>Configuración</span>
+        </button>
         <button
           mat-menu-item
-          (click)="sidenav.toggle()"
-          routerLink="{{ m.url }}"
-          style="cursor: pointer"
+          (click)="changeCompany()"
+          *ngIf="hasMultipleCompaniesFlag"
         >
-          <mat-icon>{{ m.icon }}</mat-icon>
-          <span>{{ m.name }}</span>
+          <mat-icon>business</mat-icon>
+          <span>Cambiar empresa</span>
         </button>
-        <mat-divider></mat-divider>
-      </div>
-    </mat-sidenav>
-    <mat-sidenav-content>
-      <router-outlet></router-outlet>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
+        <button mat-menu-item (click)="loginService.closeSession()">
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Cerrar sesión</span>
+        </button>
+      </mat-menu>
+    </mat-toolbar>
+
+    <mat-sidenav-container class="sidenav-container">
+      <mat-sidenav
+        #sidenav
+        [mode]="sidenavMode"
+        [opened]="sidenavOpened"
+        [disableClose]="false"
+        style="width: 360px"
+        class="app-sidenav"
+      >
+        <!-- Cabecera del logo - Logo dinámico de la compañía con fallback -->
+        <div class="sidenav-header">
+          <div class="sidenav-logo-container">
+            <!-- Logo dinámico de compañía o fallback optimizado -->
+            <img
+              *ngIf="companyLogoUrl"
+              [src]="companyLogoUrl"
+              [alt]="'Logo de ' + companyName"
+              class="sidenav-logo"
+              width="140"
+              height="56"
+              loading="lazy"
+              fetchpriority="low"
+              decoding="async"
+              (error)="companyLogoUrl = null"
+            />
+            <!-- Fallback estático optimizado con NgOptimizedImage -->
+            <img
+              *ngIf="!companyLogoUrl"
+              ngSrc="assets/logo-wallparisoft.png"
+              alt="Logotipo de WallpariSoft"
+              class="sidenav-logo"
+              width="140"
+              height="77"
+              loading="lazy"
+              fetchpriority="low"
+              decoding="async"
+              priority="false"
+            />
+          </div>
+        </div>
+
+        <!-- Badge de Suscripción en Sidebar -->
+        <div class="sidenav-subscription-container">
+          <app-subscription-badge></app-subscription-badge>
+        </div>
+
+        <!-- Menú con accordion mejorado -->
+        <div class="sidenav-menu-container">
+          <mat-accordion multi class="sidenav-accordion">
+            <ng-container *ngFor="let menu of menus; trackBy: trackByMenuId">
+              <!-- Menú con submenús: mostrar como expansion panel -->
+              <mat-expansion-panel
+                *ngIf="menu.subMenus && menu.subMenus.length > 0"
+                class="menu-group"
+                [expanded]="isMenuGroupExpanded(menu)"
+              >
+                <mat-expansion-panel-header
+                  class="menu-group-header"
+                  [class.menu-group-header-expanded]="isMenuGroupExpanded(menu)"
+                >
+                  <mat-icon class="menu-group-icon">{{ menu.icon }}</mat-icon>
+                  <span class="menu-group-title">{{ menu.name }}</span>
+                </mat-expansion-panel-header>
+
+                <!-- Usar componente recursivo para renderizar submenús anidados -->
+                <div class="menu-subitems">
+                  <app-menu-item
+                    *ngFor="
+                      let subMenu of menu.subMenus;
+                      trackBy: trackBySubMenuId
+                    "
+                    [menu]="subMenu"
+                    [level]="1"
+                    (menuItemClick)="closeSidenavOnMobile()"
+                  ></app-menu-item>
+                </div>
+              </mat-expansion-panel>
+
+              <!-- Menú sin submenús pero con URL: mostrar como link clickeable -->
+              <app-menu-item
+                *ngIf="
+                  (!menu.subMenus || menu.subMenus.length === 0) &&
+                  menu.url &&
+                  menu.url !== 'null'
+                "
+                [menu]="menu"
+                [level]="0"
+                (menuItemClick)="closeSidenavOnMobile()"
+                class="menu-group-link"
+              ></app-menu-item>
+            </ng-container>
+          </mat-accordion>
+        </div>
+      </mat-sidenav>
+
+      <mat-sidenav-content>
+        <router-outlet></router-outlet>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  </ng-container>
+
+  <!-- Si NO estoy logueado, solo cargo el outlet (login, reset-password...) -->
+  <ng-template #publicContent>
+    <router-outlet></router-outlet>
+  </ng-template>
 </div>

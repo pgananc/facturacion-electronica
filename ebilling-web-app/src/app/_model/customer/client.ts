@@ -1,14 +1,19 @@
 import { Contact } from './contact';
 
-export class Client {
-  idClient = 0;
-  idType = 0;
-  idTypeEnum: any;
-  identification = '';
-  name = '';
-  clientType = 0;
-  clientTypeEnum: any;
-  status = true;
-  companyIdentification = '';
-  contacts: Contact[] = [];
+export interface Client {
+  idClient: number;
+  idType: number;
+  idTypeEnum?: any;
+  identification: string;
+  name: string;
+  clientType: number;
+  clientTypeEnum?: any;
+  status: boolean;
+  idCompany?: number;
+  companyIdentification: string;
+  contacts: Contact[];
+  mail?: string;
+  address?: string;
+  phone?: string;
+  mobil?: string;
 }

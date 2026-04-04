@@ -1,48 +1,253 @@
-.principal-full-width {
-    margin-left: 10px;
+@import '../../_shared/toolbar-styles.css';
+@import '../../_shared/shared-styles.css';
+@import '../../_shared/table-styles.css';
+@import '../../_shared/responsive-styles.css';
+
+.product-page { padding: var(--spacing-lg, 24px); max-width: 1400px; margin: 0 auto; background-color: var(--background-color, #f9fafb); min-height: calc(100vh - 64px); }
+.new-product-btn mat-icon { margin-right: var(--spacing-xs, 8px); }
+
+.mat-column-mainCode { width: 10%; min-width: 90px; }
+.mat-column-name { width: 15%; min-width: 120px; }
+.mat-column-description { width: 20%; min-width: 150px; }
+.mat-column-unitPrice { width: 10%; min-width: 90px; }
+.mat-column-status { width: 8%; min-width: 80px; }
+.mat-column-actions { width: 15%; min-width: 120px; }
+
+.mat-column-name .celda-ajustable { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block !important; }
+.mat-column-description .celda-ajustable { display: block !important; white-space: normal !important; word-wrap: break-word !important; overflow-wrap: break-word !important; line-height: 1.5; }
+.mat-column-mainCode .celda-ajustable, .mat-column-unitPrice .celda-ajustable { white-space: nowrap; overflow: hidden; text-overflow: clip; }
+
+::ng-deep .mat-mdc-table .mat-mdc-cell.mat-column-description {
+  height: auto !important; min-height: 52px !important; padding-top: var(--spacing-xs, 8px) !important; padding-bottom: var(--spacing-xs, 8px) !important; align-items: flex-start !important;
 }
 
-
-.principal-container {
-    display: flex;
-    flex-direction: column;
-    min-width: 300px;
+.mat-column-mainCode.mat-cell, .mat-column-unitPrice.mat-cell, .mat-column-status.mat-cell, .mat-column-actions.mat-cell {
+  justify-content: center !important; text-align: center !important;
 }
 
-.principal-header {
-    min-height: 64px;
-    padding: 8px 24px 0;
+::ng-deep .mat-mdc-table .mat-mdc-cell.mat-column-mainCode,
+::ng-deep .mat-mdc-table .mat-mdc-cell.mat-column-unitPrice,
+::ng-deep .mat-mdc-table .mat-mdc-cell.mat-column-status,
+::ng-deep .mat-mdc-table .mat-mdc-cell.mat-column-actions {
+  display: flex !important; justify-content: center !important; align-items: center !important; text-align: center !important;
 }
 
-.mat-form-field {
-    font-size: 14px;
+/* ===== COLUMNAS TAX TYPES ===== */
+.mat-column-ivaTaxType { width: 10%; min-width: 100px; }
+.mat-column-iceTaxType { width: 12%; min-width: 120px; }
+
+/* Centrar columnas IVA e ICE */
+.mat-column-ivaTaxType.mat-cell,
+.mat-column-iceTaxType.mat-cell {
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+::ng-deep .mat-mdc-table .mat-mdc-cell.mat-column-ivaTaxType,
+::ng-deep .mat-mdc-table .mat-mdc-cell.mat-column-iceTaxType {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center !important;
+}
+
+/* ===== BADGES PARA TAX TYPES (IVA E ICE) ===== */
+.tax-badge {
+  padding: calc(var(--spacing-xs, 8px) / 2) var(--spacing-xs, 8px);
+  border-radius: var(--radius-sm, 4px);
+  font-size: 11px;
+  font-weight: 500;
+  display: inline-block;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.iva-badge {
+  background-color: #e3f2fd;
+  color: #1565c0;
+  border: 1px solid #90caf9;
+  cursor: help; /* ✅ Indica que hay tooltip */
+  transition: all 0.2s ease;
+}
+
+.iva-badge:hover {
+  background-color: #bbdefb; /* Slightly darker on hover */
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.ice-badge {
+  background-color: #fff3e0;
+  color: #e65100;
+  border: 1px solid #ffb74d;
+  font-size: 10px;
+  max-width: 140px; /* ✅ Ajustado para columna del 12% */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: help; /* ✅ Indica que hay tooltip al hacer hover */
+  transition: all 0.2s ease;
+}
+
+.ice-badge:hover {
+  background-color: #ffe0b2; /* Slightly darker on hover */
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.no-tax {
+  background-color: #f5f5f5;
+  color: #9e9e9e;
+  border: 1px solid #e0e0e0;
+}
+
+/* ===== TOOLTIP PERSONALIZADO ===== */
+::ng-deep .custom-tooltip {
+  font-size: 13px !important;
+  background-color: #263238 !important;
+  color: #ffffff !important;
+  padding: var(--spacing-xs, 8px) var(--spacing-sm, 12px) !important;
+  border-radius: var(--radius-sm, 4px) !important;
+  max-width: 300px !important;
+  line-height: 1.4 !important;
+}
+
+/* ===== TABLE CONTAINER ===== */
+.table-container {
+  position: relative;
+  overflow-x: auto;
+  min-height: 300px;
+}
+
+/* ===== EMPTY STATE OVERLAY ===== */
+.empty-state-overlay {
+  position: absolute;
+  top: 52%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 5;
+  padding: var(--spacing-2xl, 48px) var(--spacing-lg, 24px);
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: var(--radius-md, 8px);
+  width: 90%;
+  max-width: 600px;
+  margin-top: 20px;
+}
+
+.empty-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: #b0bec5;
+  margin-bottom: var(--spacing-md, 16px);
+}
+
+.empty-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #424242;
+  margin: 0 0 var(--spacing-xs, 8px) 0;
+}
+
+.empty-subtitle {
+  font-size: 14px;
+  color: #757575;
+  margin: 0;
+  max-width: 400px;
+}
+
+/* ===== LAYOUT HORIZONTAL: INPUTS + BOTONES EN UNA LÍNEA ===== */
+.search-grid-horizontal {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 12px);
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
+.search-field-compact {
+  flex: 1;
+  margin: 0 !important;
+  min-width: 180px;
+}
+
+.search-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 12px);
+  margin-left: auto;
+  flex-shrink: 0;
+  padding-bottom: 22px;
+}
+
+/* Mobile (< 960px) */
+@media screen and (max-width: 959px) {
+  .search-field-compact {
+    flex: 1 1 calc(50% - 6px);
+    min-width: 180px;
+  }
+
+  .search-actions {
+    flex: 1 1 100%;
+    justify-content: flex-end;
+    padding-bottom: 0;
+  }
+}
+
+@media screen and (max-width: 599px) {
+  .search-field-compact {
+    flex: 1 1 100%;
     width: 100%;
+  }
+
+  .search-actions {
+    flex-direction: column;
+    width: 100%;
+    padding-bottom: 0;
+  }
+
+  .search-btn,
+  .clear-btn {
+    width: 100%;
+  }
 }
 
-.mat-table {
-    overflow: auto;
-    max-height: 500px;
-}
-
-.text-center {
-    text-align: center;
-}
-
-.flex-parent {
-    display: flex;
-}
-
-.jc-center {
-    justify-content: center;
-}
-
-.text-color-bold {
-    font-weight: bold;
-}
-
-.botton-add {
-    margin-right: 20px;
-    margin-bottom: 5px;
-    margin-top: 5px;
-    text-align: left;
+/* ===== TABLA RESPONSIVE - OCULTAR COLUMNAS EN MOBILE ===== */
+@media screen and (max-width: 600px) {
+  /* Ocultar columnas menos importantes en mobile */
+  .mat-column-description,
+  .mat-column-ivaTaxType,
+  .mat-column-iceTaxType {
+    display: none !important;
+  }
+  
+  /* Ajustar ancho de columnas visibles */
+  .mat-column-mainCode {
+    width: 20% !important;
+    min-width: 80px !important;
+  }
+  
+  .mat-column-name {
+    width: 30% !important;
+    min-width: 100px !important;
+  }
+  
+  .mat-column-unitPrice {
+    width: 15% !important;
+    min-width: 70px !important;
+  }
+  
+  .mat-column-status {
+    width: 15% !important;
+    min-width: 70px !important;
+  }
+  
+  .mat-column-actions {
+    width: 20% !important;
+    min-width: 100px !important;
+  }
 }

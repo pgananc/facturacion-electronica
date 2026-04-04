@@ -1,20 +1,188 @@
-.principal-container {
-    display: flex;
-    flex-direction: column;
-    min-width: 300px;
+@import '../../_shared/toolbar-styles.css';
+@import '../../_shared/shared-styles.css';
+@import '../../_shared/responsive-styles.css';
+
+.invoice-page {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  background-color: var(--background-color, #f9fafb);
+  min-height: calc(100vh - 64px);
 }
 
-.principal-header {
-    min-height: 64px;
-    padding: 8px 24px 0;
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-.mat-form-field {
-    font-size: 14px;
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  background-color: #f8fafc;
+  border-radius: 12px;
+  border-left: 4px solid var(--primary-color, #0ea5e9);
+  transition: all 0.3s ease;
+}
+
+.info-item:hover {
+  background-color: #f1f5f9;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.1);
+  transform: translateX(4px);
+}
+
+.info-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-label mat-icon {
+  color: var(--primary-color, #0ea5e9);
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.info-value {
+  font-size: 18px;
+  font-weight: 500;
+  color: #1e293b;
+  margin-top: 4px;
+  word-break: break-word;
+}
+
+/* Contenedor de roles con badges */
+.roles-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Badge base para roles */
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: capitalize;
+  letter-spacing: 0.3px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.role-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Badge para Super Administrador */
+.role-badge-super-admin {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+}
+
+/* Badge para Administrador */
+.role-badge-admin {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: #ffffff;
+}
+
+/* Badge para Miembro */
+.role-badge-member {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: #ffffff;
+}
+
+/* Badge para Contador */
+.role-badge-accountant {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  color: #1e293b;
+}
+
+/* Badge para Operador */
+.role-badge-operator {
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  color: #1e293b;
+}
+
+/* Badge por defecto */
+.role-badge-default {
+  background-color: #e2e8f0;
+  color: #475569;
+}
+
+/* Mensaje cuando no hay roles */
+.no-roles {
+  color: #94a3b8;
+  font-style: italic;
+  font-size: 14px;
+}
+
+.profile-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.change-password-btn {
+  min-width: 220px;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.change-password-btn:hover {
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.5);
+  transform: translateY(-2px);
+}
+
+.change-password-btn mat-icon {
+  margin-right: 4px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .invoice-page {
+    padding: 16px;
+  }
+
+  .profile-container {
+    max-width: 100%;
+  }
+
+  .info-item {
+    padding: 16px;
+  }
+
+  .info-value {
+    font-size: 16px;
+  }
+
+  .change-password-btn {
     width: 100%;
-}
-
-.mat-table {
-    overflow: auto;
-    max-height: 500px;
+  }
 }

@@ -1,0 +1,53 @@
+<!-- Si tiene submenús, mostrar como expansion panel -->
+<mat-expansion-panel
+  *ngIf="hasSubMenus()"
+  [expanded]="isExpanded"
+  class="menu-expansion-panel"
+  [class.menu-expansion-panel-level-1]="level === 1"
+  [class.menu-expansion-panel-level-2]="level === 2"
+>
+  <mat-expansion-panel-header class="menu-expansion-header">
+    <mat-icon class="menu-icon">{{ menu.icon }}</mat-icon>
+    <span class="menu-title">{{ menu.name }}</span>
+  </mat-expansion-panel-header>
+
+  <!-- Renderizar submenús recursivamente -->
+  <div class="menu-subitems-container">
+    <app-menu-item
+      *ngFor="let subMenu of menu.subMenus; trackBy: trackByMenuId"
+      [menu]="subMenu"
+      [level]="level + 1"
+      (menuItemClick)="menuItemClick.emit()"
+      class="menu-item-recursive"
+    ></app-menu-item>
+  </div>
+</mat-expansion-panel>
+
+<!-- Si NO tiene submenús y tiene URL válida, mostrar como link -->
+<a
+  *ngIf="isClickable()"
+  [routerLink]="getFullUrl(menu.url!)"
+  routerLinkActive="menu-item-active"
+  [routerLinkActiveOptions]="{ exact: shouldUseExactMatch() }"
+  mat-list-item
+  class="menu-item-link"
+  [class.menu-item-link-level-1]="level === 1"
+  [class.menu-item-link-level-2]="level === 2"
+  [class.menu-item-link-level-3]="level === 3"
+  [attr.aria-label]="menu.name"
+  (click)="onMenuItemClick()"
+>
+  <mat-icon class="menu-icon">{{ menu.icon }}</mat-icon>
+  <span class="menu-title">{{ menu.name }}</span>
+</a>
+
+<!-- Si NO tiene submenús y NO tiene URL válida, mostrar como texto (no clickeable) -->
+<div
+  *ngIf="!hasSubMenus() && !isClickable()"
+  class="menu-item-text"
+  [class.menu-item-text-level-1]="level === 1"
+  [class.menu-item-text-level-2]="level === 2"
+>
+  <mat-icon class="menu-icon">{{ menu.icon }}</mat-icon>
+  <span class="menu-title">{{ menu.name }}</span>
+</div>

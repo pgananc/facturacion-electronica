@@ -1,0 +1,30 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "🚀 Run ebill-authentication (localhost)",
+      "request": "launch",
+      "mainClass": "com.wallparisoft.authentication.EBillAuthenticationApplication",
+      "projectName": "ebill-authentication",
+      "args": "--spring.profiles.active=localhost",
+      "console": "integratedTerminal",
+      "env": {
+        "JAVA_HOME": "/Users/jguerreroh/Library/Java/JavaVirtualMachines/corretto-17.0.16/Contents/Home"
+      }
+    },
+    {
+      "type": "java",
+      "name": "🐛 Debug ebill-authentication (localhost)",
+      "request": "launch",
+      "mainClass": "com.wallparisoft.authentication.EBillAuthenticationApplication",
+      "projectName": "ebill-authentication",
+      "args": "--spring.profiles.active=localhost",
+      "console": "integratedTerminal",
+      "env": {
+        "JAVA_HOME": "/Users/jguerreroh/Library/Java/JavaVirtualMachines/corretto-17.0.16/Contents/Home"
+      }
+    }
+  ]
+}
+

@@ -1,0 +1,119 @@
+.dialog-container {
+  display: flex;
+  flex-direction: column;
+  min-width: 400px;
+  max-width: 500px;
+}
+
+/* Alineación del botón de cerrar en el toolbar */
+.toolbar-primary-sm {
+  display: flex;
+  align-items: center;
+}
+
+.toolbar-primary-sm .spacer {
+  flex: 1 1 auto;
+}
+
+.toolbar-primary-sm button[mat-icon-button] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dialog-content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.success-content {
+  width: 100%;
+}
+
+.success-icon {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.success-icon-large {
+  font-size: 64px !important;
+  width: 64px !important;
+  height: 64px !important;
+  color: #4caf50; /* Verde de éxito */
+}
+
+.success-title {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.success-message {
+  margin: 0 0 24px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.invoice-info {
+  margin: 12px 0;
+  padding: 12px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  text-align: left;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info-label {
+  font-weight: 500;
+  color: #666;
+  font-size: 14px;
+}
+
+.info-value {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.dialog-actions {
+  padding: 16px 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.print-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.print-invoice-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.close-button {
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 600px) {
+  .dialog-container {
+    min-width: 90vw;
+  }
+}
+
+

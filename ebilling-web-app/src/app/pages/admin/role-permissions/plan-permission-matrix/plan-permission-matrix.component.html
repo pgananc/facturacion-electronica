@@ -1,0 +1,262 @@
+<div class="role-permissions-page">
+  <!-- Contenedor principal centrado -->
+  <div class="role-permissions-container">
+    <!-- Título con acción -->
+    <mat-toolbar class="toolbar-primary toolbar-with-action">
+      <span>Gestión de Permisos de Planes</span>
+      <span class="spacer"></span>
+      <button
+        mat-icon-button
+        (click)="loadData()"
+        [disabled]="isLoading"
+        matTooltip="Refrescar"
+        class="refresh-btn"
+      >
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <!-- Filtro de búsqueda -->
+    <mat-card class="card-padding mt-16 search-card">
+      <!-- Loading spinner durante búsqueda -->
+      <div *ngIf="isLoading" class="loading-overlay">
+        <mat-spinner diameter="60"></mat-spinner>
+        <p class="loading-text">Cargando permisos de planes...</p>
+      </div>
+
+      <mat-card-content>
+        <form class="search-form">
+          <div class="search-grid-horizontal">
+            <!-- Filtro por módulo -->
+            <mat-form-field appearance="outline" class="search-field-compact">
+              <mat-label>Filtrar por módulo</mat-label>
+              <mat-icon matPrefix>filter_list</mat-icon>
+              <mat-select
+                [(ngModel)]="selectedModule"
+                (selectionChange)="onFilterChange()"
+                name="module"
+              >
+                <mat-option value="">Todos los módulos</mat-option>
+                <mat-option *ngFor="let module of modules" [value]="module">
+                  <mat-icon [style.color]="getModuleColor(module)">
+                    {{ getModuleIcon(module) }}
+                  </mat-icon>
+                  {{ getModuleDisplayName(module) }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Botones de acción (solo visibles para super_admin) -->
+            <button
+              mat-stroked-button
+              type="button"
+              (click)="discardChanges()"
+              [disabled]="!hasChanges || isSaving"
+              *ngIf="hasChanges && canEdit"
+              class="btn-clear-compact"
+            >
+              <mat-icon>undo</mat-icon>
+              Descartar Cambios
+            </button>
+
+            <button
+              mat-raised-button
+              type="button"
+              (click)="saveChanges()"
+              [disabled]="!hasChanges || isSaving"
+              *ngIf="canEdit"
+              class="btn-search-compact"
+            >
+              <mat-spinner *ngIf="isSaving" diameter="20"></mat-spinner>
+              <mat-icon *ngIf="!isSaving">save</mat-icon>
+              <span *ngIf="!isSaving">Guardar Cambios</span>
+              <span *ngIf="isSaving">Guardando...</span>
+            </button>
+
+            <!-- Mensaje informativo para usuarios no super_admin -->
+            <div *ngIf="!canEdit" class="read-only-notice">
+              <mat-icon>info</mat-icon>
+              <span>Solo los super administradores pueden modificar permisos de planes</span>
+            </div>
+          </div>
+
+          <!-- Indicador de cambios pendientes -->
+          <div *ngIf="hasChanges" class="changes-indicator">
+            <mat-icon>info</mat-icon>
+            <span
+              >Tienes cambios sin guardar. Haz clic en "Guardar Cambios" para
+              aplicarlos.</span
+            >
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Tabla de Permisos -->
+    <div class="table-wrapper">
+      <mat-toolbar class="toolbar-primary-sm"
+        >Matriz de Permisos de Planes</mat-toolbar
+      >
+
+      <div
+        class="table-container"
+        style="position: relative; min-height: 300px"
+      >
+        <!-- Overlay para empty state -->
+        <div
+          *ngIf="dataSource.data.length === 0 && !isLoading"
+          class="empty-state-overlay"
+        >
+          <mat-icon class="empty-icon">filter_list_off</mat-icon>
+          <p class="empty-title">
+            No hay funcionalidades para el módulo seleccionado
+          </p>
+          <p class="empty-subtitle">
+            Cambia el filtro de módulo para ver más funcionalidades.
+          </p>
+        </div>
+
+        <mat-table
+          *ngIf="!isLoading"
+          [dataSource]="dataSource"
+          class="bordered-table permission-table"
+        >
+          <!-- Columna: Feature -->
+          <ng-container matColumnDef="feature">
+            <mat-header-cell *matHeaderCellDef class="feature-header">
+              Funcionalidad
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row" class="feature-cell">
+              <div class="feature-info">
+                <div class="feature-main">
+                  <strong>{{ row.name }}</strong>
+                  <mat-icon
+                    class="info-icon"
+                    [matTooltip]="row.description"
+                    matTooltipPosition="right"
+                    *ngIf="row.description"
+                  >
+                    info_outline
+                  </mat-icon>
+                </div>
+                <small class="feature-code">{{ row.featureCode }}</small>
+              </div>
+            </mat-cell>
+          </ng-container>
+
+          <!-- Columna: Módulo -->
+          <ng-container matColumnDef="module">
+            <mat-header-cell *matHeaderCellDef class="module-header">
+              Módulo
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row" class="module-cell">
+              <span
+                class="module-badge"
+                [style.background-color]="getModuleColor(row.module) + '20'"
+                [style.color]="getModuleColor(row.module)"
+              >
+                <mat-icon [style.color]="getModuleColor(row.module)">
+                  {{ getModuleIcon(row.module) }}
+                </mat-icon>
+                {{ getModuleDisplayName(row.module) }}
+              </span>
+            </mat-cell>
+          </ng-container>
+
+          <!-- Columnas dinámicas: Planes -->
+          <ng-container
+            *ngFor="let plan of plans"
+            [matColumnDef]="'plan_' + plan.code"
+          >
+            <mat-header-cell *matHeaderCellDef class="plan-header">
+              <div class="plan-header-content">
+                <strong>{{ plan.name }}</strong>
+                <small>{{ plan.description }}</small>
+              </div>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row" class="plan-cell">
+              <mat-checkbox
+                [checked]="row.permissions[plan.code]"
+                (change)="togglePermission(row, plan.code)"
+                [color]="'primary'"
+                [disabled]="!canEdit"
+                [attr.aria-label]="
+                  'Permiso ' +
+                  row.name +
+                  ' para plan ' +
+                  plan.name +
+                  (row.permissions[plan.code] ? ' activado' : ' desactivado')
+                "
+                [matTooltip]="
+                  !canEdit
+                    ? 'Solo los super administradores pueden modificar permisos'
+                    : row.permissions[plan.code]
+                    ? 'Clic para QUITAR permiso del plan'
+                    : 'Clic para AGREGAR permiso al plan'
+                "
+              >
+              </mat-checkbox>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row
+            *matRowDef="let row; columns: displayedColumns"
+            class="table-row"
+          ></mat-row>
+        </mat-table>
+      </div>
+    </div>
+
+    <!-- Leyenda -->
+    <mat-card class="legend-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>help_outline</mat-icon>
+          Cómo usar esta herramienta
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <ul class="legend-list">
+          <li>
+            <mat-icon>check_box</mat-icon>
+            <span
+              >Marca los checkboxes para incluir funcionalidades en cada
+              plan</span
+            >
+          </li>
+          <li>
+            <mat-icon>filter_list</mat-icon>
+            <span
+              >Usa el filtro de módulo para ver funcionalidades
+              específicas</span
+            >
+          </li>
+          <li>
+            <mat-icon>save</mat-icon>
+            <span
+              >Los cambios no se aplican hasta que hagas clic en "Guardar
+              Cambios"</span
+            >
+          </li>
+          <li>
+            <mat-icon>info</mat-icon>
+            <span
+              >Los permisos de planes determinan qué funcionalidades están
+              disponibles en cada plan de suscripción. Los usuarios solo verán
+              las funcionalidades incluidas en su plan actual.</span
+            >
+          </li>
+          <li>
+            <mat-icon>warning</mat-icon>
+            <span
+              ><strong>Importante:</strong> Un usuario necesita AMBOS permisos
+              para acceder: su rol debe tener permiso Y su plan debe incluir la
+              funcionalidad.</span
+            >
+          </li>
+        </ul>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

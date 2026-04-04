@@ -1,0 +1,152 @@
+@use '@angular/material' as mat;
+
+// Incluir las funciones comunes de Material
+@include mat.core();
+
+// ========================================
+// PALETA FINANCIAL/TECH - Paletas de colores
+// ========================================
+
+// Primary: Cyan (#0EA5E9) - Color principal del sistema
+$primary-palette: (
+  50: #e0f7fe,
+  100: #b3ecfd,
+  200: #80dffb,
+  300: #4dd2f9,
+  400: #26c8f8,
+  500: #0ea5e9, // Color principal
+  600: #0c95d2,
+  700: #0a82bb,
+  800: #0870a4,
+  900: #05517d,
+  A100: #ffffff,
+  A200: #d4f0ff,
+  A400: #a1dfff,
+  A700: #87d4ff,
+  contrast: (
+    50: rgba(0, 0, 0, 0.87),
+    100: rgba(0, 0, 0, 0.87),
+    200: rgba(0, 0, 0, 0.87),
+    300: rgba(0, 0, 0, 0.87),
+    400: rgba(0, 0, 0, 0.87),
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: rgba(0, 0, 0, 0.87),
+    A200: rgba(0, 0, 0, 0.87),
+    A400: rgba(0, 0, 0, 0.87),
+    A700: rgba(0, 0, 0, 0.87),
+  ),
+);
+
+// Accent: Naranja suave (#F97316) - Para acentos y acciones secundarias
+$accent-palette: (
+  50: #fff4e6,
+  100: #ffe4bf,
+  200: #ffd299,
+  300: #ffc073,
+  400: #ffb256,
+  500: #f97316, // Color principal
+  600: #e36614,
+  700: #ca5811,
+  800: #b14a0f,
+  900: #8a380a,
+  A100: #ffffff,
+  A200: #ffe4d4,
+  A400: #ffc4a3,
+  A700: #ffb089,
+  contrast: (
+    50: rgba(0, 0, 0, 0.87),
+    100: rgba(0, 0, 0, 0.87),
+    200: rgba(0, 0, 0, 0.87),
+    300: rgba(0, 0, 0, 0.87),
+    400: rgba(0, 0, 0, 0.87),
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: rgba(0, 0, 0, 0.87),
+    A200: rgba(0, 0, 0, 0.87),
+    A400: rgba(0, 0, 0, 0.87),
+    A700: rgba(0, 0, 0, 0.87),
+  ),
+);
+
+// Warn: Rojo (#EF4444) - Para acciones destructivas
+$warn-palette: (
+  50: #fdeaea,
+  100: #fbcbcb,
+  200: #f8a8a8,
+  300: #f58585,
+  400: #f36a6a,
+  500: #ef4444, // Color principal
+  600: #d13d3d,
+  700: #b03535,
+  800: #8f2d2d,
+  900: #5e1e1e,
+  A100: #ffffff,
+  A200: #ffe4e4,
+  A400: #ffb1b1,
+  A700: #ff9797,
+  contrast: (
+    50: rgba(0, 0, 0, 0.87),
+    100: rgba(0, 0, 0, 0.87),
+    200: rgba(0, 0, 0, 0.87),
+    300: rgba(0, 0, 0, 0.87),
+    400: rgba(0, 0, 0, 0.87),
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: rgba(0, 0, 0, 0.87),
+    A200: rgba(0, 0, 0, 0.87),
+    A400: rgba(0, 0, 0, 0.87),
+    A700: rgba(0, 0, 0, 0.87),
+  ),
+);
+
+// Crear las paletas de Material
+// Angular Material 18 requiere el prefijo m2- para las funciones de theming
+$custom-primary: mat.m2-define-palette($primary-palette);
+$custom-accent: mat.m2-define-palette($accent-palette);
+$custom-warn: mat.m2-define-palette($warn-palette);
+
+// Definir el tema claro
+$custom-theme: mat.m2-define-light-theme((
+  color: (
+    primary: $custom-primary,
+    accent: $custom-accent,
+    warn: $custom-warn,
+  ),
+  typography: mat.m2-define-typography-config(),
+  density: 0,
+));
+
+// Aplicar el tema a todos los componentes de Angular Material
+@include mat.all-component-themes($custom-theme);
+
+// ========================================
+// VARIABLES CSS CUSTOM PARA USO EN COMPONENTES
+// ========================================
+:root {
+  --primary-color: #0ea5e9;
+  --primary-light: #4dd2f9;
+  --primary-dark: #0a82bb;
+  --accent-color: #f97316;
+  --accent-light: #ffc073;
+  --accent-dark: #ca5811;
+  --warn-color: #ef4444;
+  --warn-light: #f58585;
+  --warn-dark: #b03535;
+  --background-color: #f9fafb;
+  --background-alt: #f3f4f6;
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --text-disabled: #9ca3af;
+  --border-color: #e5e7eb;
+}
+

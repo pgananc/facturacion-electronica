@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "vscjava.vscode-java-pack",
+    "vscjava.vscode-spring-initializr",
+    "vscjava.vscode-spring-boot-dashboard",
+    "vmware.vscode-boot-dev-pack",
+    "pivotal.vscode-spring-boot",
+    "redhat.java",
+    "vscjava.vscode-maven",
+    "gabrielbb.vscode-lombok",
+    "ms-azuretools.vscode-docker"
+  ]
+}
+

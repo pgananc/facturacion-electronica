@@ -1,176 +1,389 @@
 <router-outlet></router-outlet>
 
-<div [hidden]="route.children.length !== 0">
-  <div class="text-center">
-    <mat-toolbar>Gestión de Compañía-Usuarios</mat-toolbar>
-  </div>
-  <mat-accordion>
-    <mat-expansion-panel expanded="true">
-      <mat-expansion-panel-header style="background-color: #673ab7">
-        <mat-panel-title style="color: #fff"> Compañías</mat-panel-title>
-      </mat-expansion-panel-header>
-      <form
-        class="principal-container principal-full-width"
-        [formGroup]="form"
-        (ngSubmit)="search()"
-        #frmCompanyUser="ngForm"
+<div *ngIf="!route.children.length" class="company-user-page">
+  <!-- Contenedor principal centrado -->
+  <div class="company-user-container">
+    <!-- Título con acción -->
+    <mat-toolbar class="toolbar-primary toolbar-with-action">
+      <span>Gestión de Usuarios por Compañía</span>
+      <span class="spacer"></span>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="openDialog()"
+        class="btn-new-user"
+        matTooltip="Agregar nuevo usuario"
+        [disabled]="!isAdmin && !companyId"
       >
-        <table cellspacing="10">
-          <tr>
-            <td style="padding-left: 40px">
-              <mat-form-field class="principal-full-width">
-                <mat-select placeholder="Seleccione" [(value)]="companyId">
-                  <mat-option>Select</mat-option>
-                  <mat-option *ngFor="let company of companies" [value]="company.idCompany">
-                    {{ company.name }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </td>
-          </tr>
-        </table>
-        <div class="flex-parent jc-center">
-          <button
-            class="margin-right botton-width"
-            mat-raised-button
-            color="primary"
-            type="submit"
-            [disabled]="frmCompanyUser.invalid"
+        <mat-icon>add_circle</mat-icon>
+        Nuevo Usuario
+      </button>
+    </mat-toolbar>
+
+    <!-- Filtro de búsqueda -->
+    <mat-card class="card-padding mt-16 search-card">
+      <mat-card-content>
+        <form [formGroup]="form" (ngSubmit)="search()" #frmCompanyUser="ngForm">
+          <!-- Grid de campos de búsqueda -->
+          <div class="search-grid">
+            <!-- Compañía -->
+            <mat-form-field appearance="outline" class="search-field">
+              <mat-label>Compañía</mat-label>
+              <mat-icon matPrefix>business</mat-icon>
+              <mat-select
+                [(value)]="companyId"
+                [disabled]="!isAdmin"
+                placeholder="Seleccione una compañía"
+              >
+                <mat-option
+                  *ngFor="let company of companies"
+                  [value]="company.idCompany"
+                >
+                  {{ company.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- Botones de acción -->
+          <div class="search-actions">
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              class="btn-search-compact"
+              [disabled]="!companyId"
+            >
+              <mat-icon>search</mat-icon>
+              Buscar
+            </button>
+            <button
+              mat-stroked-button
+              color="primary"
+              type="button"
+              class="btn-clear-compact"
+              (click)="clearFilters()"
+            >
+              <mat-icon>clear</mat-icon>
+              Limpiar
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Tabla: Usuarios actuales -->
+    <mat-card class="card-padding mt-24">
+      <div class="table-wrapper">
+        <mat-toolbar class="toolbar-blue-sm"
+          >Usuarios de la Compañía</mat-toolbar
+        >
+        <div
+          class="table-container"
+          style="position: relative; min-height: 300px"
+        >
+          <!-- Overlay para empty state -->
+          <div
+            *ngIf="dsCurrentUsersInCompany.data.length === 0"
+            class="empty-state-overlay"
           >
-            <span>Buscar</span>
-          </button>
+            <mat-icon class="empty-icon">people</mat-icon>
+            <p class="empty-title">
+              {{
+                companyId
+                  ? "No existen usuarios en esta compañía"
+                  : "Seleccione una compañía para ver sus usuarios"
+              }}
+            </p>
+            <p class="empty-subtitle" *ngIf="!companyId">
+              Use el filtro de búsqueda para seleccionar una compañía y ver sus
+              usuarios.
+            </p>
+          </div>
+
+          <mat-table
+            [dataSource]="dsCurrentUsersInCompany"
+            matSort="sortCurrent"
+            class="bordered-table"
+          >
+            <!-- Nombre -->
+            <ng-container matColumnDef="name">
+              <mat-header-cell
+                *matHeaderCellDef
+                class="text-color-bold header-dark"
+              >
+                Nombre
+              </mat-header-cell>
+              <mat-cell
+                class="celda-ajustable"
+                *matCellDef="let userRow"
+                [matTooltip]="userRow.name || ''"
+                matTooltipPosition="above"
+              >
+                {{ userRow.name }}
+              </mat-cell>
+            </ng-container>
+
+            <!-- Usuario -->
+            <ng-container matColumnDef="username">
+              <mat-header-cell
+                *matHeaderCellDef
+                class="text-color-bold header-dark"
+              >
+                Usuario
+              </mat-header-cell>
+              <mat-cell class="celda-ajustable" *matCellDef="let userRow">
+                {{ userRow.userName }}
+              </mat-cell>
+            </ng-container>
+
+            <!-- Correo -->
+            <ng-container matColumnDef="mail">
+              <mat-header-cell
+                *matHeaderCellDef
+                class="text-color-bold header-dark"
+              >
+                Correo
+              </mat-header-cell>
+              <mat-cell
+                class="celda-ajustable"
+                *matCellDef="let userRow"
+                [matTooltip]="userRow.mail || ''"
+                matTooltipPosition="above"
+              >
+                {{ userRow.mail }}
+              </mat-cell>
+            </ng-container>
+
+            <!-- Rol -->
+            <ng-container matColumnDef="role">
+              <mat-header-cell
+                *matHeaderCellDef
+                class="text-color-bold header-dark"
+              >
+                Rol
+              </mat-header-cell>
+              <mat-cell class="celda-ajustable" *matCellDef="let userRow">
+                <span class="badge badge-role">
+                  {{
+                    userRow.roleDtos && userRow.roleDtos.length > 0
+                      ? userRow.roleDtos[0].description ||
+                        userRow.roleDtos[0].name ||
+                        "Sin rol"
+                      : "Sin rol"
+                  }}
+                </span>
+              </mat-cell>
+            </ng-container>
+
+            <!-- Estado -->
+            <ng-container matColumnDef="status">
+              <mat-header-cell
+                *matHeaderCellDef
+                class="text-color-bold header-dark"
+              >
+                Estado
+              </mat-header-cell>
+              <mat-cell *matCellDef="let userRow">
+                <span
+                  class="badge"
+                  [ngClass]="userRow.status ? 'badge-active' : 'badge-inactive'"
+                >
+                  {{ userRow.status ? "Activo" : "Inactivo" }}
+                </span>
+              </mat-cell>
+            </ng-container>
+
+            <!-- Acciones -->
+            <ng-container matColumnDef="actions">
+              <mat-header-cell
+                *matHeaderCellDef
+                class="text-color-bold header-dark"
+              >
+                Acciones
+              </mat-header-cell>
+              <mat-cell *matCellDef="let userRow" class="action-cell">
+                <button
+                  mat-icon-button
+                  color="primary"
+                  class="action-btn edit-btn"
+                  matTooltip="Editar usuario"
+                  (click)="openEditDialog(userRow)"
+                  [disabled]="!companyId"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button
+                  mat-icon-button
+                  color="warn"
+                  class="action-btn delete-btn"
+                  matTooltip="Eliminar usuario de la compañía"
+                  (click)="delete(companyId, userRow.idUser)"
+                  [disabled]="loggedUser === userRow.userName || !companyId"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </mat-cell>
+            </ng-container>
+
+            <mat-header-row
+              *matHeaderRowDef="displayedColumnsClient"
+            ></mat-header-row>
+            <mat-row
+              *matRowDef="let row; columns: displayedColumnsClient"
+            ></mat-row>
+          </mat-table>
+
+          <mat-paginator
+            [pageSize]="10"
+            [pageSizeOptions]="[5, 10, 25, 100]"
+            [length]="quantityCurrentUsers"
+            [showFirstLastButtons]="true"
+            (page)="showMore($event)"
+          ></mat-paginator>
         </div>
-      </form>
-    </mat-expansion-panel>
-  </mat-accordion>
-  <div>
-    <form (ngSubmit)="setCompanyId()">
-    <button
-      matTooltip="Agregar"
-      mat-button
-      color="second"
-      class="botton-add"
-      routerLink="/user/new"
-      type="submit"
-    >
-      <mat-icon>add_circle</mat-icon>
-    </button>
-    </form>
-  </div>
-  <div >
-    <mat-card>
-      <mat-card-content>Usuarios de la Compañía</mat-card-content>
+      </div>
     </mat-card>
-    <mat-table [dataSource]="dsCurrentUsersInCompany" matSort>
-      <ng-container matColumnDef="name">
-        <mat-header-cell *matHeaderCellDef class="text-color-bold">
-          Nombre
-        </mat-header-cell>
-        <mat-cell *matCellDef="let userRow"> {{ userRow.name }} </mat-cell>
-      </ng-container>
 
-      <ng-container matColumnDef="username">
-        <mat-header-cell *matHeaderCellDef class="text-color-bold">
-          Usuario
-        </mat-header-cell>
-        <mat-cell *matCellDef="let userRow"> {{ userRow.userName }} </mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="mail">
-        <mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          class="text-color-bold">
-          Correo electrónico
-        </mat-header-cell>
-        <mat-cell *matCellDef="let userRow"> {{ userRow.mail }} </mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="actions">
-        <mat-header-cell *matHeaderCellDef class="text-color-bold"
-        >Acciones
-        </mat-header-cell
+    <!-- Tabla: Usuarios disponibles -->
+    <mat-card class="card-padding mt-24">
+      <div class="table-wrapper">
+        <mat-toolbar class="toolbar-blue-sm"
+          >Usuarios disponibles para agregar</mat-toolbar
         >
-        <mat-cell *matCellDef="let userRow">
-          <button
-            matTooltip="Eliminar"
-            mat-button
-            color="accent"
-            (click)="delete(companyId,userRow.idUser)"
+        <div
+          class="table-container"
+          style="position: relative; min-height: 300px"
+        >
+          <!-- Overlay para empty state -->
+          <div
+            *ngIf="dsAvailableUsers.data.length === 0"
+            class="empty-state-overlay"
           >
-            <mat-icon>delete</mat-icon>
-          </button>
-        </mat-cell>
-      </ng-container>
+            <mat-icon class="empty-icon">person_add</mat-icon>
+            <p class="empty-title">
+              {{
+                companyId
+                  ? "No existen usuarios disponibles para agregar"
+                  : "Seleccione una compañía para ver usuarios disponibles"
+              }}
+            </p>
+            <p class="empty-subtitle" *ngIf="!companyId">
+              Use el filtro de búsqueda para seleccionar una compañía y ver los
+              usuarios disponibles.
+            </p>
+          </div>
 
-      <mat-header-row *matHeaderRowDef="displayedColumnsClient"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumnsClient"></mat-row>
-    </mat-table>
+          <mat-table
+            [dataSource]="dsAvailableUsers"
+            matSort="sortAvailable"
+            class="bordered-table"
+          >
+            <!-- Nombre -->
+            <ng-container matColumnDef="name">
+              <mat-header-cell
+                *matHeaderCellDef
+                class="text-color-bold header-dark"
+              >
+                Nombre
+              </mat-header-cell>
+              <mat-cell
+                class="celda-ajustable"
+                *matCellDef="let userRow"
+                [matTooltip]="userRow.name || ''"
+                matTooltipPosition="above"
+              >
+                {{ userRow.name }}
+              </mat-cell>
+            </ng-container>
 
-    <mat-paginator
-      [pageSize]="5"
-      [pageSizeOptions]="[5, 10, 25, 100]"
-      [length]="quantityCurrentUsers"
-      (page)="showMore($event)"
-    ></mat-paginator>
-  </div>
+            <!-- Usuario -->
+            <ng-container matColumnDef="username">
+              <mat-header-cell
+                *matHeaderCellDef
+                class="text-color-bold header-dark"
+              >
+                Usuario
+              </mat-header-cell>
+              <mat-cell class="celda-ajustable" *matCellDef="let userRow">
+                {{ userRow.userName }}
+              </mat-cell>
+            </ng-container>
 
-  <div class="principal-container mat-elevation-z8">
-    <mat-card>
-      <mat-card-content>Usuarios disponibles para agregar</mat-card-content>
+            <!-- Correo -->
+            <ng-container matColumnDef="mail">
+              <mat-header-cell
+                *matHeaderCellDef
+                class="text-color-bold header-dark"
+              >
+                Correo
+              </mat-header-cell>
+              <mat-cell
+                class="celda-ajustable"
+                *matCellDef="let userRow"
+                [matTooltip]="userRow.mail || ''"
+                matTooltipPosition="above"
+              >
+                {{ userRow.mail }}
+              </mat-cell>
+            </ng-container>
+
+            <!-- Estado -->
+            <ng-container matColumnDef="status">
+              <mat-header-cell
+                *matHeaderCellDef
+                class="text-color-bold header-dark"
+              >
+                Estado
+              </mat-header-cell>
+              <mat-cell *matCellDef="let userRow">
+                <span
+                  class="badge"
+                  [ngClass]="userRow.status ? 'badge-active' : 'badge-inactive'"
+                >
+                  {{ userRow.status ? "Activo" : "Inactivo" }}
+                </span>
+              </mat-cell>
+            </ng-container>
+
+            <!-- Acciones -->
+            <ng-container matColumnDef="actions">
+              <mat-header-cell
+                *matHeaderCellDef
+                class="text-color-bold header-dark"
+              >
+                Acciones
+              </mat-header-cell>
+              <mat-cell *matCellDef="let userRow" class="action-cell">
+                <button
+                  mat-icon-button
+                  color="primary"
+                  class="action-btn add-btn"
+                  matTooltip="Agregar usuario a la compañía"
+                  (click)="save(userRow.idUser)"
+                  [disabled]="!companyId"
+                >
+                  <mat-icon>person_add</mat-icon>
+                </button>
+              </mat-cell>
+            </ng-container>
+
+            <mat-header-row
+              *matHeaderRowDef="displayedColumnsAvailable"
+            ></mat-header-row>
+            <mat-row
+              *matRowDef="let row; columns: displayedColumnsAvailable"
+            ></mat-row>
+          </mat-table>
+
+          <mat-paginator
+            [pageSize]="10"
+            [pageSizeOptions]="[5, 10, 25, 100]"
+            [length]="quantityAvailableUsers"
+            [showFirstLastButtons]="true"
+          ></mat-paginator>
+        </div>
+      </div>
     </mat-card>
-    <mat-table [dataSource]="dsAvailableUsers" matSort>
-      <ng-container matColumnDef="name">
-        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold">
-          Nombre
-        </mat-header-cell>
-        <mat-cell *matCellDef="let userRow"> {{ userRow.name }} </mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="username">
-        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold">
-          Usuario
-        </mat-header-cell>
-        <mat-cell *matCellDef="let userRow"> {{ userRow.userName }} </mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="mail">
-        <mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          class="text-color-bold">
-          Correo electrónico
-        </mat-header-cell>
-        <mat-cell *matCellDef="let userRow"> {{ userRow.mail }} </mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="actions">
-        <mat-header-cell *matHeaderCellDef class="text-color-bold"
-        >Acciones
-        </mat-header-cell
-        >
-        <mat-cell *matCellDef="let userRow">
-          <button
-            class="margin-right botton-width"
-            mat-raised-button
-            color="primary"
-            (click)="save(userRow.idUser)"
-          >
-            <span>Seleccionar</span>
-          </button>
-        </mat-cell>
-      </ng-container>
-
-      <mat-header-row *matHeaderRowDef="displayedColumnsClient"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumnsClient"></mat-row>
-    </mat-table>
-
-    <mat-paginator
-      [pageSize]="5"
-      [pageSizeOptions]="[5, 10, 25, 100]"
-      [length]="quantityAvailableUsers"
-      (page)="showMore($event)"
-    ></mat-paginator>
   </div>
-
 </div>

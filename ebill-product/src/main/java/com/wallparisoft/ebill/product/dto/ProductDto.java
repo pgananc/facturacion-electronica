@@ -1,27 +1,30 @@
 package com.wallparisoft.ebill.product.dto;
 
+import java.io.Serializable;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.SuperBuilder;
-
-import static lombok.AccessLevel.PRIVATE;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
-@FieldDefaults(level = PRIVATE)
-public class ProductDto {
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class ProductDto implements Serializable {
 
-  int idProduct;
+  Integer idProduct;
+  Long idCompany;
   String mainCode;
-  String auxiliarCode;
-  Integer productType;
   String name;
+  Integer productType;
+  Double unitPrice;
   String description;
-  double unitPrice;
-  double discount;
-  boolean status;
+  Boolean ice;
+  Boolean tourismIva;
+  Boolean status;
+  TaxTypeDto ivaTaxType;
+  TaxTypeDto iceTaxType;
 }

@@ -1,152 +1,260 @@
-<router-outlet></router-outlet>
-
-<div [hidden]="route.children.length !== 0">
-  <div class="text-center">
-    <mat-toolbar>Consulta Cliente</mat-toolbar>
-  </div>
-  <mat-accordion>
-    <mat-expansion-panel expanded="true">
-      <mat-expansion-panel-header style="background-color: #673ab7">
-        <mat-panel-title style="color: #fff"> Búsqueda </mat-panel-title>
-      </mat-expansion-panel-header>
-      <form
-        class="principal-container principal-full-width"
-        [formGroup]="form"
-        (ngSubmit)="search()"
-        #frmClient="ngForm"
+<div class="client-page">
+  <!-- Contenedor principal centrado -->
+  <div class="client-container">
+    <!-- Título con acción -->
+    <mat-toolbar class="toolbar-primary toolbar-with-action">
+      <span>Consulta Cliente</span>
+      <span class="spacer"></span>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="openCreateDialog()"
+        class="btn-new-client"
       >
-        <table cellspacing="10">
-          <tr>
-            <td>
-              <mat-form-field class="principal-full-width">
-                <input
-                  matInput
-                  type="text"
-                  [maxLength]="20"
-                  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
-                  placeholder="Identificación"
-                  formControlName="identification"
-                />
-              </mat-form-field>
-            </td>
-            <td style="padding-left: 40px">
-              <mat-form-field class="principal-full-width">
-                <input matInput placeholder="Nombres" formControlName="name" />
-              </mat-form-field>
-            </td>
-            <td style="padding-left: 40px">
-              <mat-form-field class="principal-full-width">
-                <mat-select placeholder="Tipo Cliente" [(value)]="clientType">
-                  <mat-option *ngFor="let tc of clientTypes" [value]="tc.code">
-                    {{ tc.value }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </td>
-            <td style="padding-left: 40px">
-              <mat-form-field class="principal-full-width">
-                <mat-select placeholder="Estado" [(value)]="status">
-                  <mat-option [value]="true">Activo</mat-option>
-                  <mat-option [value]="false">Inactivo</mat-option>
-                </mat-select>
-              </mat-form-field>
-            </td>
-          </tr>
-        </table>
-        <div class="flex-parent jc-center">
-          <button
-            class="margin-right botton-width"
-            mat-raised-button
-            color="primary"
-            type="submit"
-            [disabled]="frmClient.invalid"
+        <mat-icon>add_circle</mat-icon>
+        Nuevo Cliente
+      </button>
+    </mat-toolbar>
+
+    <!-- Filtro de búsqueda -->
+    <mat-card class="card-padding mt-16 search-card">
+      <!-- Loading spinner durante búsqueda -->
+      <div *ngIf="isLoading" class="loading-overlay">
+        <mat-spinner diameter="60"></mat-spinner>
+        <p class="loading-text">Buscando clientes...</p>
+      </div>
+
+      <mat-card-content>
+        <form [formGroup]="form" (ngSubmit)="search()" #frmClient="ngForm">
+          <div class="search-grid-horizontal">
+            <mat-form-field appearance="outline" class="search-field-compact">
+              <mat-label>Identificación</mat-label>
+              <mat-icon matPrefix>badge</mat-icon>
+              <input
+                matInput
+                placeholder="Ingrese identificación"
+                maxlength="20"
+                formControlName="identification"
+                (input)="numericOnly($event)"
+              />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="search-field-compact">
+              <mat-label>Nombres</mat-label>
+              <mat-icon matPrefix>person</mat-icon>
+              <input
+                matInput
+                placeholder="Ingrese nombre del cliente"
+                formControlName="name"
+              />
+            </mat-form-field>
+
+            <div class="search-actions">
+              <button
+                mat-raised-button
+                color="primary"
+                type="submit"
+                [disabled]="frmClient.invalid"
+                class="btn-search-compact"
+              >
+                <mat-icon>search</mat-icon>
+                Buscar
+              </button>
+
+              <button
+                mat-stroked-button
+                color="primary"
+                type="button"
+                (click)="limpiar()"
+                class="btn-clear-compact"
+              >
+                <mat-icon>clear</mat-icon>
+                Limpiar
+              </button>
+            </div>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Tabla -->
+    <mat-card class="card-padding mt-24">
+      <mat-card-content>
+        <div class="table-wrapper">
+          <mat-toolbar class="toolbar-primary-sm"
+            >Listado de Clientes</mat-toolbar
           >
-            <span>Buscar</span>
-          </button>
+          <div
+            class="table-container"
+            style="position: relative; min-height: 300px"
+          >
+            <!-- Overlay para empty state -->
+            <div
+              *ngIf="dataSourceClients.data.length === 0 && !isLoading"
+              class="empty-state-overlay"
+            >
+              <mat-icon class="empty-icon">person_search</mat-icon>
+              <p class="empty-title">No se encontraron clientes</p>
+              <p class="empty-subtitle">
+                Intenta con otros criterios de búsqueda o crea un nuevo
+                cliente.
+              </p>
+            </div>
+
+            <mat-table
+              [dataSource]="dataSourceClients"
+              matSort
+              class="mat-elevation-z1 bordered-table"
+              *ngIf="!isLoading"
+            >
+            <ng-container matColumnDef="identification">
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="text-color-bold header-dark"
+                >Identificación</mat-header-cell
+              >
+              <mat-cell class="celda-ajustable" *matCellDef="let rowClient">{{
+                rowClient.identification
+              }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="text-color-bold header-dark"
+                >Nombre</mat-header-cell
+              >
+              <mat-cell
+                class="celda-ajustable"
+                *matCellDef="let rowClient"
+                [matTooltip]="rowClient.name || ''"
+                matTooltipPosition="above"
+              >
+                {{ rowClient.name }}
+              </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="address">
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="text-color-bold header-dark"
+                >Dirección</mat-header-cell
+              >
+              <mat-cell
+                class="celda-ajustable"
+                *matCellDef="let rowClient"
+                [matTooltip]="rowClient.address || ''"
+                matTooltipPosition="above"
+              >
+                {{ rowClient.address }}
+              </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="mail">
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="text-color-bold header-dark"
+                >Correo</mat-header-cell
+              >
+              <mat-cell
+                class="celda-ajustable"
+                *matCellDef="let rowClient"
+                [matTooltip]="rowClient.mail || ''"
+                matTooltipPosition="above"
+              >
+                {{ rowClient.mail }}
+              </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="phone">
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="text-color-bold header-dark"
+                >Teléfono</mat-header-cell
+              >
+              <mat-cell class="celda-ajustable" *matCellDef="let rowClient">{{
+                rowClient.phone
+              }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="mobil">
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="text-color-bold header-dark"
+                >Celular</mat-header-cell
+              >
+              <mat-cell class="celda-ajustable" *matCellDef="let rowClient">{{
+                rowClient.mobil
+              }}</mat-cell>
+            </ng-container>
+
+            <!-- Acciones (mantener) -->
+            <ng-container matColumnDef="actions">
+              <mat-header-cell
+                *matHeaderCellDef
+                class="text-color-bold header-dark"
+                >Acciones</mat-header-cell
+              >
+              <mat-cell *matCellDef="let rowClient" class="actions-cell">
+                <!-- Copiar Email -->
+                <button
+                  mat-icon-button
+                  color="primary"
+                  matTooltip="Copiar email"
+                  [attr.aria-label]="'Copiar email de ' + rowClient.name"
+                  (click)="copyEmail(rowClient.mail)"
+                  class="action-btn copy-btn"
+                >
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+
+                <!-- Editar -->
+                <button
+                  mat-icon-button
+                  color="accent"
+                  matTooltip="Editar cliente"
+                  [attr.aria-label]="'Editar cliente ' + rowClient.name"
+                  (click)="openEditDialog(rowClient.idClient)"
+                  class="action-btn edit-btn"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+
+                <!-- Eliminar -->
+                <button
+                  mat-icon-button
+                  color="warn"
+                  matTooltip="Eliminar cliente"
+                  [attr.aria-label]="'Eliminar cliente ' + rowClient.name"
+                  (click)="delete(rowClient.idClient)"
+                  class="action-btn delete-btn"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </mat-cell>
+            </ng-container>
+
+            <mat-header-row
+              *matHeaderRowDef="displayedColumns"
+            ></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+          </mat-table>
+          </div>
+
+          <mat-paginator
+            [pageSize]="pageSize"
+            [pageSizeOptions]="[5, 10, 25, 100]"
+            [length]="quantity"
+            (page)="showMore($event)"
+          ></mat-paginator>
         </div>
-      </form>
-    </mat-expansion-panel>
-  </mat-accordion>
-  <div>
-    <button
-      matTooltip="Agregar"
-      mat-button
-      color="second"
-      class="botton-add"
-      routerLink="/client/new"
-    >
-      <mat-icon>add_circle</mat-icon>
-    </button>
-  </div>
-  <div class="principal-container mat-elevation-z8">
-    <mat-table [dataSource]="dataSource" matSort>
-      <ng-container matColumnDef="identification">
-        <mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          class="text-color-bold"
-        >
-          Identificación
-        </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{ row.identification }} </mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="name">
-        <mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          class="text-color-bold"
-        >
-          Nombre
-        </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{ row.name }} </mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="status">
-        <mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          class="text-color-bold"
-        >
-          Estado
-        </mat-header-cell>
-        <mat-cell *matCellDef="let row">
-          {{ row.status ? "Activo" : "Inactivo" }}
-        </mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="actions">
-        <mat-header-cell *matHeaderCellDef class="text-color-bold"
-          >Acciones</mat-header-cell
-        >
-        <mat-cell *matCellDef="let row">
-          <button
-            matTooltip="Editar"
-            mat-button
-            color="primary"
-            [routerLink]="['edit', row.idClient]"
-          >
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button
-            matTooltip="Eliminar"
-            mat-button
-            color="accent"
-            (click)="delete(row.idClient)"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
-        </mat-cell>
-      </ng-container>
-
-      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns"> </mat-row>
-    </mat-table>
-
-    <mat-paginator
-      [pageSize]="5"
-      [pageSizeOptions]="[5, 10, 25, 100]"
-      [length]="quantity"
-      (page)="showMore($event)"
-    ></mat-paginator>
+      </mat-card-content>
+    </mat-card>
   </div>
 </div>

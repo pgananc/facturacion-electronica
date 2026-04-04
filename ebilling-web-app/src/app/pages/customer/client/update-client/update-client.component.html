@@ -1,131 +1,255 @@
-<mat-toolbar>
-  <mat-toolbar-row>
-    <span style="margin: auto">{{
-      edition ? "Actualización Cliente" : " Registro Cliente"
-    }}</span>
-  </mat-toolbar-row>
-</mat-toolbar>
-<form
-  class="principal-container"
-  [formGroup]="form"
-  (ngSubmit)="validateSave()"
-  #frmClient="ngForm"
->
-  <mat-form-field class="principal-full-width">
-    <mat-select
-      placeholder="Tipo Cliente"
-      [(value)]="clientType"
-      required="true"
-    >
-      <mat-option *ngFor="let tc of clientTypes" [value]="tc.code">
-        {{ tc.value }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <mat-form-field class="principal-full-width">
-    <mat-select
-      placeholder="Tipo Identificación"
-      [(value)]="idType"
-      (valueChange)="clearIdentification()"
-      required="true"
-    >
-      <mat-option *ngFor="let ti of identificationTypes" [value]="ti.code">
-        {{ ti.value }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <mat-form-field class="principal-full-width">
-    <input
-      matInput
-      type="text"
-      oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
-      placeholder="Identificación"
-      required
-      [maxlength]="identificationMaxlength"
-      [minlength]="identificationMinlength"
-      formControlName="identification"
-    />
-  </mat-form-field>
-
-  <mat-form-field class="principal-full-width">
-    <input
-      matInput
-      placeholder="Nombre y Apellido"
-      required
-      formControlName="name"
-      name="name"
-    />
-  </mat-form-field>
-
-  <mat-form-field class="principal-full-width">
-    <input
-      matInput
-      placeholder="Dirección"
-      required
-      formControlName="address"
-    />
-  </mat-form-field>
-  <mat-form-field class="principal-full-width">
-    <input
-      matInput
-      placeholder="Teléfono"
-      type="text"
-      [maxLength]="9"
-      [minLength]="9"
-      oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
-      formControlName="phone"
-    />
-  </mat-form-field>
-  <mat-form-field class="principal-full-width">
-    <input
-      matInput
-      placeholder="Celular"
-      type="text"
-      [maxLength]="10"
-      [minLength]="10"
-      oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
-      required
-      formControlName="mobil"
-    />
-  </mat-form-field>
-  <mat-form-field class="principal-full-width">
-    <input
-      matInput
-      placeholder="Mail"
-      required
-      formControlName="email"
-      id="email"
-      email="true"
-    />
-  </mat-form-field>
-  <div
-    class="text-invalid principal-full-width"
-    *ngIf="f['email'].errors?.['email']"
-  >
-    Formato de email incorrecto.
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <h2 mat-dialog-title>
+      {{ edition ? "Actualizar Cliente" : "Nuevo Cliente" }}
+    </h2>
   </div>
-  <mat-checkbox
-    labelPosition="before"
-    formControlName="status"
-    class="principal-full-width"
-    >Estado</mat-checkbox
-  >
-  <div class="flex-parent jc-center">
+
+  <!-- Content -->
+  <div class="dialog-content" mat-dialog-content>
+    <form [formGroup]="form" (ngSubmit)="validateSave()" #frmClient="ngForm">
+      <!-- 
+        ✅ Tipo Cliente OCULTO: 
+        Siempre es "Cliente" (code: 1) para facturación electrónica.
+        El valor se envía automáticamente usando DEFAULT_CLIENT_TYPE_CODE
+      -->
+
+      <!-- Tipo Identificación -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Tipo Identificación</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >badge</mat-icon
+        >
+        <mat-select
+          formControlName="idType"
+          required
+          placeholder="Seleccione tipo de identificación"
+        >
+          <mat-option *ngFor="let it of filteredIdTypes" [value]="it.code">
+            {{ it.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="f['idType'].hasError('required')">
+          Tipo de identificación es requerido
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Identificación -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Identificación</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >fingerprint</mat-icon
+        >
+        <input
+          matInput
+          [placeholder]="getIdentificationPlaceholder()"
+          required
+          formControlName="identification"
+          name="identification"
+        />
+        <!-- Hints específicos según tipo -->
+        <mat-hint *ngIf="form.get('idType')?.value === 1"
+          >10 dígitos numéricos</mat-hint
+        >
+        <mat-hint *ngIf="form.get('idType')?.value === 2"
+          >13 dígitos numéricos</mat-hint
+        >
+        <mat-hint *ngIf="form.get('idType')?.value === 3"
+          >Máximo 10 caracteres alfanuméricos</mat-hint
+        >
+        <mat-hint *ngIf="form.get('idType')?.value === 4"
+          >Valor fijo para consumidor final</mat-hint
+        >
+        <mat-hint *ngIf="form.get('idType')?.value === 5"
+          >Letras, números, espacios y guiones (máx 20)</mat-hint
+        >
+
+        <!-- Errores específicos -->
+        <mat-error *ngIf="f['identification'].hasError('required')">
+          Identificación es requerida
+        </mat-error>
+        <mat-error
+          *ngIf="
+            f['identification'].hasError('pattern') &&
+            form.get('idType')?.value === 1
+          "
+        >
+          Cédula debe contener solo 10 dígitos numéricos
+        </mat-error>
+        <mat-error
+          *ngIf="
+            f['identification'].hasError('pattern') &&
+            form.get('idType')?.value === 2
+          "
+        >
+          RUC debe contener solo 13 dígitos numéricos
+        </mat-error>
+        <mat-error
+          *ngIf="
+            f['identification'].hasError('pattern') &&
+            form.get('idType')?.value === 3
+          "
+        >
+          Pasaporte debe contener solo letras y números (máx 10 caracteres)
+        </mat-error>
+        <mat-error
+          *ngIf="
+            f['identification'].hasError('pattern') &&
+            form.get('idType')?.value === 5
+          "
+        >
+          Solo letras, números, espacios y guiones (máximo 20 caracteres)
+        </mat-error>
+        <mat-error *ngIf="f['identification'].hasError('minlength')">
+          Longitud mínima no cumplida
+        </mat-error>
+        <mat-error *ngIf="f['identification'].hasError('maxlength')">
+          Longitud máxima excedida
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Nombre y Apellido -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nombre y Apellido</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >person</mat-icon
+        >
+        <input
+          matInput
+          [placeholder]="
+            form.get('idType')?.value === 4
+              ? 'Consumidor Final'
+              : 'Nombre completo del cliente'
+          "
+          formControlName="name"
+          name="name"
+        />
+        <mat-hint *ngIf="form.get('idType')?.value === 4"
+          >Valor automático para consumidor final</mat-hint
+        >
+        <mat-error *ngIf="f['name'].hasError('required')">
+          Nombre es requerido
+        </mat-error>
+        <mat-error *ngIf="f['name'].errors?.['fullName']">
+          Debe ingresar al menos nombre y apellido (mínimo 2 letras cada uno)
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Dirección -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Dirección</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >location_on</mat-icon
+        >
+        <input
+          matInput
+          placeholder="Dirección del cliente"
+          formControlName="address"
+          name="address"
+        />
+        <mat-hint>Opcional</mat-hint>
+      </mat-form-field>
+
+      <!-- Teléfono -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Teléfono</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >phone</mat-icon
+        >
+        <input
+          matInput
+          placeholder="Teléfono fijo"
+          formControlName="phone"
+          name="phone"
+          oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+          maxlength="9"
+        />
+        <mat-hint>Opcional</mat-hint>
+      </mat-form-field>
+
+      <!-- Celular -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Celular</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >smartphone</mat-icon
+        >
+        <input
+          matInput
+          placeholder="Número de celular"
+          formControlName="mobile"
+          name="mobile"
+          oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+          maxlength="10"
+        />
+        <mat-hint>Opcional</mat-hint>
+      </mat-form-field>
+
+      <!-- Email -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Correo Electrónico</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >email</mat-icon
+        >
+        <input
+          matInput
+          placeholder="correo@ejemplo.com"
+          formControlName="mail"
+          name="mail"
+          email="true"
+        />
+        <mat-hint *ngIf="form.get('idType')?.value === 4"
+          >Opcional - Pre-llenado con email de la compañía</mat-hint
+        >
+        <mat-error *ngIf="f['mail'].hasError('required')">
+          Correo es requerido
+        </mat-error>
+        <mat-error *ngIf="f['mail'].hasError('email')">
+          Formato de email incorrecto
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Checkbox Estado -->
+      <div class="status-section">
+        <label class="custom-checkbox-container">
+          <input
+            type="checkbox"
+            formControlName="status"
+            class="custom-checkbox-input"
+          />
+          <span class="custom-checkbox-box"></span>
+          <span class="custom-checkbox-label">Cliente Activo</span>
+        </label>
+        <div class="status-hint">
+          Los clientes activos aparecerán en las búsquedas y podrán realizar
+          transacciones
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Actions -->
+  <div class="dialog-actions" mat-dialog-actions>
     <button
-      class="margin-right botton-width"
       mat-raised-button
       color="primary"
-      type="submit"
+      type="button"
       [disabled]="frmClient.invalid"
+      (click)="validateSave()"
+      class="btn-save"
     >
-      <mat-icon>done</mat-icon>
-      <span>Ok</span>
+      <mat-icon>save</mat-icon>
+      <span>Guardar</span>
     </button>
-    <button mat-raised-button color="accent" routerLink="/client" type="button">
+
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="onCancel()"
+      class="btn-cancel"
+    >
       <mat-icon>close</mat-icon>
-      <span>Cancel</span>
+      <span>Cancelar</span>
     </button>
   </div>
-</form>
+</div>

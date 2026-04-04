@@ -1,0 +1,511 @@
+/* ======================
+   ESTILOS COMPARTIDOS - MEJORAS VISUALES Y UX
+   Sistema unificado de estilos para toda la aplicación
+   Tema fintech (cyan #0EA5E9)
+====================== */
+
+/* ======================
+   TOOLBARS MEJORADOS
+====================== */
+.toolbar-primary {
+  background: linear-gradient(135deg, var(--primary-color, #0ea5e9) 0%, var(--primary-dark, #0a82bb) 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.5px;
+  margin-bottom: 24px;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+  transition: box-shadow 0.3s ease;
+  padding: 16px 24px;
+  height: auto;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toolbar-primary:hover {
+  box-shadow: 0 6px 16px rgba(14, 165, 233, 0.4);
+}
+
+.toolbar-primary-sm {
+  background: linear-gradient(135deg, var(--primary-color, #0ea5e9) 0%, var(--primary-dark, #0a82bb) 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.3px;
+  margin-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  padding: 14px 20px;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.25);
+  width: 100%;
+  box-sizing: border-box;
+  border-bottom: 2px solid var(--primary-dark, #0a82bb);
+  transition: box-shadow 0.3s ease;
+  display: flex;
+  align-items: center;
+  height: 56px;
+  min-height: 56px;
+}
+
+.toolbar-primary-sm:hover {
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.35);
+}
+
+.toolbar-with-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+}
+
+.toolbar-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.toolbar-spacer,
+.spacer {
+  flex: 1 1 auto;
+}
+
+/* ======================
+   CARDS MEJORADOS
+====================== */
+.search-card {
+  border-radius: 12px;
+  border-top: 4px solid var(--primary-color, #0ea5e9);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(14, 165, 233, 0.12);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  overflow: visible;
+  background: #ffffff;
+  margin-bottom: 24px;
+}
+
+.search-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(14, 165, 233, 0.2);
+  transform: translateY(-2px);
+}
+
+.search-card mat-card-content {
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+/* ======================
+   BOTONES MEJORADOS
+====================== */
+/* Botones "Nuevo" (Nuevo Cliente, Nuevo Producto, etc.) */
+.btn-new-client,
+.btn-new-user,
+.btn-new-subscription,
+.btn-new-establishment,
+.btn-new-issuance-point,
+.btn-new-credit-note,
+.btn-new-menu,
+.btn-new-invoice,
+.btn-new-proforma,
+.btn-new-carrier,
+.btn-new-debit-note,
+.btn-new-guide,
+.new-product-btn,
+.new-company-btn,
+.new-establishment-btn,
+.new-issuance-point-btn {
+  background-color: #ffffff !important;
+  color: var(--primary-color, #0ea5e9) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.3px;
+  height: 40px;
+  border-radius: 8px;
+  padding: 8px 20px;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.25);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-new-client:hover,
+.btn-new-user:hover,
+.btn-new-subscription:hover,
+.btn-new-establishment:hover,
+.btn-new-issuance-point:hover,
+.btn-new-credit-note:hover,
+.btn-new-menu:hover,
+.btn-new-invoice:hover,
+.btn-new-proforma:hover,
+.btn-new-carrier:hover,
+.btn-new-debit-note:hover,
+.btn-new-guide:hover,
+.new-product-btn:hover,
+.new-company-btn:hover,
+.new-establishment-btn:hover,
+.new-issuance-point-btn:hover {
+  background-color: rgba(14, 165, 233, 0.12) !important;
+  box-shadow: 0 4px 16px rgba(14, 165, 233, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn-new-client:active,
+.btn-new-user:active,
+.btn-new-subscription:active,
+.btn-new-establishment:active,
+.btn-new-issuance-point:active,
+.btn-new-credit-note:active,
+.btn-new-menu:active,
+.btn-new-invoice:active,
+.btn-new-proforma:active,
+.btn-new-carrier:active,
+.btn-new-debit-note:active,
+.btn-new-guide:active,
+.new-product-btn:active,
+.new-company-btn:active,
+.new-establishment-btn:active,
+.new-issuance-point-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+}
+
+.btn-new-client:disabled,
+.btn-new-user:disabled,
+.btn-new-subscription:disabled,
+.btn-new-establishment:disabled,
+.btn-new-issuance-point:disabled,
+.btn-new-credit-note:disabled,
+.btn-new-menu:disabled,
+.btn-new-invoice:disabled,
+.btn-new-proforma:disabled,
+.btn-new-carrier:disabled,
+.btn-new-debit-note:disabled,
+.btn-new-guide:disabled,
+.new-product-btn:disabled,
+.new-company-btn:disabled,
+.new-establishment-btn:disabled,
+.new-issuance-point-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #f5f5f5 !important;
+  color: #9e9e9e !important;
+}
+
+.btn-new-client mat-icon,
+.btn-new-user mat-icon,
+.btn-new-subscription mat-icon,
+.btn-new-establishment mat-icon,
+.btn-new-issuance-point mat-icon,
+.btn-new-credit-note mat-icon,
+.btn-new-menu mat-icon,
+.btn-new-invoice mat-icon,
+.btn-new-proforma mat-icon,
+.btn-new-carrier mat-icon,
+.btn-new-debit-note mat-icon,
+.btn-new-guide mat-icon,
+.new-product-btn mat-icon,
+.new-company-btn mat-icon,
+.new-establishment-btn mat-icon,
+.new-issuance-point-btn mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  margin-right: 0;
+}
+
+/* Botones de búsqueda */
+.btn-search,
+.search-btn {
+  min-width: 140px;
+  height: 44px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+}
+
+.btn-search:hover:not([disabled]),
+.search-btn:hover:not([disabled]) {
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.5);
+  transform: translateY(-2px);
+}
+
+.btn-search:active:not([disabled]),
+.search-btn:active:not([disabled]) {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(14, 165, 233, 0.4);
+}
+
+.btn-search:disabled,
+.search-btn:disabled {
+  background-color: rgba(0, 0, 0, 0.12) !important;
+  color: rgba(0, 0, 0, 0.26) !important;
+}
+
+/* Botones de limpiar */
+.btn-clear,
+.clear-btn {
+  min-width: 140px;
+  height: 44px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid rgba(14, 165, 233, 0.3);
+}
+
+.btn-clear:hover,
+.clear-btn:hover {
+  background-color: rgba(14, 165, 233, 0.08);
+  border-color: var(--primary-color, #0ea5e9);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.2);
+}
+
+.btn-clear:active,
+.clear-btn:active {
+  transform: translateY(0);
+}
+
+/* ======================
+   TABLAS MEJORADAS
+====================== */
+.mat-elevation-z1 {
+  width: 100%;
+  border-radius: 0 0 12px 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+  transition: box-shadow 0.3s ease;
+  background: #ffffff;
+}
+
+.mat-elevation-z1:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Filas de tabla con mejor contraste */
+::ng-deep .mat-mdc-table .mat-mdc-row:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+::ng-deep .mat-mdc-table .mat-mdc-row:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+/* Hover mejorado en filas de tabla */
+::ng-deep .mat-mdc-table .mat-mdc-row {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+::ng-deep .mat-mdc-table .mat-mdc-row:hover {
+  background-color: rgba(14, 165, 233, 0.06) !important;
+  cursor: pointer;
+  transform: scale(1.001);
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.1);
+}
+
+/* Botones de acción en tabla */
+.edit-btn {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.edit-btn:hover {
+  background-color: rgba(249, 115, 22, 0.15) !important;
+  transform: scale(1.15);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}
+
+.edit-btn:active {
+  transform: scale(1.05);
+}
+
+.delete-btn {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.delete-btn:hover {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+  transform: scale(1.15);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.delete-btn:active {
+  transform: scale(1.05);
+}
+
+/* ======================
+   FORM FIELDS MEJORADOS
+====================== */
+::ng-deep .search-field .mat-mdc-form-field-label,
+::ng-deep .search-card .mat-mdc-form-field-label {
+  font-weight: 600;
+  color: var(--text-primary, #111827);
+  font-size: 14px;
+}
+
+::ng-deep .search-field mat-icon,
+::ng-deep .search-card .mat-mdc-form-field-icon-prefix mat-icon {
+  color: var(--primary-color, #0ea5e9);
+  margin-right: 8px;
+  transition: color 0.3s ease;
+}
+
+::ng-deep .search-field .mat-mdc-form-field.mat-focused mat-icon,
+::ng-deep .search-card .mat-mdc-form-field.mat-focused .mat-mdc-form-field-icon-prefix mat-icon {
+  color: var(--primary-dark, #0a82bb);
+}
+
+::ng-deep .mat-mdc-form-field.mat-form-field-appearance-outline .mdc-notched-outline__leading,
+::ng-deep .mat-mdc-form-field.mat-form-field-appearance-outline .mdc-notched-outline__notch,
+::ng-deep .mat-mdc-form-field.mat-form-field-appearance-outline .mdc-notched-outline__trailing {
+  border-width: 1.5px !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  transition: border-color 0.3s ease;
+}
+
+::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+  border-color: var(--primary-color, #0ea5e9) !important;
+  border-width: 2px !important;
+}
+
+/* ======================
+   PAGINADOR MEJORADO
+====================== */
+mat-paginator {
+  width: 100%;
+  padding-top: 20px;
+  padding-bottom: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex !important;
+  justify-content: center !important;
+  background-color: #fafbfc;
+  border-radius: 0 0 12px 12px;
+}
+
+::ng-deep mat-paginator .mat-mdc-paginator-container {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 12px 0 4px 0 !important;
+  gap: 16px;
+}
+
+::ng-deep mat-paginator .mat-mdc-paginator-range-label {
+  font-weight: 500;
+  color: var(--text-secondary, #6b7280);
+}
+
+/* ======================
+   RESPONSIVE
+====================== */
+@media screen and (max-width: 959px) {
+  .toolbar-primary {
+    font-size: 18px;
+    padding: 12px 16px;
+    height: auto;
+    min-height: 56px;
+    margin-bottom: 16px;
+  }
+
+  .toolbar-primary-sm {
+    font-size: 14px;
+    padding: 12px 16px;
+    height: auto;
+    min-height: 48px;
+  }
+
+  .toolbar-with-action {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .btn-new-client,
+  .btn-new-user,
+  .btn-new-subscription,
+  .btn-new-establishment,
+  .btn-new-menu,
+  .btn-new-issuance-point,
+  .btn-new-credit-note,
+  .new-product-btn,
+  .new-company-btn,
+  .new-establishment-btn,
+  .new-issuance-point-btn {
+    height: 36px;
+    padding: 6px 16px;
+    font-size: 14px;
+  }
+
+  .search-card {
+    margin-bottom: 16px;
+    border-radius: 8px;
+  }
+
+  .search-card mat-card-content {
+    padding: 16px;
+  }
+}
+
+/* ======================
+   BADGES DE ESTADO
+====================== */
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-active {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #a5d6a7;
+}
+
+.badge-inactive {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ef9a9a;
+}
+
+.badge-matriz {
+  background-color: #e3f2fd;
+  color: var(--primary-dark, #0a82bb);
+  border: 1px solid #90caf9;
+}
+
+.badge-sucursal {
+  background-color: #fff3e0;
+  color: #e65100;
+  border: 1px solid #ffb74d;
+}
+
+.badge-yes {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #a5d6a7;
+}
+
+.badge-no {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ef9a9a;
+}
+
+.badge-role {
+  background-color: #e3f2fd;
+  color: var(--primary-dark, #0a82bb);
+  border: 1px solid #90caf9;
+}
+

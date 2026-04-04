@@ -1,0 +1,160 @@
+/* ======================
+   ESTILOS RESPONSIVE COMPARTIDOS
+   Media queries reutilizables para todos los componentes
+====================== */
+
+/* iPhone SE / Mini (≤375px) */
+@media screen and (max-width: 375px) {
+  .toolbar-primary {
+    flex-direction: column;
+    height: auto;
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .toolbar-title {
+    font-size: 16px;
+  }
+
+  .search-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 0;
+  }
+
+  .search-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .search-btn,
+  .btn-search,
+  .clear-btn,
+  .btn-clear {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .table-wrapper {
+    font-size: 11px;
+    margin: 0 -12px;
+    padding: 0 12px;
+  }
+
+  ::ng-deep .mat-mdc-table {
+    min-width: 700px;
+  }
+
+  .action-btn {
+    width: 36px !important;
+    height: 36px !important;
+  }
+}
+
+/* iPhone 12-15 (376px - 430px) */
+@media screen and (min-width: 376px) and (max-width: 430px) {
+  .toolbar-primary {
+    flex-direction: column;
+    height: auto;
+    gap: 12px;
+  }
+
+  .search-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .search-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .search-btn,
+  .btn-search,
+  .clear-btn,
+  .btn-clear {
+    width: 100%;
+  }
+}
+
+/* iPhone Pro Max / Samsung S23-S25 Ultra (431px - 667px) */
+@media screen and (min-width: 431px) and (max-width: 667px) {
+  .search-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .search-actions {
+    flex-direction: row;
+    gap: 16px;
+  }
+
+  .search-btn,
+  .btn-search,
+  .clear-btn,
+  .btn-clear {
+    flex: 1;
+  }
+}
+
+/* Landscape móviles (668px - 834px) */
+@media screen and (min-width: 668px) and (max-width: 834px) {
+  .search-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* iPad Mini y landscape tablets (835px - 1024px) */
+@media screen and (min-width: 835px) and (max-width: 1024px) {
+  .search-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* iPad Pro y tablets grandes (1025px - 1366px) */
+@media screen and (min-width: 1025px) and (max-width: 1366px) {
+  .search-grid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 1100px;
+  }
+}
+
+/* Desktop (>1366px) */
+@media screen and (min-width: 1367px) {
+  .search-grid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 1200px;
+  }
+}
+
+/* Landscape orientación */
+@media screen and (orientation: landscape) and (max-height: 600px) {
+  .search-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .toolbar-primary {
+    height: 56px;
+    padding: 12px 16px;
+  }
+}
+
+/* Tabla responsive adicional */
+@media screen and (max-width: 600px) {
+  ::ng-deep .mat-mdc-table {
+    min-width: 600px;
+  }
+}
+
+@media screen and (max-width: 959px) {
+  .table-wrapper {
+    margin: 0 -12px;
+    padding: 0 12px;
+  }
+
+  ::ng-deep .mat-mdc-table,
+  .bordered-table {
+    min-width: 700px;
+  }
+}
+

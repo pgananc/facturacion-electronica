@@ -1,207 +1,320 @@
 package com.wallparisoft.ebill.product.controller;
 
+import static com.wallparisoft.ebill.utils.LogUtil.setLogs;
+import static lombok.AccessLevel.PRIVATE;
+
 import com.wallparisoft.ebill.product.dto.ProductDto;
+import com.wallparisoft.ebill.product.response.BasicResponse;
 import com.wallparisoft.ebill.product.response.ProductResponse;
 import com.wallparisoft.ebill.product.service.IProductService;
-import com.wallparisoft.ebill.product.util.EventLog;
+import com.wallparisoft.ebill.utils.log.EventType;
+import com.wallparisoft.ebill.utils.log.Level;
+import jakarta.validation.Valid;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-
-import java.util.List;
-
-import static com.wallparisoft.ebill.product.util.EventType.REQUEST;
-import static com.wallparisoft.ebill.product.util.EventType.RESPONSE;
-import static com.wallparisoft.ebill.product.util.Level.LEVEL_001;
-import static lombok.AccessLevel.PRIVATE;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/product")
 @FieldDefaults(level = PRIVATE)
-@Log4j2
+@RequiredArgsConstructor
+@Slf4j
 public class ProductController {
 
-    @Autowired
-    IProductService productService;
+  final IProductService productService;
 
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public ProductResponse getAll() {
-        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
-        log.debug(EventLog.builder()
-                .service(traceElement.getClassName())
-                .method(traceElement.getMethodName())
-                .eventType(REQUEST.name())
-                .level(LEVEL_001.name())
-                .build());
-        ProductResponse response = productService.getAllProducts();
-        log.debug(EventLog.builder()
-                .service(traceElement.getClassName())
-                .method(traceElement.getMethodName())
-                .information(response.getProductDtos())
-                .eventType(RESPONSE.name())
-                .level(LEVEL_001.name())
-                .build());
-        return response;
+  @GetMapping("/company/{idCompany}")
+  @ResponseStatus(HttpStatus.OK)
+  public ProductResponse getAll(@PathVariable("idCompany") Long idCompany) {
+    StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+    setLogs(
+        com.wallparisoft.ebill.utils.log.EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName()),
+        EventType.REQUEST,
+        Level.LEVEL_001);
+    ProductResponse response =
+        productService.findProductsByIdCompanyAndStatusOrderByMainCode(idCompany);
+    setLogs(
+        com.wallparisoft.ebill.utils.log.EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName())
+            .information(response.getProductDtos()),
+        EventType.RESPONSE,
+        Level.LEVEL_001);
+    return response;
+  }
+
+  @GetMapping("/products-status/{status}")
+  @ResponseStatus(HttpStatus.OK)
+  public ProductResponse getAllByStatus(@PathVariable("status") boolean status) {
+    StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+    setLogs(
+        com.wallparisoft.ebill.utils.log.EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName()),
+        EventType.REQUEST,
+        Level.LEVEL_001);
+    ProductResponse response = productService.getProductsByStatus(status);
+    setLogs(
+        com.wallparisoft.ebill.utils.log.EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName())
+            .information(response.getProductDtos()),
+        EventType.RESPONSE,
+        Level.LEVEL_001);
+    return response;
+  }
+
+  @GetMapping("/id/{idProduct}")
+  public ResponseEntity<ProductResponse> findProductById(
+      @PathVariable(value = "idProduct") Long idProduct) {
+    StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+    setLogs(
+        com.wallparisoft.ebill.utils.log.EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName()),
+        EventType.REQUEST,
+        Level.LEVEL_001);
+    ProductDto productDto = productService.getProductById(idProduct);
+    ProductResponse response =
+        ProductResponse.builder()
+            .status(HttpStatus.OK.getReasonPhrase())
+            .productDto(productDto)
+            .productDtos(List.of(productDto))
+            .build();
+    setLogs(
+        com.wallparisoft.ebill.utils.log.EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName())
+            .information(response.getProductDto()),
+        EventType.RESPONSE,
+        Level.LEVEL_001);
+    return new ResponseEntity<>(response, HttpStatus.OK);
+  }
+
+  @PostMapping
+  public ProductResponse register(@Valid @RequestBody ProductDto product) {
+    StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+    setLogs(
+        com.wallparisoft.ebill.utils.log.EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName()),
+        EventType.REQUEST,
+        Level.LEVEL_001);
+    ProductResponse response = productService.createProduct(product);
+    setLogs(
+        com.wallparisoft.ebill.utils.log.EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName())
+            .information(response.getProductDto()),
+        EventType.RESPONSE,
+        Level.LEVEL_001);
+    return response;
+  }
+
+  @DeleteMapping("/{idProduct}")
+  public ProductResponse delete(@PathVariable("idProduct") Long idProduct) {
+    StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+    setLogs(
+        com.wallparisoft.ebill.utils.log.EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName()),
+        EventType.REQUEST,
+        Level.LEVEL_001);
+    ProductResponse response = productService.delete(idProduct);
+    setLogs(
+        com.wallparisoft.ebill.utils.log.EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName())
+            .information(response.getProductDto()),
+        EventType.RESPONSE,
+        Level.LEVEL_001);
+    return response;
+  }
+
+  @DeleteMapping("/{idProduct}/permanent")
+  public BasicResponse deletePhysical(@PathVariable("idProduct") Long idProduct) {
+    StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+    setLogs(
+        com.wallparisoft.ebill.utils.log.EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName())
+            .information("Physical delete for product ID: " + idProduct),
+        EventType.REQUEST,
+        Level.LEVEL_001);
+    BasicResponse response = productService.deletePhysical(idProduct);
+    setLogs(
+        com.wallparisoft.ebill.utils.log.EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName())
+            .information(response.getMessage()),
+        EventType.RESPONSE,
+        Level.LEVEL_001);
+    return response;
+  }
+
+  @PatchMapping("/{idProduct}")
+  public ProductResponse updateProduct(
+      @Valid @RequestBody ProductDto product, @PathVariable Long idProduct) {
+    StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+    setLogs(
+        com.wallparisoft.ebill.utils.log.EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName())
+            .information(
+                "ID product: "
+                    .concat(idProduct.toString())
+                    .concat(", Object product: ")
+                    .concat(product.toString())),
+        EventType.REQUEST,
+        Level.LEVEL_001);
+    ProductResponse response = productService.updateProduct(product, idProduct);
+    setLogs(
+        com.wallparisoft.ebill.utils.log.EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName())
+            .information(response.getProductDto()),
+        EventType.RESPONSE,
+        Level.LEVEL_001);
+    return response;
+  }
+
+  @GetMapping("/pageable")
+  public ResponseEntity<Page<ProductDto>> listPageable(
+      Pageable pageable,
+      @RequestParam(required = false) Long idCompany,
+      @RequestParam(required = false) String mainCode,
+      @RequestParam(required = false) String name,
+      @RequestParam(required = false) Integer productType,
+      @RequestParam(required = false) Boolean status) {
+    StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+    setLogs(
+        com.wallparisoft.ebill.utils.log.EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName())
+            .information(
+                "Pageable request - idCompany: "
+                    + idCompany
+                    + ", mainCode: "
+                    + mainCode
+                    + ", name: "
+                    + name),
+        EventType.REQUEST,
+        Level.LEVEL_001);
+    Page<ProductDto> productDtos =
+        productService.findProductByIdCompanyAndMainCodeOrNameOrType(
+            idCompany, mainCode, name, productType, status, pageable);
+    setLogs(
+        com.wallparisoft.ebill.utils.log.EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName()),
+        EventType.RESPONSE,
+        Level.LEVEL_001);
+    return new ResponseEntity<>(productDtos, HttpStatus.OK);
+  }
+
+  @GetMapping("/exists/{mainCode}/company/{idCompany}")
+  public ResponseEntity<Boolean> existsByMainCode(
+      @PathVariable(value = "mainCode") String mainCode,
+      @PathVariable(value = "idCompany") Long idCompany) {
+    StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+    setLogs(
+        com.wallparisoft.ebill.utils.log.EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName()),
+        EventType.REQUEST,
+        Level.LEVEL_001);
+    Boolean exists = productService.existsByMainCodeAndIdCompany(mainCode, idCompany);
+    setLogs(
+        com.wallparisoft.ebill.utils.log.EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName())
+            .information(exists),
+        EventType.RESPONSE,
+        Level.LEVEL_001);
+    return new ResponseEntity<>(exists, HttpStatus.OK);
+  }
+
+  @GetMapping("/search")
+  public ResponseEntity<ProductResponse> searchProducts(
+      @RequestParam(value = "term", required = false) String term) {
+    StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+    setLogs(
+        com.wallparisoft.ebill.utils.log.EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName())
+            .information("Search term: " + (term == null ? "" : term)),
+        EventType.REQUEST,
+        Level.LEVEL_001);
+
+    ProductResponse response;
+    if (term == null || term.trim().isEmpty()) {
+      // Si no hay término de búsqueda, retornar todos los productos activos
+      response = productService.getProductsByStatus(true);
+    } else {
+      // Aquí puedes implementar la lógica de búsqueda por término
+      // Por ahora, retornaremos productos activos (ajusta según tu necesidad)
+      response = productService.getProductsByStatus(true);
     }
 
-    @GetMapping("/products-status/{status}")
-    @ResponseStatus(HttpStatus.OK)
-    public ProductResponse getAllByStatus(@PathVariable("status") boolean status) {
-        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
-        log.debug(EventLog.builder()
-                .service(traceElement.getClassName())
-                .method(traceElement.getMethodName())
-                .eventType(REQUEST.name())
-                .level(LEVEL_001.name())
-                .build());
-        ProductResponse response = productService.getProductsByStatus(status);
-        log.debug(EventLog.builder()
-                .service(traceElement.getClassName())
-                .method(traceElement.getMethodName())
-                .information(response.getProductDtos())
-                .eventType(RESPONSE.name())
-                .level(LEVEL_001.name())
-                .build());
-        return response;
-    }
+    response.setCode(HttpStatus.OK.value());
+    response.setStatus(HttpStatus.OK.name());
 
-    @GetMapping("/{idProduct}")
-    public ResponseEntity<ProductResponse> findProductById(@PathVariable(value = "idProduct") Long idProduct) {
-        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
-        log.debug(EventLog.builder()
-                .service(traceElement.getClassName())
-                .method(traceElement.getMethodName())
-                .eventType(REQUEST.name())
-                .level(LEVEL_001.name())
-                .build());
-        ProductDto productDto = productService.getProductById(idProduct);
-        ProductResponse response = ProductResponse.builder()
-                .status(HttpStatus.OK.getReasonPhrase())
-                .productDto(productDto)
-                .productDtos(List.of(productDto))
-                .build();
-        log.debug(EventLog.builder()
-                .service(traceElement.getClassName())
-                .method(traceElement.getMethodName())
-                .information(response.getProductDto())
-                .eventType(RESPONSE.name())
-                .level(LEVEL_001.name())
-                .build());
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+    setLogs(
+        com.wallparisoft.ebill.utils.log.EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName())
+            .information(response.getProductDtos()),
+        EventType.RESPONSE,
+        Level.LEVEL_001);
+    return new ResponseEntity<>(response, HttpStatus.OK);
+  }
 
-    @PostMapping
-    public ProductResponse register(@Valid @RequestBody ProductDto product) {
-        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
-        log.debug(EventLog.builder()
-                .service(traceElement.getClassName())
-                .method(traceElement.getMethodName())
-                .information(product)
-                .eventType(REQUEST.name())
-                .level(LEVEL_001.name())
-                .build());
-        ProductResponse response = productService.createProduct(product);
-        log.debug(EventLog.builder()
-                .service(traceElement.getClassName())
-                .method(traceElement.getMethodName())
-                .information(response.getProductDto())
-                .eventType(RESPONSE.name())
-                .level(LEVEL_001.name())
-                .build());
-        return response;
-    }
+  @GetMapping("/billing/search")
+  public ResponseEntity<ProductResponse> searchProductsForBilling(
+      @RequestParam(value = "idCompany", required = true) Long idCompany,
+      @RequestParam(value = "term", required = false) String term) {
+    StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+    setLogs(
+        com.wallparisoft.ebill.utils.log.EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName())
+            .information(
+                "Billing search - idCompany: "
+                    + idCompany
+                    + ", term: "
+                    + (term == null || term.isEmpty() ? "[EMPTY - All products]" : term)),
+        EventType.REQUEST,
+        Level.LEVEL_001);
 
-    @DeleteMapping("/{id}")
-    public ProductResponse delete(@PathVariable("id") Long id) {
-        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
-        log.debug(EventLog.builder()
-                .service(traceElement.getClassName())
-                .method(traceElement.getMethodName())
-                .information(id)
-                .eventType(REQUEST.name())
-                .level(LEVEL_001.name())
-                .build());
-        ProductResponse response = productService.delete(id);
-        log.debug(EventLog.builder()
-                .service(traceElement.getClassName())
-                .method(traceElement.getMethodName())
-                .information(response.getProductDto())
-                .eventType(RESPONSE.name())
-                .level(LEVEL_001.name())
-                .build());
-        return response;
-    }
+    ProductResponse response = productService.searchProductsForBilling(idCompany, term);
 
-    @PatchMapping("/{idProduct}")
-    public ProductResponse updateProduct(@Valid @RequestBody ProductDto product, @PathVariable Long idProduct) {
-        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
-        log.debug(EventLog.builder()
-                .service(traceElement.getClassName())
-                .method(traceElement.getMethodName())
-                .information("ID product: ".concat(idProduct.toString()).concat(", Object product: ").concat(product.toString()))
-                .eventType(REQUEST.name())
-                .level(LEVEL_001.name())
-                .build());
-        ProductResponse response = productService.updateProduct(product, idProduct);
-        log.debug(EventLog.builder()
-                .service(traceElement.getClassName())
-                .method(traceElement.getMethodName())
-                .information(response.getProductDto())
-                .eventType(RESPONSE.name())
-                .level(LEVEL_001.name())
-                .build());
-        return response;
-    }
-
-    @PostMapping("/pageable")
-    public ResponseEntity<Page<ProductDto>> listPageable(Pageable pageable,
-                                                         @Valid @RequestBody ProductDto productDto) {
-        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
-        log.debug(EventLog.builder()
-                .service(traceElement.getClassName())
-                .method(traceElement.getMethodName())
-                .information("Object product: ".concat(productDto.toString()))
-                .eventType(REQUEST.name())
-                .level(LEVEL_001.name())
-                .build());
-        Page<ProductDto> productDtos = productService.findProductByMainCodeOrNameOrType
-                (productDto.getMainCode(),
-                        productDto.getName(), productDto.getProductType(), productDto.isStatus(), pageable);
-        log.debug(EventLog.builder()
-                .service(traceElement.getClassName())
-                .method(traceElement.getMethodName())
-                .eventType(RESPONSE.name())
-                .level(LEVEL_001.name())
-                .build());
-        return new ResponseEntity<>(productDtos, HttpStatus.OK);
-    }
-
-    @GetMapping("exist/{mainCode}")
-    public ResponseEntity<Boolean> existsByMainCode(@PathVariable(value = "mainCode") String mainCode) {
-        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
-        log.debug(EventLog.builder()
-                .service(traceElement.getClassName())
-                .method(traceElement.getMethodName())
-                .eventType(REQUEST.name())
-                .level(LEVEL_001.name())
-                .build());
-        Boolean exists = productService.existsByMainCode(mainCode);
-
-        log.debug(EventLog.builder()
-                .service(traceElement.getClassName())
-                .method(traceElement.getMethodName())
-                .information(exists)
-                .eventType(RESPONSE.name())
-                .level(LEVEL_001.name())
-                .build());
-        return new ResponseEntity<>(exists, HttpStatus.OK);
-    }
+    setLogs(
+        com.wallparisoft.ebill.utils.log.EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName())
+            .information(
+                "Found "
+                    + (response.getProductDtos() != null ? response.getProductDtos().size() : 0)
+                    + " products"),
+        EventType.RESPONSE,
+        Level.LEVEL_001);
+    return new ResponseEntity<>(response, HttpStatus.OK);
+  }
 }

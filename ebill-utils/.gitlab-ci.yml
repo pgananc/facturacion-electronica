@@ -1,0 +1,66 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  GIT_STRATEGY: none
+  GIT_SSH_COMMAND: 'ssh -i /home/gitlab-runner/.ssh/id_rsa_utils -o StrictHostKeyChecking=no'
+
+default:
+  tags:
+    - ebill
+
+build:
+  stage: build
+  before_script:
+    - set -e
+    - echo "🔐 Configurando SSH manual"
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - cp /home/gitlab-runner/.ssh/id_rsa_utils ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -p 22 85.239.237.88 >> ~/.ssh/known_hosts
+    - echo "🧹 Eliminando fuente previa si existe"
+    - rm -rf source
+    - echo "🌐 Clonando repo manualmente por SSH"
+    - git clone git@85.239.237.88:dev-billing/ebill-utils.git source
+  script:
+    - cd source
+    - 'echo "🔍 JAVA_HOME: $JAVA_HOME"'
+    - echo "🔍 Versión de Java:"
+    - java -version
+    - echo "🔍 Versión de Maven y ruta del JDK:"
+    - mvn -v
+    - echo "🚧 Compilando ebill-utils y dejando en .m2 local del runner"
+    - mvn clean install -DskipTests
+  artifacts:
+    paths:
+      - source/target/*.jar
+    expire_in: "30 minutes"
+
+deploy:
+  stage: deploy
+  needs: ["build"]
+  script:
+    - echo "📄 Generando settings.xml temporal con CI_JOB_TOKEN"
+    - |
+      cat > settings.xml <<EOF
+      <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
+        <servers>
+          <server>
+            <id>gitlab-maven</id>
+            <configuration>
+              <httpHeaders>
+                <property>
+                  <name>Job-Token</name>
+                  <value>${CI_JOB_TOKEN}</value>
+                </property>
+              </httpHeaders>
+            </configuration>
+          </server>
+        </servers>
+      </settings>
+      EOF
+    - echo "📦 Publicando ebill-utils al GitLab Maven Registry"
+    - cd source
+    - mvn deploy --settings ../settings.xml -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true

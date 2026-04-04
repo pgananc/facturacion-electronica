@@ -1,48 +1,125 @@
-.principal-full-width {
-    margin-left: 10px;
+@import '../../_shared/toolbar-styles.css';
+@import '../../_shared/shared-styles.css';
+@import '../../_shared/table-styles.css';
+@import '../../_shared/responsive-styles.css';
+
+.user-page { padding: var(--spacing-lg, 24px); max-width: 1400px; margin: 0 auto; background-color: var(--background-color, #f9fafb); min-height: calc(100vh - 64px); }
+.btn-new-user mat-icon { margin-right: var(--spacing-xs, 8px); }
+
+.mat-column-idUser { width: 8%; min-width: 70px; }
+.mat-column-name { width: 22%; min-width: 180px; }
+.mat-column-userName { width: 18%; min-width: 140px; }
+.mat-column-mail { width: 22%; min-width: 180px; }
+.mat-column-status { width: 12%; min-width: 100px; }
+.mat-column-actions { width: 18%; min-width: 140px; }
+
+.mat-column-name .celda-ajustable, .mat-column-userName .celda-ajustable, .mat-column-mail .celda-ajustable {
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block !important; text-align: center !important;
 }
 
-
-.principal-container {
-    display: flex;
-    flex-direction: column;
-    min-width: 300px;
+.user-page .mat-column-name.mat-cell, .user-page .mat-column-userName.mat-cell, .user-page .mat-column-roleDtos.mat-cell,
+.user-page .mat-column-idUser.mat-cell, .user-page .mat-column-status.mat-cell, .user-page .mat-column-actions.mat-cell {
+  justify-content: center !important; text-align: center !important;
 }
 
-.principal-header {
-    min-height: 64px;
-    padding: 8px 24px 0;
+::ng-deep .user-page .mat-mdc-table .mat-mdc-cell.mat-column-name,
+::ng-deep .user-page .mat-mdc-table .mat-mdc-cell.mat-column-userName,
+::ng-deep .user-page .mat-mdc-table .mat-mdc-cell.mat-column-roleDtos,
+::ng-deep .user-page .mat-mdc-table .mat-mdc-cell.mat-column-idUser,
+::ng-deep .user-page .mat-mdc-table .mat-mdc-cell.mat-column-status,
+::ng-deep .user-page .mat-mdc-table .mat-mdc-cell.mat-column-actions {
+  display: flex !important; justify-content: center !important; align-items: center !important; text-align: center !important;
 }
 
-.mat-form-field {
-    font-size: 14px;
+/* ===== LAYOUT HORIZONTAL: INPUTS + BOTONES EN UNA LÍNEA ===== */
+.search-grid-horizontal {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 12px);
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
+.search-field-compact {
+  flex: 1;
+  margin: 0 !important;
+  min-width: 180px;
+}
+
+.search-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 12px);
+  margin-left: auto;
+  flex-shrink: 0;
+  padding-bottom: 22px;
+}
+
+@media screen and (max-width: 959px) {
+  .search-field-compact {
+    flex: 1 1 calc(50% - 6px);
+    min-width: 180px;
+  }
+
+  .search-actions {
+    flex: 1 1 100%;
+    justify-content: flex-end;
+    padding-bottom: 0;
+  }
+}
+
+@media screen and (max-width: 599px) {
+  .search-field-compact {
+    flex: 1 1 100%;
     width: 100%;
+  }
+
+  .search-actions {
+    flex-direction: column;
+    width: 100%;
+    padding-bottom: 0;
+  }
+
+  .btn-search,
+  .btn-clear {
+    width: 100%;
+  }
 }
 
-.mat-table {
-    overflow: auto;
-    max-height: 500px;
+/* ===== TABLE CONTAINER CON SCROLL HORIZONTAL ===== */
+.table-wrapper {
+  margin-top: var(--spacing-sm, 12px) !important;
 }
 
-.text-center {
-    text-align: center;
+.table-container {
+  position: relative;
+  overflow-x: auto;
+  min-height: 300px;
+  -webkit-overflow-scrolling: touch;
 }
 
-.flex-parent {
-    display: flex;
-}
-
-.jc-center {
-    justify-content: center;
-}
-
-.text-color-bold {
-    font-weight: bold;
-}
-
-.botton-add {
-    margin-right: 20px;
-    margin-bottom: 5px;
-    margin-top: 5px;
-    text-align: left;
+/* ===== TABLA RESPONSIVE - OCULTAR COLUMNAS EN MOBILE ===== */
+@media screen and (max-width: 600px) {
+  /* Ocultar columnas menos importantes en mobile */
+  .mat-column-idUser,
+  .mat-column-userName,
+  .mat-column-mail {
+    display: none !important;
+  }
+  
+  /* Ajustar ancho de columnas visibles */
+  .mat-column-name {
+    width: 50% !important;
+    min-width: 150px !important;
+  }
+  
+  .mat-column-status {
+    width: 25% !important;
+    min-width: 100px !important;
+  }
+  
+  .mat-column-actions {
+    width: 25% !important;
+    min-width: 100px !important;
+  }
 }

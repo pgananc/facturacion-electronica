@@ -1,0 +1,73 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  GIT_STRATEGY: none
+  GIT_SSH_COMMAND: "ssh -i /home/gitlab-runner/.ssh/id_rsa_web_app -o StrictHostKeyChecking=no"
+
+default:
+  tags:
+    - ebill
+
+build:
+  stage: build
+  before_script:
+    - set -e
+    - echo "🔐 Configurando SSH manual"
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - cp /home/gitlab-runner/.ssh/id_rsa_web_app ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -p 22 85.239.237.88 >> ~/.ssh/known_hosts
+    - echo "🌐 Clonando repo manualmente por SSH"
+    - rm -rf source
+    - git clone git@85.239.237.88:dev-billing/ebilling-web-app.git source
+
+  script:
+    - cd source
+    - echo "📦 Instalando dependencias"
+    - docker run --rm --cpus=2 -u 1000:1000 -v $PWD:/app -w /app node:18-alpine sh -c "set -xe && npm ci --prefer-offline --no-audit"
+    - echo "🧹 Limpiando caché"
+    - docker run --rm --cpus=2 -u 1000:1000 -v $PWD:/app -w /app node:18-alpine sh -c "rm -rf .angular/cache node_modules/.cache || true"
+    - echo "🐳 Compilando Angular (tuned RAM)"
+    - |
+      docker run --rm --cpus=2 -u 1000:1000 -v $PWD:/app -w /app node:18-alpine sh -c '
+        set -xe
+        export NODE_OPTIONS="--max-old-space-size=1024"
+        export NG_BUILD_MAX_WORKERS=2
+        npx ng build --configuration production \
+          --output-path=dist \
+          --build-optimizer=false \
+          --source-map=false \
+          --optimization=minimal \
+          --aot=true \
+          --vendor-chunk=true \
+          --common-chunk=false \
+          --progress=false
+      '
+
+  artifacts:
+    paths:
+      - source/dist
+    expire_in: "1 hour"
+
+deploy:
+  stage: deploy
+  before_script:
+    - set -e
+    - echo "🔐 Configurando SSH para deploy"
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - cp /home/gitlab-runner/.ssh/id_rsa_web_app ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -p 22 85.239.237.88 >> ~/.ssh/known_hosts
+
+  script:
+    - echo "🚀 Subiendo build Angular al servidor remoto"
+    - /usr/bin/scp -i /home/gitlab-runner/.ssh/id_rsa_web_app -r source/dist/* deploy@85.239.237.88:/opt/wallparisoft/ebilling-web-app/
+    - echo "✅ Deploy completado para webapp"
+
+  needs:
+    - job: build
+      artifacts: true

@@ -1,0 +1,70 @@
+/* ======================
+   CHECKBOX NATIVO PERSONALIZADO - REUTILIZABLE
+   Autor: Jonathan Guerrero
+   Fecha: Noviembre 2024
+   Uso: Importar en cualquier componente que necesite checkboxes limpios
+====================== */
+
+.custom-checkbox-container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.custom-checkbox-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.custom-checkbox-box {
+  position: relative;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(0, 0, 0, 0.54);
+  border-radius: 2px;
+  background-color: transparent;
+  transition: all 0.2s ease;
+  margin-right: 8px;
+}
+
+.custom-checkbox-input:checked ~ .custom-checkbox-box {
+  background-color: var(--primary-color, #0ea5e9);
+  border-color: var(--primary-color, #0ea5e9);
+}
+
+.custom-checkbox-input:checked ~ .custom-checkbox-box::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.custom-checkbox-container:hover .custom-checkbox-box {
+  border-color: rgba(0, 0, 0, 0.87);
+}
+
+.custom-checkbox-input:checked ~ .custom-checkbox-container:hover .custom-checkbox-box {
+  background-color: var(--primary-dark, #0a82bb);
+}
+
+.custom-checkbox-label {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.87);
+}
+

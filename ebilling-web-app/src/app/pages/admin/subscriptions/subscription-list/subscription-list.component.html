@@ -1,0 +1,226 @@
+<!-- Contenedor principal -->
+<div class="subscription-page">
+  <!-- Header principal con botón integrado -->
+  <mat-toolbar class="toolbar-primary toolbar-with-action">
+    <span>Gestión de Suscripciones</span>
+    <span class="spacer"></span>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="openAssignDialog()"
+      class="btn-new-subscription"
+      [disabled]="isLoading"
+    >
+      <mat-icon>add_circle</mat-icon>
+      Asignar Suscripción
+    </button>
+  </mat-toolbar>
+
+  <!-- Filtros -->
+  <mat-card class="search-card">
+    <mat-card-content>
+      <div class="search-grid-horizontal">
+        <mat-form-field appearance="outline" class="search-field-compact">
+          <mat-label>Buscar empresa</mat-label>
+          <mat-icon matPrefix>search</mat-icon>
+          <input
+            matInput
+            (keyup)="applyFilter($event)"
+            placeholder="Nombre o RUC"
+          />
+        </mat-form-field>
+
+        <div class="search-actions">
+          <button
+            mat-raised-button
+            class="search-btn"
+            (click)="loadSubscriptions()"
+            [disabled]="isLoading"
+          >
+            <mat-icon>refresh</mat-icon>
+            <span>Actualizar</span>
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Tabla de Suscripciones -->
+  <div class="table-wrapper">
+    <mat-toolbar class="toolbar-primary-sm"
+      >Listado de Suscripciones</mat-toolbar
+    >
+
+    <div class="table-container" style="position: relative; min-height: 300px">
+      <!-- Overlay para empty state (fuera de la tabla) -->
+      <div
+        *ngIf="dataSource.data.length === 0 && !isLoading"
+        class="empty-state-overlay"
+      >
+        <mat-icon class="empty-icon">business_center</mat-icon>
+        <p class="empty-title">No existen suscripciones registradas</p>
+        <p class="empty-subtitle">
+          Asigna una nueva suscripción usando el botón "Asignar Suscripción" en
+          la parte superior.
+        </p>
+      </div>
+
+      <mat-table
+        [dataSource]="dataSource"
+        matSort
+        class="bordered-table"
+        *ngIf="!isLoading"
+      >
+        <!-- Empresa -->
+        <ng-container matColumnDef="businessName">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Empresa
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <div class="company-cell">
+              <strong>{{ row.businessName }}</strong>
+            </div>
+          </mat-cell>
+        </ng-container>
+
+        <!-- RUC -->
+        <ng-container matColumnDef="ruc">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            RUC
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <span class="ruc-cell">{{ row.ruc }}</span>
+          </mat-cell>
+        </ng-container>
+
+        <!-- Plan -->
+        <ng-container matColumnDef="plan">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Plan
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <span
+              class="plan-badge"
+              [class]="'plan-' + row.plan.code.toLowerCase()"
+            >
+              {{ row.plan.name }}
+            </span>
+          </mat-cell>
+        </ng-container>
+
+        <!-- Estado -->
+        <ng-container matColumnDef="status">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Estado
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <span
+              class="status-badge"
+              [class]="getStatusClass(row.subscriptionStatus)"
+            >
+              {{ row.statusDetail || row.subscriptionStatus }}
+            </span>
+          </mat-cell>
+        </ng-container>
+
+        <!-- Uso -->
+        <ng-container matColumnDef="usage">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Uso
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <div class="usage-cell">
+              <mat-progress-bar
+                mode="determinate"
+                [value]="row.percentUsed"
+                [class]="getUsageClass(row.percentUsed)"
+              ></mat-progress-bar>
+              <span class="usage-text">
+                {{ row.currentYearUsage }} /
+                {{ row.plan.documentLimitYearly }} ({{
+                  row.percentUsed | number : "1.0-1"
+                }}%)
+              </span>
+            </div>
+          </mat-cell>
+        </ng-container>
+
+        <!-- Documentos Restantes -->
+        <ng-container matColumnDef="remaining">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Restantes
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <strong>{{ row.remainingDocuments }}</strong>
+          </mat-cell>
+        </ng-container>
+
+        <!-- Fecha Expiración -->
+        <ng-container matColumnDef="expiresAt">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Expira
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            {{ row.expiresAt | date : "dd/MM/yyyy" }}
+          </mat-cell>
+        </ng-container>
+
+        <!-- Acciones -->
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <button
+              mat-icon-button
+              [matMenuTriggerFor]="menu"
+              aria-label="Acciones"
+            >
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="viewDetails(row)">
+                <mat-icon>visibility</mat-icon>
+                <span>Ver Detalle</span>
+              </button>
+              <button mat-menu-item (click)="changePlan(row)">
+                <mat-icon>upgrade</mat-icon>
+                <span>Cambiar Plan</span>
+              </button>
+              <button mat-menu-item (click)="extendSubscription(row)">
+                <mat-icon>schedule</mat-icon>
+                <span>Extender Vigencia</span>
+              </button>
+              <mat-divider></mat-divider>
+              <button
+                mat-menu-item
+                (click)="cancelSubscription(row)"
+                class="danger-action"
+              >
+                <mat-icon>cancel</mat-icon>
+                <span>Cancelar Suscripción</span>
+              </button>
+            </mat-menu>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          class="table-row"
+        ></mat-row>
+      </mat-table>
+
+      <mat-paginator
+        [pageSizeOptions]="[10, 25, 50, 100]"
+        showFirstLastButtons
+        aria-label="Selecciona página de suscripciones"
+      ></mat-paginator>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div *ngIf="isLoading" class="loading-overlay">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Cargando suscripciones...</p>
+    </div>
+  </div>
+</div>
+<!-- Fin contenedor principal -->

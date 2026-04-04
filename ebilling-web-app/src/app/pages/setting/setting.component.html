@@ -1,0 +1,117 @@
+<div class="invoice-page">
+  <mat-toolbar class="toolbar-primary">
+    <span>Firma electrónica</span>
+    <span class="spacer"></span>
+  </mat-toolbar>
+
+  <mat-card class="card-padding mt-24">
+    <mat-card-content>
+      <div class="setting-container">
+        <div class="setting-section">
+          <div class="file-upload-section">
+            <input
+              type="file"
+              #certificateFileInput
+              style="display: none"
+              (change)="onCertificateFileSelected($event)"
+              accept=".p12,.pem"
+            />
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="certificateFileInput.click()"
+              class="upload-btn"
+            >
+              <mat-icon>cloud_upload</mat-icon>
+              <span>Cargar certificado</span>
+            </button>
+            <div *ngIf="certificateFileName" class="file-name">
+              {{ certificateFileName }}
+            </div>
+          </div>
+
+          <form [formGroup]="form" (ngSubmit)="save()" #frmSetting="ngForm">
+            <div class="form-field-section">
+              <div class="info-item">
+                <div class="info-label">
+                  <mat-icon>lock</mat-icon>
+                  <span>Password</span>
+                </div>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Password del certificado</mat-label>
+                  <input
+                    matInput
+                    placeholder="Password"
+                    formControlName="passwordCertificate"
+                    type="password"
+                    name="passwordCertificate"
+                  />
+                </mat-form-field>
+                <button
+                  *ngIf="selectedCertificateFile && !isActive"
+                  mat-raised-button
+                  color="accent"
+                  type="button"
+                  (click)="uploadCertificate()"
+                  class="validate-btn"
+                  [disabled]="!form.get('passwordCertificate')?.value"
+                >
+                  <mat-icon>verified</mat-icon>
+                  <span>Validar certificado</span>
+                </button>
+              </div>
+
+              <div class="info-item" *ngIf="fechaVigenciaDisplay">
+                <div class="info-label">
+                  <mat-icon>calendar_today</mat-icon>
+                  <span>Fecha de vigencia</span>
+                </div>
+                <div class="info-value">{{ fechaVigenciaDisplay }}</div>
+              </div>
+
+              <div class="info-item" *ngIf="propietarioCertificadoDisplay">
+                <div class="info-label">
+                  <mat-icon>badge</mat-icon>
+                  <span>Propietario certificado</span>
+                </div>
+                <div class="info-value">
+                  {{ propietarioCertificadoDisplay }}
+                </div>
+              </div>
+            </div>
+
+            <div class="setting-actions">
+              <button
+                mat-raised-button
+                color="primary"
+                type="submit"
+                class="btn-save"
+                [disabled]="
+                  frmSetting.invalid ||
+                  !form.get('passwordCertificate')?.value ||
+                  (!selectedCertificateFile && !idDigitalSignature) ||
+                  (selectedCertificateFile && !isActive) ||
+                  (isActive &&
+                    form.get('passwordCertificate')?.value !==
+                      validatedPassword)
+                "
+              >
+                <mat-icon>save</mat-icon>
+                <span>Guardar</span>
+              </button>
+              <button
+                mat-stroked-button
+                routerLink="/welcome"
+                type="button"
+                class="btn-cancel"
+              >
+                <mat-icon>close</mat-icon>
+                <span>Cancelar</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

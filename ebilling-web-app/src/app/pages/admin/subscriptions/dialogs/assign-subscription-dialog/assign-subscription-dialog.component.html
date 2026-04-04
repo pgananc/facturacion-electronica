@@ -1,0 +1,322 @@
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <h2 mat-dialog-title>Asignar Nueva Suscripción</h2>
+  </div>
+
+  <mat-dialog-content>
+    <!-- Alert cuando no hay empresas disponibles -->
+    <div
+      *ngIf="!isLoadingCompanies && companies.length === 0"
+      class="alert-warning"
+    >
+      <mat-icon>warning</mat-icon>
+      <div>
+        <strong>No hay empresas disponibles</strong>
+        <p>Todas las empresas registradas ya tienen una suscripción activa.</p>
+      </div>
+    </div>
+
+    <form [formGroup]="assignForm" class="assign-form">
+      <!-- Empresa -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+        floatLabel="always"
+      >
+        <mat-label>Empresa a Asignar</mat-label>
+        <mat-icon matPrefix>business</mat-icon>
+        <mat-select
+          formControlName="idCompany"
+          placeholder="Selecciona empresa"
+          #companySelect
+        >
+          <!-- Valor seleccionado (colapsado) - Solo muestra el nombre -->
+          <mat-select-trigger>
+            <span class="selected-company-display">
+              {{ getSelectedCompanyDisplay() }}
+            </span>
+          </mat-select-trigger>
+
+          <!-- Opciones del dropdown -->
+          <mat-option *ngIf="isLoadingCompanies" disabled>
+            <div class="loading-option">
+              <mat-spinner diameter="20"></mat-spinner>
+              <span>Cargando empresas disponibles...</span>
+            </div>
+          </mat-option>
+          <mat-option
+            *ngIf="!isLoadingCompanies && companies.length === 0"
+            disabled
+          >
+            <div class="empty-option">
+              <mat-icon>info_outline</mat-icon>
+              <span>No hay empresas sin suscripción</span>
+            </div>
+          </mat-option>
+          <mat-option
+            *ngFor="let company of companies"
+            [value]="company.idCompany"
+          >
+            <div class="company-option">
+              <div class="company-name">{{ company.businessName }}</div>
+              <div class="company-ruc">{{ formatRuc(company.ruc) }}</div>
+            </div>
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="assignForm.get('idCompany')?.hasError('required')">
+          Selecciona una empresa
+        </mat-error>
+        <mat-hint *ngIf="!isLoadingCompanies && companies.length > 0">
+          <mat-icon class="hint-icon">info</mat-icon>
+          {{ companies.length }} empresa{{
+            companies.length !== 1 ? "s" : ""
+          }}
+          disponible{{ companies.length !== 1 ? "s" : "" }}
+        </mat-hint>
+      </mat-form-field>
+
+      <!-- Plan -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+        floatLabel="always"
+      >
+        <mat-label>Plan de Suscripción</mat-label>
+        <mat-icon matPrefix>workspace_premium</mat-icon>
+        <mat-select
+          formControlName="planCode"
+          placeholder="Selecciona plan"
+          #planSelect
+        >
+          <!-- Valor seleccionado (colapsado) - Formato mejorado con separadores -->
+          <mat-select-trigger>
+            <span class="selected-plan-display">
+              {{ getSelectedPlanDisplay() }}
+            </span>
+          </mat-select-trigger>
+
+          <!-- Opciones del dropdown -->
+          <mat-option *ngFor="let plan of availablePlans" [value]="plan.code">
+            <div class="plan-option">
+              <div class="plan-name-container">
+                <span class="plan-name">{{ plan.name }}</span>
+                <span class="plan-price"
+                  >${{ plan.price | number : "1.2-2" }}/mes</span
+                >
+              </div>
+              <div class="plan-limit-info">
+                <mat-icon class="mini-icon">description</mat-icon>
+                <span *ngIf="plan.documentLimit === -1"
+                  >Documentos ilimitados</span
+                >
+                <span *ngIf="plan.documentLimit !== -1"
+                  >{{ plan.documentLimit | number }} doc/año</span
+                >
+              </div>
+            </div>
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="assignForm.get('planCode')?.hasError('required')">
+          Selecciona un plan
+        </mat-error>
+        <mat-hint *ngIf="selectedPlan">
+          <mat-icon class="hint-icon">check_circle</mat-icon>
+          Plan seleccionado: {{ selectedPlan.name }}
+        </mat-hint>
+      </mat-form-field>
+
+      <!-- Detalles del plan seleccionado (mejorado) -->
+      <div *ngIf="selectedPlan" class="plan-details" @fadeIn>
+        <div class="plan-header">
+          <mat-icon>workspace_premium</mat-icon>
+          <strong>{{ selectedPlan.name }}</strong>
+          <span class="plan-code-badge">{{ selectedPlan.code }}</span>
+        </div>
+        <div class="plan-info-grid">
+          <div class="plan-info-item">
+            <div class="info-icon-wrapper documents">
+              <mat-icon>description</mat-icon>
+            </div>
+            <div class="info-content">
+              <span class="info-label">Documentos anuales</span>
+              <span class="info-value">
+                <span
+                  *ngIf="selectedPlan.documentLimit === -1"
+                  class="unlimited-badge"
+                >
+                  <mat-icon class="inline-icon">all_inclusive</mat-icon>
+                  Ilimitado
+                </span>
+                <span *ngIf="selectedPlan.documentLimit !== -1">
+                  {{ selectedPlan.documentLimit | number }}
+                </span>
+              </span>
+            </div>
+          </div>
+          <div class="plan-info-item">
+            <div class="info-icon-wrapper price">
+              <mat-icon>payments</mat-icon>
+            </div>
+            <div class="info-content">
+              <span class="info-label">Precio mensual</span>
+              <span class="info-value price-highlight">
+                ${{ selectedPlan.price | number : "1.2-2" }}
+              </span>
+            </div>
+          </div>
+          <div class="plan-info-item full-width" *ngIf="calculatedEndDate">
+            <div class="info-icon-wrapper date">
+              <mat-icon>event_available</mat-icon>
+            </div>
+            <div class="info-content">
+              <span class="info-label">Vigencia de la suscripción</span>
+              <span class="info-value date-range">
+                {{ assignForm.get("startDate")?.value | date : "dd/MMM/yyyy" }}
+                <mat-icon class="arrow-icon">arrow_forward</mat-icon>
+                {{ calculatedEndDate | date : "dd/MMM/yyyy" }}
+              </span>
+            </div>
+          </div>
+          <div class="plan-info-item full-width highlighted">
+            <div class="info-icon-wrapper total">
+              <mat-icon>calculate</mat-icon>
+            </div>
+            <div class="info-content">
+              <span class="info-label">Inversión total</span>
+              <span class="info-value total-cost">
+                ${{ totalCost | number : "1.2-2" }}
+                <span class="duration-info"
+                  >({{ assignForm.get("durationMonths")?.value }} meses)</span
+                >
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <mat-divider class="section-divider"></mat-divider>
+
+      <!-- Fecha de Inicio -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Fecha de Inicio</mat-label>
+        <mat-icon matPrefix>event</mat-icon>
+        <input
+          matInput
+          type="date"
+          formControlName="startDate"
+          placeholder="dd/mm/aaaa"
+          (change)="onDateChange()"
+          [min]="minDate"
+        />
+        <mat-error *ngIf="assignForm.get('startDate')?.hasError('required')">
+          Selecciona la fecha de inicio
+        </mat-error>
+        <mat-hint *ngIf="assignForm.get('startDate')?.valid">
+          <mat-icon class="hint-icon">event</mat-icon>
+          Inicio:
+          {{
+            assignForm.get("startDate")?.value
+              | date : "EEEE, dd 'de' MMMM 'de' yyyy"
+          }}
+        </mat-hint>
+      </mat-form-field>
+
+      <!-- Vigencia (meses) con atajos rápidos -->
+      <div class="duration-field-container">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Vigencia</mat-label>
+          <mat-icon matPrefix>schedule</mat-icon>
+          <input
+            matInput
+            type="number"
+            formControlName="durationMonths"
+            placeholder="Ej: 12"
+            min="1"
+            max="60"
+            (input)="onDurationChange()"
+          />
+          <span matTextSuffix class="suffix-text">meses</span>
+          <mat-hint *ngIf="assignForm.get('durationMonths')?.valid">
+            <mat-icon class="hint-icon">event_available</mat-icon>
+            {{ getDurationYearsMonths() }}
+          </mat-hint>
+          <mat-error
+            *ngIf="assignForm.get('durationMonths')?.hasError('required')"
+          >
+            Ingresa la vigencia
+          </mat-error>
+          <mat-error *ngIf="assignForm.get('durationMonths')?.hasError('min')">
+            Mínimo 1 mes
+          </mat-error>
+          <mat-error *ngIf="assignForm.get('durationMonths')?.hasError('max')">
+            Máximo 60 meses (5 años)
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Atajos rápidos -->
+        <div class="duration-shortcuts">
+          <button
+            type="button"
+            mat-stroked-button
+            class="shortcut-btn"
+            (click)="setDuration(12)"
+            [class.active]="assignForm.get('durationMonths')?.value === 12"
+          >
+            <mat-icon>calendar_month</mat-icon>
+            1 año
+          </button>
+          <button
+            type="button"
+            mat-stroked-button
+            class="shortcut-btn"
+            (click)="setDuration(24)"
+            [class.active]="assignForm.get('durationMonths')?.value === 24"
+          >
+            <mat-icon>event_note</mat-icon>
+            2 años
+          </button>
+          <button
+            type="button"
+            mat-stroked-button
+            class="shortcut-btn"
+            (click)="setDuration(36)"
+            [class.active]="assignForm.get('durationMonths')?.value === 36"
+          >
+            <mat-icon>event_repeat</mat-icon>
+            3 años
+          </button>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <!-- Actions -->
+  <div class="dialog-actions" mat-dialog-actions>
+    <button
+      mat-raised-button
+      color="primary"
+      type="button"
+      [disabled]="assignForm.invalid || isLoading || companies.length === 0"
+      (click)="onAssign()"
+      class="btn-save"
+      [class.loading]="isLoading"
+    >
+      <mat-icon *ngIf="!isLoading">save</mat-icon>
+      <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+      <span *ngIf="!isLoading">Guardar</span>
+      <span *ngIf="isLoading">Asignando...</span>
+    </button>
+
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="onCancel()"
+      [disabled]="isLoading"
+      class="btn-cancel"
+    >
+      <mat-icon>close</mat-icon>
+      <span>Cancelar</span>
+    </button>
+  </div>
+</div>

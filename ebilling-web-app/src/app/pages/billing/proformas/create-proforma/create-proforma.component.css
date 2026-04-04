@@ -1,0 +1,391 @@
+@import '../../../../_shared/custom-checkbox.css';
+@import '../../../../_shared/toolbar-styles.css';
+@import '../../../../_shared/shared-styles.css';
+@import '../../../../_shared/table-styles.css';
+@import '../../../../_shared/responsive-styles.css';
+
+/* Misma estructura que invoice-page */
+.proforma-page {
+  padding: var(--spacing-lg, 24px);
+  max-width: 1400px;
+  margin: 0 auto;
+  background-color: var(--background-color, #f9fafb);
+  min-height: calc(100vh - 64px);
+}
+
+.mt-16 { margin-top: 12px; }
+.mt-24 { margin-top: 24px; }
+.full-width { width: 100%; }
+
+/* Headers de sección (igual que billing) */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  margin: -16px -16px 24px -16px;
+  background: linear-gradient(135deg, #0ea5e9 0%, #0a82bb 100%);
+  border-radius: 4px 4px 0 0;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.2);
+}
+
+.section-icon {
+  color: #ffffff;
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+}
+
+.section-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Labels de formulario */
+.input-label {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: var(--spacing-md, 16px);
+  padding-right: var(--spacing-sm, 12px);
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.87);
+  min-height: 56px;
+  box-sizing: border-box;
+  line-height: 1.5;
+  text-align: right;
+}
+
+.input-label .required::before {
+  content: '*';
+  color: #d32f2f;
+  margin-left: 2px;
+}
+
+.client-info {
+  margin-top: 12px;
+  color: #2e7d32;
+  font-size: 14px;
+}
+
+/* Botón crear cliente y buscar (mismos estilos que factura) */
+.create-client-btn {
+  transition: all 0.3s ease !important;
+  color: #4caf50 !important;
+  margin-left: 4px;
+}
+
+.create-client-btn:hover {
+  background-color: rgba(76, 175, 80, 0.1) !important;
+  transform: scale(1.1);
+}
+
+.create-client-btn mat-icon {
+  color: #4caf50;
+}
+
+.search-buyer-btn {
+  transition: all 0.3s ease !important;
+}
+
+.search-buyer-btn:hover:not(:disabled) {
+  background-color: rgba(14, 165, 233, 0.1) !important;
+  transform: scale(1.1);
+}
+
+/* ===== TABLA DE PRODUCTOS (mismos estilos que billing) ===== */
+.invoice-detail-table {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: var(--radius-sm, 4px);
+  overflow: hidden;
+  margin-top: var(--spacing-md, 16px);
+}
+
+/* Headers y celdas */
+.invoice-detail-table .mat-mdc-header-cell {
+  background-color: #eceff1;
+  color: #263238;
+  font-weight: 700;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: var(--spacing-sm, 12px) var(--spacing-xs, 8px) !important;
+  border-bottom: 2px solid var(--primary-color, #0ea5e9);
+}
+
+.invoice-detail-table .mat-mdc-cell {
+  padding: var(--spacing-xs, 8px) !important;
+  font-size: 14px;
+}
+
+/* Inputs dentro de la tabla */
+.invoice-detail-table input {
+  width: 100% !important;
+  padding: var(--spacing-xs, 8px) 10px !important;
+  border: 1px solid #ddd !important;
+  border-radius: var(--radius-sm, 4px) !important;
+  font-size: 14px !important;
+  font-family: inherit !important;
+  transition: border-color 0.3s, box-shadow 0.3s !important;
+  background-color: #ffffff !important;
+  box-sizing: border-box !important;
+}
+
+.invoice-detail-table input:focus {
+  outline: none !important;
+  border-color: var(--primary-color, #0ea5e9) !important;
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.1) !important;
+}
+
+.invoice-detail-table input:disabled,
+.invoice-detail-table input[readonly] {
+  background-color: #f5f5f5 !important;
+  color: #666 !important;
+  cursor: not-allowed !important;
+}
+
+.invoice-detail-table input:hover:not(:disabled):not([readonly]) {
+  border-color: var(--primary-color, #0ea5e9);
+}
+
+/* Anchos de columnas */
+.invoice-detail-table .mat-column-code {
+  flex: 0 0 110px;
+  max-width: 110px;
+}
+
+.invoice-detail-table .mat-column-quantity {
+  flex: 0 0 100px;
+  max-width: 100px;
+}
+
+.invoice-detail-table .mat-column-description {
+  flex: 1 1 auto;
+  min-width: 200px;
+}
+
+.invoice-detail-table .mat-column-unitPrice {
+  flex: 0 0 120px;
+  max-width: 120px;
+}
+
+.invoice-detail-table .mat-column-discount {
+  flex: 0 0 110px;
+  max-width: 110px;
+}
+
+.invoice-detail-table .mat-column-totalValue {
+  flex: 0 0 120px;
+  max-width: 120px;
+}
+
+.invoice-detail-table .mat-column-iva {
+  flex: 0 0 90px;
+  max-width: 90px;
+}
+
+.invoice-detail-table .mat-column-ice {
+  flex: 0 0 90px;
+  max-width: 90px;
+}
+
+.invoice-detail-table .mat-column-actions {
+  flex: 0 0 80px;
+  max-width: 80px;
+  text-align: center;
+}
+
+/* Filas */
+.invoice-detail-table .mat-mdc-row:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.invoice-detail-table .mat-mdc-row:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+.invoice-detail-table .mat-mdc-row:hover {
+  background-color: rgba(14, 165, 233, 0.05) !important;
+}
+
+/* Estado vacío (idéntico a billing) */
+.invoice-detail-table {
+  position: relative;
+}
+
+.empty-state-overlay {
+  position: absolute;
+  top: 56px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 1;
+  padding: var(--spacing-2xl, 48px) var(--spacing-lg, 24px);
+  background: rgba(255, 255, 255, 0.98);
+  width: 100%;
+  min-height: 200px;
+  pointer-events: none;
+}
+
+/* Asegurar que las cabeceras estén por encima */
+::ng-deep .invoice-detail-table .mat-mdc-header-row {
+  position: relative;
+  z-index: 2;
+  background-color: #f5f5f5;
+}
+
+/* Altura mínima cuando está vacía */
+.invoice-detail-table mat-table {
+  min-height: 300px;
+}
+
+.empty-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: #b0bec5;
+  margin-bottom: var(--spacing-md, 16px);
+}
+
+.empty-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #37474f;
+  margin: 0 0 var(--spacing-xs, 8px) 0;
+}
+
+.empty-subtitle {
+  font-size: 14px;
+  color: #78909c;
+  margin: 0;
+  line-height: 1.5;
+  max-width: 500px;
+}
+
+.total-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  padding: 12px 16px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+/* Mismos estilos que billing (actions-card, actions-container) */
+.actions-card {
+  border-radius: var(--radius-lg, 12px);
+  box-shadow: var(--shadow-lg, 0 8px 24px rgba(14, 165, 233, 0.3));
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-top: 4px solid var(--primary-color, #0ea5e9);
+}
+.actions-card .mat-mdc-card-content {
+  padding: var(--spacing-xl, 32px);
+}
+.actions-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-lg, 24px);
+  flex-wrap: wrap;
+}
+
+.btn-action-cancel,
+.btn-action-save {
+  min-width: 180px;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: var(--radius-lg, 12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-action-cancel {
+  border: 2px solid #607d8b;
+  color: #37474f;
+  background-color: #ffffff;
+}
+.btn-action-cancel:hover {
+  background-color: #eceff1;
+  border-color: #455a64;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(96, 125, 139, 0.2);
+}
+.btn-action-save {
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);
+}
+.btn-action-save:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(14, 165, 233, 0.3);
+}
+.btn-action-save mat-icon,
+.btn-action-cancel mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+/* Botones de producto (mismos estilos que factura) */
+.search-product-btn {
+  transition: all 0.3s ease !important;
+}
+
+.search-product-btn:hover {
+  background-color: rgba(14, 165, 233, 0.1) !important;
+  transform: scale(1.1);
+}
+
+.create-product-btn {
+  transition: all 0.3s ease !important;
+  color: #4caf50 !important;
+  margin-left: 4px;
+}
+
+.create-product-btn:hover {
+  background-color: rgba(76, 175, 80, 0.1) !important;
+  transform: scale(1.1);
+}
+
+.create-product-btn mat-icon {
+  color: #4caf50;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.loading-overlay p {
+  margin-top: 16px;
+  font-size: 16px;
+  color: #666;
+}
+
+.btn-spinner {
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: middle;
+}

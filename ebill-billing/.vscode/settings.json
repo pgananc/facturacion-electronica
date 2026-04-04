@@ -1,0 +1,49 @@
+{
+  // Java Configuration
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.compile.nullAnalysis.mode": "automatic",
+  "java.configuration.runtimes": [
+    {
+      "name": "JavaSE-17",
+      "path": "/Users/jguerreroh/Library/Java/JavaVirtualMachines/corretto-17.0.16/Contents/Home",
+      "default": true
+    }
+  ],
+  "java.jdt.ls.java.home": "/Users/jguerreroh/Library/Java/JavaVirtualMachines/corretto-17.0.16/Contents/Home",
+  // Maven Configuration
+  "maven.executable.path": "mvn",
+  "maven.terminal.useJavaHome": true,
+  "maven.terminal.customEnv": [
+    {
+      "environmentVariable": "JAVA_HOME",
+      "value": "/Users/jguerreroh/Library/Java/JavaVirtualMachines/corretto-17.0.16/Contents/Home"
+    }
+  ],
+  // Spring Boot Configuration
+  "spring-boot.ls.java.home": "/Users/jguerreroh/Library/Java/JavaVirtualMachines/corretto-17.0.16/Contents/Home",
+  "spring-boot.ls.checkJVM": true,
+  // Editor Configuration
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  // Java Formatting
+  "java.format.settings.url": "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml",
+  "java.format.settings.profile": "GoogleStyle",
+  // Files to exclude
+  "files.exclude": {
+    "**/.classpath": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/.factorypath": true,
+    "**/target": false
+  },
+  // Spring Boot Dashboard
+  "spring.dashboard.openWith": "external",
+  // Java Test Configuration
+  "java.test.config": {
+    "vmArgs": [
+      "-Dspring.profiles.active=localhost"
+    ]
+  }
+}

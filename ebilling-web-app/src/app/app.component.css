@@ -10,8 +10,717 @@
 
 .sidenav-container {
     flex: 1;
+    overflow: auto;
+    /* Asegurar que el contenedor ocupe todo el espacio disponible */
+    height: calc(100vh - 64px); /* Altura total menos el toolbar */
+}
+
+/* ======================
+   SIDENAV MODE "SIDE" - El contenido se acomoda
+   Angular Material debería manejar esto automáticamente,
+   pero aseguramos que no haya interferencia de otros estilos
+====================== */
+::ng-deep .mat-drawer-container.mat-sidenav-container {
+    height: 100% !important;
+}
+
+/* Cuando el sidenav está abierto en modo "side", el contenido debe tener margen */
+::ng-deep .mat-sidenav-container .mat-sidenav ~ .mat-sidenav-content {
+    transition: margin-left 0.3s ease-in-out;
+}
+
+/* Asegurar que el contenido principal no se superponga */
+::ng-deep .mat-sidenav-container .mat-drawer-content {
+    overflow: auto !important;
+}
+
+/* ===== ELIMINAR TODO PADDING/MARGIN DE CONTENEDORES MATERIAL ===== */
+mat-sidenav-container,
+.mat-drawer-container,
+mat-drawer-container {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Asegurar que el contenido del sidenav NO tenga padding extra */
+/* NOTA: NO usar margin: 0 aquí porque Angular Material usa margin-left 
+   para ajustar el contenido cuando el sidenav está en modo "side" */
+mat-sidenav-content,
+.mat-drawer-content,
+mat-drawer-content {
+    padding: 0 !important;
+    /* margin-left es manejado por Angular Material para modo "side" */
+    margin-top: 0 !important;
+    margin-right: 0 !important;
+    margin-bottom: 0 !important;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background-color, #f9fafb); /* Fondo gris claro fintech */
+}
+
+/* Contenedor para el contenido de las páginas - Angular renderiza el componente después del router-outlet */
+mat-sidenav-content > *,
+.mat-drawer-content > *,
+mat-drawer-content > * {
+    flex: 1;
+    display: block;
+    width: 100%;
+    /* margin-left es manejado por Angular Material, solo resetear los otros */
+    margin-top: 0 !important;
+    margin-right: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+}
+
+/* Forzar que router-outlet no añada espacio */
+router-outlet {
+    display: none !important;
+}
+
+router-outlet + * {
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .spacer {
     flex: 1 1 auto;
+}
+
+/* Estilos para el toolbar */
+.toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.app-name {
+    margin-left: 10px;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+/* ✅ Contenedor del logo centrado dentro del sidebar (360px) */
+.toolbar-logo-wrapper {
+    position: absolute;
+    left: 180px; /* ✅ Centro del sidebar de 360px */
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ✅ Logo en el toolbar superior */
+.toolbar-logo {
+    height: 72px;
+    width: auto;
+    object-fit: contain;
+    filter: brightness(0) invert(1); /* ✅ Convierte a blanco para fondo cyan */
+}
+
+/* ======================
+   SIDENAV BASE STYLES
+====================== */
+mat-sidenav.app-sidenav {
+    transition: transform 0.3s ease-in-out;
+    min-width: 360px !important;
+    width: 360px !important;
+    max-width: 360px !important;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+}
+
+/* Responsive: ajustar ancho del sidenav en mobile */
+@media screen and (max-width: 959px) {
+    mat-sidenav.app-sidenav {
+        width: 100% !important;
+        max-width: 360px !important;
+    }
+}
+
+/* ======================
+   SIDENAV HEADER - CONTENEDOR DEL LOGO
+   Contenedor claro con fondo suave, altura fija y padding consistente
+   ✅ Logo centrado con dimensiones óptimas para sidebar
+====================== */
+.sidenav-header {
+    height: 80px;
+    min-height: 80px;
+    padding: 12px 24px;
+    background-color: rgba(14, 165, 233, 0.03); /* Fondo cyan muy clarito */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* ✅ Centrado horizontal */
+}
+
+.sidenav-logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* ✅ Centrado horizontal */
+    width: 100%;
+    height: 100%;
+}
+
+.sidenav-logo {
+    max-width: 140px; /* ✅ Ancho máximo ideal para sidebar de 360px */
+    max-height: 56px; /* ✅ Altura máxima proporcional */
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    flex-shrink: 0;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    border-radius: 4px; /* ✅ Bordes suaves */
+}
+
+.sidenav-logo:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+/* ======================
+   MENU CONTAINER - SCROLL SUAVE
+====================== */
+.sidenav-menu-container {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px 0;
+    /* Scrollbar personalizado para mejor UX */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(14, 165, 233, 0.3) transparent;
+}
+
+.sidenav-menu-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidenav-menu-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidenav-menu-container::-webkit-scrollbar-thumb {
+    background-color: rgba(14, 165, 233, 0.3);
+    border-radius: 3px;
+}
+
+.sidenav-menu-container::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(14, 165, 233, 0.5);
+}
+
+/* ======================
+   ACCORDION STYLES
+====================== */
+.sidenav-accordion {
+    display: block;
+    width: 100%;
+}
+
+.sidenav-accordion .menu-group {
+    border: none;
+    box-shadow: none;
+    margin: 0;
+    border-radius: 0;
+    background-color: transparent;
+}
+
+.sidenav-accordion .menu-group:not(:last-child) {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* ======================
+   MENU GROUP HEADERS (Padres)
+   - Estilo unificado: fondo blanco cuando colapsado, fondo lila claro cuando expandido
+   - Sin bordes morados tipo "rectángulo"
+   - Indentación consistente: padding-left: 16px
+   - Gap de 8px entre icono y texto para alineación limpia
+====================== */
+mat-sidenav.app-sidenav .sidenav-accordion .menu-group .menu-group-header,
+mat-sidenav.app-sidenav .sidenav-accordion .menu-group-header,
+.sidenav-accordion .menu-group .menu-group-header,
+.menu-group-header {
+    padding: 12px 16px !important;
+    min-height: 48px !important;
+    height: auto !important;
+    transition: background-color 0.2s ease;
+    border-radius: 0 !important;
+    border: none !important; /* Eliminar cualquier borde */
+    box-shadow: none !important; /* Eliminar sombras que puedan crear efecto de "botón" */
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important; /* Gap consistente de 8px */
+    background-color: #ffffff !important; /* Fondo blanco por defecto (colapsado) */
+}
+
+/* Override más agresivo con ::ng-deep para asegurar que se aplique */
+::ng-deep mat-sidenav.app-sidenav .sidenav-accordion .mat-expansion-panel-header.menu-group-header {
+    padding: 12px 16px !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+::ng-deep mat-sidenav.app-sidenav .sidenav-accordion .mat-expansion-panel-header.menu-group-header .mat-content {
+    padding-left: 0 !important;
+}
+
+/* Estado hover - fondo cyan muy suave */
+.menu-group-header:hover {
+    background-color: rgba(14, 165, 233, 0.04) !important;
+}
+
+/* Estado expandido - fondo cyan claro unificado (sin bordes) */
+.menu-group-header-expanded,
+.menu-group-header[aria-expanded="true"] {
+    background-color: rgba(14, 165, 233, 0.08) !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Asegurar que no haya bordes en el panel expandido */
+::ng-deep .sidenav-accordion .menu-group.mat-expanded .menu-group-header {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.menu-group-header .menu-group-icon,
+.menu-group-icon {
+    font-size: 22px !important;
+    width: 22px !important;
+    height: 22px !important;
+    color: rgba(0, 0, 0, 0.87) !important;
+    flex-shrink: 0 !important;
+    align-self: center !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    /* Asegurar que todos los iconos sean Material Icons filled (consistencia) */
+    font-family: 'Material Icons' !important;
+    font-weight: normal !important;
+    font-style: normal !important;
+    letter-spacing: normal !important;
+    text-transform: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    white-space: nowrap !important;
+    word-wrap: normal !important;
+    direction: ltr !important;
+}
+
+/* Override con ::ng-deep para iconos */
+::ng-deep mat-sidenav.app-sidenav .menu-group-header mat-icon.menu-group-icon {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.menu-group-title {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: rgba(0, 0, 0, 0.87) !important;
+    text-transform: none !important;
+    letter-spacing: 0.15px;
+    line-height: 1.4;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+}
+
+/* ======================
+   MENU GROUP LINK (Menús principales sin submenús pero con URL)
+   - Estilo igual a menu-group-header pero clickeable
+====================== */
+.menu-group-link {
+    display: block !important;
+    width: 100% !important;
+}
+
+.menu-group-link .menu-item-link {
+    padding: 12px 16px !important;
+    min-height: 48px !important;
+    height: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    background-color: #ffffff !important;
+    border-radius: 0 !important;
+    border: none !important;
+    text-decoration: none !important;
+    color: rgba(0, 0, 0, 0.87) !important;
+    transition: background-color 0.2s ease !important;
+    cursor: pointer !important;
+}
+
+.menu-group-link .menu-item-link:hover {
+    background-color: rgba(14, 165, 233, 0.04) !important;
+}
+
+.menu-group-link .menu-item-link.menu-item-active {
+    background-color: rgba(14, 165, 233, 0.15) !important;
+    color: var(--primary-color, #0ea5e9) !important;
+    font-weight: 600 !important;
+    border-left: 4px solid var(--primary-color, #0ea5e9) !important;
+}
+
+.menu-group-link .menu-icon {
+    font-size: 22px !important;
+    width: 22px !important;
+    height: 22px !important;
+    color: rgba(0, 0, 0, 0.87) !important;
+    margin-right: 0 !important;
+}
+
+.menu-group-link .menu-item-active .menu-icon {
+    color: var(--primary-color, #0ea5e9) !important;
+}
+
+.menu-group-link .menu-title {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: rgba(0, 0, 0, 0.87) !important;
+    letter-spacing: 0.15px;
+    line-height: 1.4;
+}
+
+/* ======================
+   MENU SUBITEMS (Hijos)
+   - Con sangría y tipografía más pequeña
+   - Iconos y texto alineados visualmente con los padres
+====================== */
+.menu-subitems {
+    display: flex;
+    flex-direction: column;
+    padding: 4px 0;
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.menu-item {
+    display: flex !important;
+    align-items: center !important;
+    padding: 10px 16px 10px 32px !important; /* Indentación clara: 32px desde el borde izquierdo (16px base padres + 16px extra para jerarquía visual) */
+    min-height: 44px !important;
+    height: auto !important;
+    text-decoration: none !important;
+    color: var(--text-secondary, #6b7280) !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border-radius: 0 !important;
+    position: relative !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+    line-height: 1.5 !important;
+    margin: 0 !important;
+    border-left: 4px solid transparent !important; /* Borde más grueso para estado activo más visible */
+    gap: 8px !important; /* Gap consistente de 8px (igual que headers) */
+}
+
+.menu-item:hover {
+    background-color: rgba(14, 165, 233, 0.06) !important;
+    color: rgba(0, 0, 0, 0.87) !important;
+}
+
+.menu-item:focus {
+    outline: 2px solid var(--primary-color, #0ea5e9) !important;
+    outline-offset: -2px !important;
+    background-color: rgba(14, 165, 233, 0.08) !important;
+}
+
+.menu-item:focus:not(:focus-visible) {
+    outline: none !important;
+}
+
+/* ======================
+   ESTADO ACTIVO - Muy visible con fondo y barra lateral cyan
+   Borde izquierdo de 4px para máxima visibilidad
+====================== */
+.menu-item-active {
+    background-color: rgba(14, 165, 233, 0.15) !important; /* Fondo más visible */
+    border-left-color: var(--primary-color, #0ea5e9) !important;
+    border-left-width: 4px !important; /* Borde más grueso para mejor visibilidad */
+    color: var(--primary-color, #0ea5e9) !important;
+    font-weight: 600 !important; /* Peso más fuerte para destacar */
+}
+
+.menu-item-active .menu-item-icon {
+    color: var(--primary-color, #0ea5e9) !important;
+    font-weight: normal !important; /* Mantener peso normal en iconos */
+}
+
+.menu-item-active .menu-item-text {
+    color: var(--primary-color, #0ea5e9) !important;
+    font-weight: 600 !important; /* Peso más fuerte para destacar */
+}
+
+/* Hover en item activo - mantener color cyan y aumentar fondo */
+.menu-item-active:hover {
+    background-color: rgba(14, 165, 233, 0.20) !important; /* Fondo aún más visible en hover */
+    color: var(--primary-color, #0ea5e9) !important;
+}
+
+.menu-item-active:hover .menu-item-icon,
+.menu-item-active:hover .menu-item-text {
+    color: var(--primary-color, #0ea5e9) !important;
+}
+
+.menu-item-icon {
+    font-size: 20px !important;
+    width: 20px !important;
+    height: 20px !important;
+    color: rgba(0, 0, 0, 0.6) !important;
+    flex-shrink: 0 !important;
+    align-self: center !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    transition: color 0.2s ease !important;
+    /* Asegurar que todos los iconos sean Material Icons filled (consistencia) */
+    font-family: 'Material Icons' !important;
+    font-weight: normal !important;
+    font-style: normal !important;
+    letter-spacing: normal !important;
+    text-transform: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    white-space: nowrap !important;
+    word-wrap: normal !important;
+    direction: ltr !important;
+}
+
+.menu-item:hover .menu-item-icon {
+    color: var(--primary-color, #0ea5e9) !important;
+}
+
+.menu-item-text {
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    color: inherit !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    line-height: 1.5 !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+    hyphens: none !important;
+    transition: color 0.2s ease, font-weight 0.2s ease !important;
+}
+
+/* ======================
+   OVERRIDES PARA MATERIAL COMPONENTS
+   IMPORTANTE: No sobrescribir padding del header aquí, se maneja en .menu-group-header
+====================== */
+::ng-deep .sidenav-accordion .mat-expansion-panel-body {
+    padding: 0 !important;
+}
+
+::ng-deep .sidenav-accordion .mat-expansion-panel-content {
+    overflow: visible !important;
+}
+
+/* NO establecer padding: 0 aquí porque lo maneja .menu-group-header */
+/* Padding se maneja en .menu-group-header con mayor especificidad */
+
+::ng-deep .sidenav-accordion .mat-expansion-indicator {
+    margin-right: 8px !important;
+    color: rgba(0, 0, 0, 0.54) !important;
+}
+
+::ng-deep .sidenav-accordion .mat-expansion-panel-header[aria-expanded="true"] .mat-expansion-indicator {
+    color: var(--primary-color, #0ea5e9) !important;
+}
+
+/* ======================
+   RESPONSIVE DESIGN
+====================== */
+@media (max-width: 768px) {
+    mat-sidenav.app-sidenav {
+        min-width: 320px !important;
+        width: 320px !important;
+        max-width: 320px !important;
+    }
+
+    .sidenav-title {
+        font-size: 18px;
+    }
+
+    .menu-group-title {
+        font-size: 14px !important;
+    }
+
+    .menu-item {
+        padding-left: 28px !important; /* Reducir sangría en móviles pero mantener alineación proporcional */
+    }
+}
+
+@media (max-width: 480px) {
+    mat-sidenav.app-sidenav {
+        min-width: 100vw !important;
+        width: 100vw !important;
+        max-width: 100vw !important;
+    }
+}
+
+/* ======================
+   ACCESIBILIDAD - MEJORAS DE CONTRASTE Y FOCUS
+====================== */
+.menu-item:focus-visible {
+    outline: 2px solid var(--primary-color, #0ea5e9) !important;
+    outline-offset: -2px !important;
+    background-color: rgba(14, 165, 233, 0.1) !important;
+}
+
+.menu-group-header:focus-visible {
+    outline: 2px solid var(--primary-color, #0ea5e9) !important;
+    outline-offset: -2px !important;
+}
+
+/* Mejorar contraste para textos largos - usando color fintech */
+.menu-item-text {
+    color: var(--text-primary, #111827) !important;
+}
+
+.menu-item:hover .menu-item-text {
+    color: var(--text-primary, #111827) !important;
+}
+
+/* ======================
+   SUBSCRIPTION BADGE STYLES - INTEGRACIÓN NATIVA EN TOOLBAR
+   Diseño minimalista que se integra como parte nativa del toolbar
+====================== */
+.toolbar-subscription-badge {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    margin-right: 16px;
+    padding: 0 12px;
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Eliminar fondo, sombras y bordes - diseño completamente plano */
+.toolbar-subscription-badge ::ng-deep .subscription-badge-container {
+    padding: 0 !important;
+    min-width: auto !important;
+    max-width: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    gap: 0 !important;
+}
+
+/* Layout horizontal inline */
+.toolbar-subscription-badge ::ng-deep .compact-mode {
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 0 !important;
+}
+
+.toolbar-subscription-badge ::ng-deep .compact-mode .usage-container {
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.toolbar-subscription-badge ::ng-deep .compact-mode .usage-header {
+    display: none !important; /* Ocultar header en toolbar */
+}
+
+/* Icono de documentos */
+.toolbar-subscription-badge ::ng-deep .usage-icon {
+    font-size: 18px !important;
+    width: 18px !important;
+    height: 18px !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    margin-right: 6px;
+    flex-shrink: 0;
+}
+
+/* Label compacto para toolbar */
+.toolbar-subscription-badge ::ng-deep .usage-label-compact {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-weight: 500;
+    font-size: 12px;
+    margin-right: 4px;
+    white-space: nowrap;
+}
+
+/* Texto simple y limpio */
+.toolbar-subscription-badge ::ng-deep .usage-value {
+    color: rgba(255, 255, 255, 0.95) !important;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.1px;
+    white-space: nowrap;
+    margin-right: 6px;
+}
+
+/* Barra de progreso inline y delgada */
+.toolbar-subscription-badge ::ng-deep .compact-mode .usage-content-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+.toolbar-subscription-badge ::ng-deep .mat-progress-bar {
+    width: 60px !important;
+    height: 4px !important;
+    border-radius: 2px;
+    background-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+.toolbar-subscription-badge ::ng-deep .mat-progress-bar-fill::after {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 2px;
+}
+
+/* Footer inline compacto */
+.toolbar-subscription-badge ::ng-deep .usage-footer-inline {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+}
+
+.toolbar-subscription-badge ::ng-deep .usage-percent {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-weight: 500;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.toolbar-subscription-badge ::ng-deep .usage-remaining {
+    color: rgba(200, 230, 201, 0.95) !important;
+    font-weight: 500;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.sidenav-subscription-container {
+    padding: 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    background-color: rgba(14, 165, 233, 0.02);
+}
+
+.sidenav-subscription-container ::ng-deep .subscription-badge-container {
+    box-shadow: none;
+    background: transparent;
+}
+
+/* Responsive: Ocultar badge en toolbar en móviles pequeños */
+@media (max-width: 600px) {
+    .toolbar-subscription-badge {
+        display: none;
+    }
 }

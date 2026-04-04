@@ -1,170 +1,241 @@
-<router-outlet></router-outlet>
-
-<div [hidden]="route.children.length !== 0">
-  <div class="text-center">
-    <mat-toolbar>Consulta Producto</mat-toolbar>
-  </div>
-  <mat-accordion>
-    <mat-expansion-panel expanded="true">
-      <mat-expansion-panel-header style="background-color: #673ab7">
-        <mat-panel-title style="color: #fff"> Búsqueda </mat-panel-title>
-      </mat-expansion-panel-header>
-      <form
-        class="principal-container principal-full-width"
-        [formGroup]="form"
-        (ngSubmit)="search()"
-        #frmProduct="ngForm"
-      >
-        <table cellspacing="10">
-          <tr>
-            <td>
-              <mat-form-field class="principal-full-width">
-                <input
-                  matInput
-                  placeholder="ID producto"
-                  formControlName="mainCode"
-                />
-              </mat-form-field>
-            </td>
-            <td style="padding-left: 40px">
-              <mat-form-field class="principal-full-width">
-                <input matInput placeholder="Nombre" formControlName="name" />
-              </mat-form-field>
-            </td>
-            <td style="padding-left: 40px">
-              <mat-form-field class="principal-full-width">
-                <mat-select placeholder="Tipo Producto" [(value)]="productType">
-                  <mat-option *ngFor="let tp of productTypes" [value]="tp.code">
-                    {{ tp.value }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </td>
-            <td style="padding-left: 40px">
-              <mat-form-field class="principal-full-width">
-                <mat-select placeholder="Estado" [(value)]="status">
-                  <mat-option [value]="true">Activo</mat-option>
-                  <mat-option [value]="false">Inactivo</mat-option>
-                </mat-select>
-              </mat-form-field>
-            </td>
-          </tr>
-        </table>
-        <div class="flex-parent jc-center">
-          <button
-            class="margin-right botton-width"
-            mat-raised-button
-            color="primary"
-            type="submit"
-            [disabled]="frmProduct.invalid"
-          >
-            <span>Buscar</span>
-          </button>
-        </div>
-      </form>
-    </mat-expansion-panel>
-  </mat-accordion>
-  <div>
+<!-- Contenedor principal -->
+<div class="product-page">
+  <!-- Header principal con botón integrado -->
+  <mat-toolbar class="toolbar-primary">
+    <span class="toolbar-title">Consulta Producto</span>
+    <span class="toolbar-spacer"></span>
     <button
-      matTooltip="Agregar"
-      mat-button
-      color="second"
-      class="botton-add"
-      routerLink="/product/new"
+      mat-raised-button
+      class="new-product-btn"
+      matTooltip="Agregar nuevo producto"
+      (click)="openDialog()"
     >
       <mat-icon>add_circle</mat-icon>
+      <span>Nuevo Producto</span>
     </button>
-  </div>
-  <div class="principal-container mat-elevation-z8">
-    <mat-table [dataSource]="dataSource" matSort>
-      <ng-container matColumnDef="mainCode">
-        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold">
-          Código principal
-        </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{ row.mainCode }} </mat-cell>
-      </ng-container>
+  </mat-toolbar>
 
-      <ng-container matColumnDef="auxiliarCode">
-        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold">
-          Código auxiliar
-        </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{ row.auxiliarCode }} </mat-cell>
-      </ng-container>
+  <!-- Panel de búsqueda -->
+  <mat-card class="search-card">
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="search()" #frmProduct="ngForm">
+        <div class="search-grid-horizontal">
+          <mat-form-field appearance="outline" class="search-field-compact">
+            <mat-label>ID producto</mat-label>
+            <mat-icon matPrefix>qr_code</mat-icon>
+            <input
+              matInput
+              formControlName="mainCode"
+              placeholder="Ingrese código principal"
+            />
+          </mat-form-field>
 
-      <ng-container matColumnDef="name">
-        <mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          class="text-color-bold">
-          Nombre
-        </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{ row.name }} </mat-cell>
-      </ng-container>
+          <mat-form-field appearance="outline" class="search-field-compact">
+            <mat-label>Nombre</mat-label>
+            <mat-icon matPrefix>label</mat-icon>
+            <input
+              matInput
+              formControlName="name"
+              placeholder="Ingrese nombre del producto"
+            />
+          </mat-form-field>
 
-      <ng-container matColumnDef="description">
-        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold">
-          Descripción
-        </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{ row.description }} </mat-cell>
-      </ng-container>
+          <mat-form-field appearance="outline" class="search-field-compact">
+            <mat-label>Tipo Producto</mat-label>
+            <mat-icon matPrefix>category</mat-icon>
+            <mat-select
+              formControlName="productType"
+              placeholder="Seleccione tipo"
+            >
+              <mat-option [value]="0">Seleccionar</mat-option>
+              <mat-option *ngFor="let tp of productTypes" [value]="tp.code">
+                {{ tp.value }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
 
-      <ng-container matColumnDef="unitPrice">
-        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold">
-          Precio unitario
-        </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{ row.unitPrice }} </mat-cell>
-      </ng-container>
+          <mat-form-field appearance="outline" class="search-field-compact">
+            <mat-label>Estado</mat-label>
+            <mat-icon matPrefix>toggle_on</mat-icon>
+            <mat-select
+              formControlName="status"
+              placeholder="Seleccione estado"
+            >
+              <mat-option [value]="null">Todos</mat-option>
+              <mat-option [value]="true">Activo</mat-option>
+              <mat-option [value]="false">Inactivo</mat-option>
+            </mat-select>
+          </mat-form-field>
 
-      <ng-container matColumnDef="discount">
-        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold">
-          Descuento
-        </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{ row.discount }} </mat-cell>
-      </ng-container>
+          <div class="search-actions">
+            <button mat-raised-button color="primary" type="submit" class="search-btn">
+              <mat-icon>search</mat-icon>
+              <span>Buscar</span>
+            </button>
+            <button
+              mat-stroked-button
+              type="button"
+              class="clear-btn"
+              (click)="limpiar()"
+            >
+              <mat-icon>clear</mat-icon>
+              <span>Limpiar</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
 
-      <ng-container matColumnDef="status">
-        <mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          class="text-color-bold"
-        >
-          Estado
-        </mat-header-cell>
-        <mat-cell *matCellDef="let row">
-          {{ row.status ? "Activo" : "Inactivo" }}
-        </mat-cell>
-      </ng-container>
+  <!-- Tabla de productos -->
+  <div class="table-wrapper">
+    <mat-toolbar class="toolbar-primary-sm">Listado de Productos</mat-toolbar>
 
-      <ng-container matColumnDef="actions">
-        <mat-header-cell *matHeaderCellDef class="text-color-bold"
-          >Acciones</mat-header-cell
-        >
-        <mat-cell *matCellDef="let row">
-          <button
-            matTooltip="Editar"
-            mat-button
-            color="primary"
-            [routerLink]="['edit', row.idProduct]"
+    <div class="table-container" style="position: relative; min-height: 300px">
+      <!-- Overlay para empty state -->
+      <div *ngIf="dataSource.data.length === 0" class="empty-state-overlay">
+        <mat-icon class="empty-icon">inventory_2</mat-icon>
+        <p class="empty-title">No existen productos registrados</p>
+        <p class="empty-subtitle">
+          Intenta con otros criterios de búsqueda o crea un nuevo producto.
+        </p>
+      </div>
+
+      <mat-table [dataSource]="dataSource" matSort class="bordered-table">
+        <!-- Columna: Código principal -->
+        <ng-container matColumnDef="mainCode">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Código principal
+          </mat-header-cell>
+          <mat-cell class="celda-ajustable" *matCellDef="let row">
+            {{ row.mainCode }}
+          </mat-cell>
+        </ng-container>
+
+        <!-- Columna: Nombre -->
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Nombre
+          </mat-header-cell>
+          <mat-cell
+            class="celda-ajustable"
+            *matCellDef="let row"
+            [matTooltip]="row.name || ''"
+            matTooltipPosition="above"
           >
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button
-            matTooltip="Eliminar"
-            mat-button
-            color="accent"
-            (click)="delete(row.idProduct)"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
-        </mat-cell>
-      </ng-container>
+            {{ row.name }}
+          </mat-cell>
+        </ng-container>
 
-      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns"> </mat-row>
-    </mat-table>
+        <!-- Columna: Descripción -->
+        <ng-container matColumnDef="description">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Descripción
+          </mat-header-cell>
+          <mat-cell
+            class="celda-ajustable"
+            *matCellDef="let row"
+            [matTooltip]="row.description || ''"
+            matTooltipPosition="above"
+          >
+            {{ row.description }}
+          </mat-cell>
+        </ng-container>
+
+        <!-- Columna: Precio unitario -->
+        <ng-container matColumnDef="unitPrice">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Precio unitario
+          </mat-header-cell>
+          <mat-cell class="celda-ajustable" *matCellDef="let row">
+            {{ row.unitPrice | currency : "USD" : "symbol" : "1.2-2" }}
+          </mat-cell>
+        </ng-container>
+
+        <!-- Columna: IVA (Tipo de Impuesto) -->
+        <ng-container matColumnDef="ivaTaxType">
+          <mat-header-cell *matHeaderCellDef> IVA </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <span
+              class="tax-badge iva-badge"
+              *ngIf="row.ivaTaxType"
+              [matTooltip]="
+                row.ivaTaxType.name + ' (' + row.ivaTaxType.value + '%)'
+              "
+              matTooltipPosition="above"
+              matTooltipClass="custom-tooltip"
+            >
+              {{ row.ivaTaxType.value }}%
+            </span>
+            <span class="tax-badge no-tax" *ngIf="!row.ivaTaxType"> N/A </span>
+          </mat-cell>
+        </ng-container>
+
+        <!-- Columna: ICE (Impuesto Consumos Especiales) -->
+        <ng-container matColumnDef="iceTaxType">
+          <mat-header-cell *matHeaderCellDef> ICE </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <span
+              class="tax-badge ice-badge"
+              *ngIf="row.iceTaxType"
+              [matTooltip]="row.iceTaxType.name"
+              matTooltipPosition="above"
+              matTooltipClass="custom-tooltip"
+            >
+              {{ row.iceTaxType.name }}
+            </span>
+            <span class="tax-badge no-tax" *ngIf="!row.iceTaxType"> N/A </span>
+          </mat-cell>
+        </ng-container>
+
+        <!-- Columna: Estado -->
+        <ng-container matColumnDef="status">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Estado
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <span
+              class="badge"
+              [class.badge-active]="row.status"
+              [class.badge-inactive]="!row.status"
+            >
+              {{ row.status ? "Activo" : "Inactivo" }}
+            </span>
+          </mat-cell>
+        </ng-container>
+
+        <!-- Columna: Acciones -->
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef> Acciones </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <button
+              mat-icon-button
+              color="primary"
+              matTooltip="Editar producto (cambiar estado activo/inactivo)"
+              (click)="openDialog(row)"
+              class="action-btn edit-btn"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="warn"
+              matTooltip="Eliminar permanentemente"
+              (click)="delete(row)"
+              class="action-btn delete-btn"
+            >
+              <mat-icon>delete_forever</mat-icon>
+            </button>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+    </div>
 
     <mat-paginator
-      [pageSize]="5"
+      [pageSize]="pageSize"
       [pageSizeOptions]="[5, 10, 25, 100]"
       [length]="quantity"
       (page)="showMore($event)"

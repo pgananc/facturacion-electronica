@@ -1,0 +1,396 @@
+/* Estilos para pantalla (vista previa) */
+.ticket-container {
+  max-width: 75mm;
+  margin: 0 auto;
+  padding: 10px;
+  font-family: "Courier New", "Consolas", monospace;
+  font-size: 10pt;
+  line-height: 1.4;
+  background: white;
+  color: black;
+}
+
+.ticket-header {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.company-name {
+  font-weight: bold;
+  font-size: 11pt;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.company-ruc {
+  font-size: 9pt;
+  margin-bottom: 2px;
+}
+
+.company-address {
+  font-size: 8pt;
+  margin-bottom: 2px;
+}
+
+.company-phone {
+  font-size: 8pt;
+}
+
+.separator {
+  text-align: center;
+  margin: 8px 0;
+  font-size: 9pt;
+  color: #666;
+}
+
+.invoice-info,
+.client-info {
+  margin: 6px 0;
+  font-size: 9pt;
+}
+
+.invoice-line,
+.client-line {
+  margin: 3px 0;
+  word-wrap: break-word;
+}
+
+.access-key-line {
+  display: flex;
+  flex-direction: column;
+  word-break: break-all;
+  white-space: normal;
+  line-height: 1.4;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  margin-top: 3px;
+}
+
+.access-key-line strong {
+  flex-shrink: 0;
+  margin-bottom: 2px;
+  display: block;
+}
+
+.access-key-value {
+  word-break: break-all;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  white-space: normal;
+  display: block;
+  line-height: 1.4;
+}
+
+.invoice-line.warning {
+  color: #ff9800;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.client-line strong {
+  display: inline-block;
+  min-width: 60px;
+}
+
+.products-header {
+  margin: 6px 0;
+}
+
+.products-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 4px 0;
+  font-size: 9pt;
+}
+
+.products-row.header {
+  font-weight: bold;
+  border-bottom: 1px dashed #ccc;
+  padding-bottom: 3px;
+  margin-bottom: 6px;
+}
+
+.col-qty {
+  width: 30px;
+  text-align: right;
+  margin-right: 3px;
+}
+
+.col-desc {
+  flex: 1;
+  margin: 0 3px;
+  word-wrap: break-word;
+  line-height: 1.3;
+  min-width: 0;
+}
+
+.product-code {
+  font-size: 7pt;
+  color: #666;
+  display: block;
+}
+
+.col-price {
+  width: 55px;
+  text-align: right;
+  margin: 0 3px;
+  font-size: 8pt;
+}
+
+.col-discount {
+  width: 55px;
+  text-align: right;
+  margin: 0 3px;
+  font-size: 8pt;
+}
+
+.col-total {
+  width: 60px;
+  text-align: right;
+  font-weight: bold;
+}
+
+.totals {
+  margin: 8px 0;
+  font-size: 9pt;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 3px 0;
+}
+
+.total-label {
+  flex: 1;
+}
+
+.total-value {
+  text-align: right;
+  min-width: 80px;
+}
+
+.total-final {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 2px solid #000;
+  font-size: 10pt;
+}
+
+.payments {
+  margin: 8px 0;
+  font-size: 9pt;
+}
+
+.payments-header {
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+.payment-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 3px 0;
+}
+
+.payment-type {
+  flex: 1;
+}
+
+.payment-value {
+  text-align: right;
+  min-width: 80px;
+}
+
+.change-row {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px dashed #ccc;
+}
+
+.legal-notice {
+  text-align: center;
+  margin: 10px 0;
+  padding: 8px 0;
+}
+
+.legal-text {
+  font-size: 9pt;
+  margin: 4px 0;
+  color: #d32f2f;
+}
+
+.legal-text-centered {
+  text-align: center;
+}
+
+.legal-subtext {
+  font-size: 7pt;
+  margin: 3px 0;
+  color: #666;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 8pt;
+  color: #666;
+}
+
+/* Estados de carga y error - Mejorados para mejor visibilidad */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  padding: 50px 20px;
+  text-align: center;
+  background-color: #fafafa;
+}
+
+.loading-message {
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+  margin-top: 20px;
+  margin-bottom: 8px;
+}
+
+.loading-submessage {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  padding: 50px 20px;
+  text-align: center;
+  background-color: #ffebee;
+}
+
+.error-icon {
+  font-size: 64px !important;
+  width: 64px !important;
+  height: 64px !important;
+  color: #f44336;
+  margin-bottom: 16px;
+}
+
+.error-title {
+  font-size: 20px;
+  font-weight: 500;
+  color: #d32f2f;
+  margin: 0 0 12px 0;
+}
+
+.error-message {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 24px 0;
+  max-width: 500px;
+}
+
+.error button {
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Controles de impresión */
+.print-controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-top: 1px solid #e0e0e0;
+}
+
+.print-controls button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ============================================
+   ESTILOS PARA IMPRESIÓN (window.print())
+   ============================================ */
+
+@media print {
+  @page {
+    size: 75mm auto;
+    margin: 2mm 3mm;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: white;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .ticket-container {
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-size: 9pt;
+  }
+
+  .separator {
+    font-size: 8pt;
+  }
+
+  .company-name {
+    font-size: 10pt;
+  }
+
+  .company-ruc,
+  .company-address,
+  .company-phone {
+    font-size: 7pt;
+  }
+
+  .invoice-info,
+  .client-info {
+    font-size: 8pt;
+  }
+
+  .products-row {
+    font-size: 8pt;
+  }
+
+  .totals,
+  .payments {
+    font-size: 8pt;
+  }
+
+  .legal-text {
+    font-size: 8pt;
+  }
+
+  .legal-subtext {
+    font-size: 6pt;
+  }
+
+  /* Ocultar elementos no necesarios en impresión */
+  .loading,
+  .error,
+  .print-controls {
+    display: none !important;
+  }
+
+  /* Evitar saltos de página dentro del ticket */
+  .ticket-container {
+    page-break-inside: avoid;
+  }
+}

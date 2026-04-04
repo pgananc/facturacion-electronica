@@ -1,8 +1,10 @@
 package com.wallparisoft.ebill.utils.log;
 
 import lombok.Builder;
+import lombok.ToString;
 
 @Builder
+@ToString
 public class EventLog {
 
   private String service;

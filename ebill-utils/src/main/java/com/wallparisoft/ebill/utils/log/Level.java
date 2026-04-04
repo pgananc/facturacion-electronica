@@ -7,6 +7,5 @@ public enum Level {
   LEVEL_004,
   HANDLE_ERROR;
 
-  private Level() {
-  }
+  Level() {}
 }

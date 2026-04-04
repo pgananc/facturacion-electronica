@@ -1,0 +1,1013 @@
+<div class="guide-page">
+  <!-- 1) TÍTULO -->
+  <mat-toolbar class="toolbar-primary">Guía de remisión</mat-toolbar>
+
+  <!-- 2) DATOS DE EMISIÓN -->
+  <mat-card class="card-padding mt-16">
+    <mat-toolbar class="toolbar-primary-sm">Datos de Emisión</mat-toolbar>
+    <mat-card-content>
+      <div fxLayout="row" fxLayoutAlign="start stretch">
+        <div fxFlex="100%">
+          <form [formGroup]="emissionForm">
+            <!-- Fila 1: Establecimiento + Nombre comercial -->
+            <div
+              fxLayout="row"
+              fxLayoutGap="16px"
+              fxLayoutAlign="start baseline"
+              class="mt-12"
+            >
+              <!-- Label Establecimiento (15%) -->
+              <div fxFlex="15%">
+                <div class="input-label">
+                  Establecimiento <span class="required"></span>
+                </div>
+              </div>
+              <!-- Campo Establecimiento (85%) -->
+              <div fxFlex="85%">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-select formControlName="establishment">
+                    <mat-option *ngFor="let b of branchOffices" [value]="b.id">
+                      {{ b.code }} – {{ b.address }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- Label Nombre comercial (15%) -->
+              <div fxFlex="15%">
+                <div class="input-label">Nombre comercial</div>
+              </div>
+              <!-- Campo Nombre comercial (85%) -->
+              <div fxFlex="85%">
+                <mat-form-field appearance="outline" class="full-width">
+                  <input matInput formControlName="commercialName" readonly />
+                </mat-form-field>
+              </div>
+            </div>
+
+            <!-- Fila 2: Fecha de emisión + Punto de emisión -->
+            <div
+              fxLayout="row"
+              fxLayoutGap="16px"
+              fxLayoutAlign="start baseline"
+              class="mt-12"
+            >
+              <!-- Label Fecha emisión (15%) -->
+              <div fxFlex="15%">
+                <div class="input-label">
+                  Fecha de emisión <span class="required"></span>
+                </div>
+              </div>
+              <!-- Campo Fecha emisión (85%) -->
+              <div fxFlex="85%">
+                <mat-form-field appearance="outline" class="full-width">
+                  <input
+                    matInput
+                    [matDatepicker]="issueDatePicker"
+                    [max]="maxDate"
+                    formControlName="issueDate"
+                    placeholder="Seleccione fecha"
+                  />
+                  <mat-datepicker-toggle
+                    matSuffix
+                    [for]="issueDatePicker"
+                  ></mat-datepicker-toggle>
+                  <mat-datepicker #issueDatePicker></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <!-- Label Punto emisión (15%) -->
+              <div fxFlex="15%">
+                <div class="input-label">
+                  Punto de emisión <span class="required"></span>
+                </div>
+              </div>
+              <!-- Campo Punto emisión (85%) -->
+              <div fxFlex="85%">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-select formControlName="emissionPoint">
+                    <mat-option *ngFor="let p of emissionPoints" [value]="p.id">
+                      {{ p.code }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- 3) TRANSPORTISTA -->
+  <mat-card class="card-padding mt-24">
+    <mat-toolbar class="toolbar-primary-sm">Transportista</mat-toolbar>
+    <mat-card-content>
+      <form [formGroup]="carrierForm">
+        <!-- Fila 1: Identificación + Tipo identificación -->
+        <div
+          fxLayout="row"
+          fxLayoutGap="24px"
+          fxLayoutAlign="start baseline"
+          class="form-row"
+        >
+          <!-- Label Identificación (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">
+              Identificación <span class="required"></span>
+            </div>
+          </div>
+          <!-- Campo Identificación (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field appearance="outline" class="full-width">
+              <input
+                matInput
+                placeholder="RUC / CI / Pasaporte / Id exterior"
+                formControlName="identification"
+                (keydown.enter)="onCarrierIdentificationEnter($any($event))"
+              />
+              <button
+                type="button"
+                mat-icon-button
+                matSuffix
+                (click)="searchCarrier()"
+                matTooltip="Buscar transportista"
+                matTooltipPosition="above"
+                class="search-carrier-btn"
+              >
+                <mat-icon>search</mat-icon>
+              </button>
+              <button
+                type="button"
+                mat-icon-button
+                matSuffix
+                (click)="openCreateCarrierDialog()"
+                matTooltip="Crear nuevo transportista"
+                matTooltipPosition="above"
+                class="create-carrier-btn"
+              >
+                <mat-icon>add_circle</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+
+          <!-- Label Tipo identificación (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">
+              Tipo identificación <span class="required"></span>
+            </div>
+          </div>
+          <!-- Campo Tipo identificación (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field
+              appearance="outline"
+              class="full-width readonly-field"
+            >
+              <mat-label>Tipo identificación</mat-label>
+              <mat-select formControlName="identificationType">
+                <mat-option *ngFor="let t of carrierIdTypes" [value]="t.code">
+                  {{ t.value }}
+                </mat-option>
+              </mat-select>
+              <mat-hint align="start">Se completa automáticamente</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Fila 2: Razón social + Correo electrónico -->
+        <div
+          fxLayout="row"
+          fxLayoutGap="24px"
+          fxLayoutAlign="start baseline"
+          class="form-row mt-16"
+        >
+          <!-- Label Razón social (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">
+              Razón social <span class="required"></span>
+            </div>
+          </div>
+          <!-- Campo Razón social (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field
+              appearance="outline"
+              class="full-width readonly-field"
+            >
+              <mat-label>Razón social</mat-label>
+              <input matInput formControlName="name" readonly />
+              <mat-hint align="start">Se completa automáticamente</mat-hint>
+            </mat-form-field>
+          </div>
+
+          <!-- Label Correo electrónico (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">
+              Correo electrónico <span class="required"></span>
+            </div>
+          </div>
+          <!-- Campo Correo electrónico (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field
+              appearance="outline"
+              class="full-width readonly-field"
+            >
+              <mat-label>Correo electrónico</mat-label>
+              <input matInput type="email" formControlName="email" readonly />
+              <mat-hint align="start"
+                >Se completa automáticamente. Revise que sea correcto.</mat-hint
+              >
+            </mat-form-field>
+          </div>
+        </div>
+
+        <p class="hint mt-8">
+          Recuerda revisar el correo electrónico para garantizar que el
+          comprobante sea entregado exitosamente
+        </p>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- 4) TRASLADO -->
+  <mat-card class="card-padding mt-24">
+    <mat-toolbar class="toolbar-primary-sm">Traslado</mat-toolbar>
+    <mat-card-content>
+      <form [formGroup]="transferForm">
+        <!-- Fila 1: Dirección de partida + Inicio de transporte -->
+        <div
+          fxLayout="row"
+          fxLayoutGap="24px"
+          fxLayoutAlign="start baseline"
+          class="form-row"
+        >
+          <!-- Label Dirección de partida (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">
+              Dirección de partida <span class="required"></span>
+            </div>
+          </div>
+          <!-- Campo Dirección de partida (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field appearance="outline" class="full-width" #originAddressInput>
+              <textarea
+                matInput
+                formControlName="originAddress"
+                rows="2"
+              ></textarea>
+            </mat-form-field>
+          </div>
+
+          <!-- Label Inicio de transporte (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">
+              Inicio de transporte <span class="required"></span>
+            </div>
+          </div>
+          <!-- Campo Inicio de transporte (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field appearance="outline" class="full-width">
+              <input
+                matInput
+                [matDatepicker]="startPicker"
+                formControlName="startDate"
+                [min]="minDate"
+                [max]="maxDate"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="startPicker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #startPicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Fila 2: Fin de transporte + Placa -->
+        <div
+          fxLayout="row"
+          fxLayoutGap="24px"
+          fxLayoutAlign="start baseline"
+          class="form-row mt-16"
+        >
+          <!-- Label Fin de transporte (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">
+              Fin de transporte <span class="required"></span>
+            </div>
+          </div>
+          <!-- Campo Fin de transporte (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field appearance="outline" class="full-width">
+              <input
+                matInput
+                [matDatepicker]="endPicker"
+                formControlName="endDate"
+                [min]="minDate"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="endPicker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #endPicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <!-- Label Placa (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">
+              Placa <span class="required"></span>
+            </div>
+          </div>
+          <!-- Campo Placa (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field appearance="outline" class="full-width">
+              <input matInput formControlName="transportPlate" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Fila 3: Tipo de transporte -->
+        <div
+          fxLayout="row"
+          fxLayoutGap="24px"
+          fxLayoutAlign="start baseline"
+          class="form-row mt-16"
+        >
+          <!-- Label Tipo de transporte (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">Tipo de transporte</div>
+          </div>
+          <!-- Campo Tipo de transporte (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-select formControlName="transportType">
+                <mat-option *ngFor="let t of transportTypes" [value]="t.code">
+                  {{ t.value }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- 5) DESTINATARIO/CLIENTE -->
+  <mat-card class="card-padding mt-24">
+    <mat-toolbar class="toolbar-primary-sm">Destinatario/Cliente</mat-toolbar>
+    <mat-card-content>
+      <form [formGroup]="recipientForm">
+        <!-- Fila 1: Identificación + Tipo identificación -->
+        <div
+          fxLayout="row"
+          fxLayoutGap="24px"
+          fxLayoutAlign="start baseline"
+          class="form-row"
+        >
+          <!-- Label Identificación (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">
+              Identificación <span class="required"></span>
+            </div>
+          </div>
+          <!-- Campo Identificación (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field appearance="outline" class="full-width">
+              <input
+                matInput
+                placeholder="RUC/CI/Pasaporte"
+                formControlName="identification"
+                (keydown.enter)="onRecipientIdentificationEnter($any($event))"
+              />
+              <button
+                type="button"
+                mat-icon-button
+                matSuffix
+                (click)="searchRecipient()"
+                matTooltip="Buscar cliente"
+                matTooltipPosition="above"
+                class="search-recipient-btn"
+              >
+                <mat-icon>search</mat-icon>
+              </button>
+              <button
+                type="button"
+                mat-icon-button
+                matSuffix
+                (click)="openCreateClientDialog()"
+                matTooltip="Crear nuevo cliente"
+                matTooltipPosition="above"
+                class="create-client-btn"
+              >
+                <mat-icon>add_circle</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+
+          <!-- Label Tipo identificación (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">
+              Tipo identificación <span class="required"></span>
+            </div>
+          </div>
+          <!-- Campo Tipo identificación (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field
+              appearance="outline"
+              class="full-width readonly-field"
+            >
+              <mat-label>Tipo identificación</mat-label>
+              <mat-select formControlName="identificationType">
+                <mat-option *ngFor="let t of idTypes" [value]="t.value">
+                  {{ t.viewValue }}
+                </mat-option>
+              </mat-select>
+              <mat-hint align="start">Se completa automáticamente</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Fila 2: Razón social + Dirección destino -->
+        <div
+          fxLayout="row"
+          fxLayoutGap="24px"
+          fxLayoutAlign="start baseline"
+          class="form-row mt-16"
+        >
+          <!-- Label Razón social (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">
+              Razón social <span class="required"></span>
+            </div>
+          </div>
+          <!-- Campo Razón social (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field
+              appearance="outline"
+              class="full-width readonly-field"
+            >
+              <mat-label>Razón social</mat-label>
+              <input matInput formControlName="name" readonly />
+              <mat-hint align="start">Se completa automáticamente</mat-hint>
+            </mat-form-field>
+          </div>
+
+          <!-- Label Dirección destino (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">
+              Dirección destino <span class="required"></span>
+            </div>
+          </div>
+          <!-- Campo Dirección destino (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field
+              appearance="outline"
+              class="full-width readonly-field"
+            >
+              <mat-label>Dirección destino</mat-label>
+              <textarea
+                matInput
+                formControlName="destinationAddress"
+                rows="2"
+                readonly
+              ></textarea>
+              <mat-hint align="start">Se completa automáticamente</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Fila 3: Ruta + Motivo -->
+        <div
+          fxLayout="row"
+          fxLayoutGap="24px"
+          fxLayoutAlign="start baseline"
+          class="form-row mt-16"
+        >
+          <!-- Label Ruta (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">Ruta</div>
+          </div>
+          <!-- Campo Ruta (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field appearance="outline" class="full-width" #routeInput>
+              <input matInput formControlName="route" />
+            </mat-form-field>
+          </div>
+
+          <!-- Label Motivo (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">
+              Motivo <span class="required"></span>
+            </div>
+          </div>
+          <!-- Campo Motivo (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-select formControlName="reasonForTransfer">
+                <mat-option
+                  *ngFor="let r of reasonForTransferTypes"
+                  [value]="r.code"
+                >
+                  {{ r.value }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Fila 4: Documento aduanero -->
+        <div
+          fxLayout="row"
+          fxLayoutGap="24px"
+          fxLayoutAlign="start baseline"
+          class="form-row mt-16"
+        >
+          <!-- Label Documento aduanero (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">Documento aduanero</div>
+          </div>
+          <!-- Campo Documento aduanero (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field appearance="outline" class="full-width">
+              <input matInput formControlName="customsDocument" />
+            </mat-form-field>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- 6) COMPROBANTE SUSTENTO -->
+  <mat-card class="card-padding mt-24">
+    <mat-toolbar class="toolbar-primary-sm">Comprobante sustento</mat-toolbar>
+    <mat-card-content>
+      <form [formGroup]="documentForm">
+        <!-- Fila 1: Tipo de emisión + Documento + Buscar por -->
+        <div
+          fxLayout="row"
+          fxLayoutGap="24px"
+          fxLayoutAlign="start baseline"
+          class="form-row"
+        >
+          <!-- Label Tipo de emisión (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">Tipo de emisión</div>
+          </div>
+          <!-- Campo Tipo de emisión (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-select formControlName="emissionType">
+                <mat-option *ngFor="let t of emissionTypes" [value]="t.code">
+                  {{ t.value }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- Label Documento (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">Documento</div>
+          </div>
+          <!-- Campo Documento (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-select formControlName="documentType">
+                <mat-option
+                  *ngFor="let t of documentTypes"
+                  [value]="t.code"
+                  [title]="t.description"
+                >
+                  {{ t.code }} - {{ t.value }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- Label Buscar por (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">Buscar por</div>
+          </div>
+          <!-- Campo Buscar por (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-select formControlName="searchBy">
+                <mat-option *ngFor="let t of searchByTypes" [value]="t.code">
+                  {{ t.value }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Fila 3: Campo de búsqueda y botón Validar (centrados) -->
+        <div
+          fxLayout="row"
+          fxLayoutAlign="center center"
+          class="form-row mt-16"
+        >
+          <div fxLayout="row" fxLayoutGap="8px" fxFlex="80%">
+            <div fxFlex>
+              <mat-form-field appearance="outline" class="full-width">
+                <input 
+                  matInput 
+                  formControlName="searchValue"
+                  [placeholder]="getSearchValuePlaceholder()"
+                  (keydown.enter)="validateDocument()"
+                />
+              </mat-form-field>
+            </div>
+            <div fxFlex="none">
+              <button
+                type="button"
+                mat-raised-button
+                color="primary"
+                (click)="validateDocument()"
+                [disabled]="loading"
+                style="display: flex; align-items: center; gap: 8px"
+              >
+                <mat-spinner
+                  *ngIf="loading"
+                  diameter="20"
+                  class="btn-spinner"
+                ></mat-spinner>
+                <span>{{ loading ? "Validando..." : "Validar" }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Fila 3: Clave de acceso + Número autorización -->
+        <div
+          fxLayout="row"
+          fxLayoutGap="24px"
+          fxLayoutAlign="start baseline"
+          class="form-row mt-16"
+        >
+          <!-- Label Clave de acceso (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">Clave de acceso</div>
+          </div>
+          <!-- Campo Clave de acceso (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field
+              appearance="outline"
+              class="full-width readonly-field"
+            >
+              <mat-label>Clave de acceso</mat-label>
+              <input matInput formControlName="accessKey" readonly />
+              <mat-hint align="start">Se completa automáticamente</mat-hint>
+            </mat-form-field>
+          </div>
+
+          <!-- Label Número autorización (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">Número autorización</div>
+          </div>
+          <!-- Campo Número autorización (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field
+              appearance="outline"
+              class="full-width readonly-field"
+            >
+              <mat-label>Número autorización</mat-label>
+              <input
+                matInput
+                formControlName="authorizationNumber"
+                readonly
+              />
+              <mat-hint align="start">Se completa automáticamente</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Fila 4: Fecha de emisión + Número comprobante -->
+        <div
+          fxLayout="row"
+          fxLayoutGap="24px"
+          fxLayoutAlign="start baseline"
+          class="form-row mt-16"
+        >
+          <!-- Label Fecha de emisión (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">Fecha de emisión</div>
+          </div>
+          <!-- Campo Fecha de emisión (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field
+              appearance="outline"
+              class="full-width readonly-field"
+            >
+              <mat-label>Fecha de emisión</mat-label>
+              <input matInput formControlName="issueDate" readonly />
+              <mat-hint align="start">Se completa automáticamente</mat-hint>
+            </mat-form-field>
+          </div>
+
+          <!-- Label Número comprobante (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">Número comprobante</div>
+          </div>
+          <!-- Campo Número comprobante (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field
+              appearance="outline"
+              class="full-width readonly-field"
+            >
+              <mat-label>Número comprobante</mat-label>
+              <input matInput formControlName="documentNumber" readonly />
+              <mat-hint align="start">Se completa automáticamente</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- 7) DETALLE DE PRODUCTOS -->
+  <mat-card class="card-padding mt-24">
+    <mat-toolbar class="toolbar-primary-sm">Detalle de productos</mat-toolbar>
+    <mat-card-content>
+      <form [formGroup]="detailsForm">
+        <!-- Buscador de productos -->
+        <div
+          fxLayout="row"
+          fxLayoutAlign="start baseline"
+          fxLayoutGap="16px"
+          class="mt-16"
+        >
+          <div fxFlex="15%">
+            <div class="input-label">Código/Descripción</div>
+          </div>
+          <!-- Campo de búsqueda y botón (85%) -->
+          <div fxFlex="85%" fxLayout="row" fxLayoutGap="16px">
+            <div fxFlex>
+              <mat-form-field appearance="outline" class="full-width">
+                <input
+                  #productSearchInput
+                  matInput
+                  placeholder="Buscar por código o descripción..."
+                  [formControl]="productCtrl"
+                  (keyup.enter)="searchProduct()"
+                />
+                <!-- Botón buscar producto (primero - acción principal) -->
+                <button
+                  type="button"
+                  mat-icon-button
+                  matSuffix
+                  (click)="searchProduct()"
+                  aria-label="Buscar producto"
+                  matTooltip="Buscar producto"
+                  matTooltipPosition="above"
+                  class="search-product-btn"
+                >
+                  <mat-icon>search</mat-icon>
+                </button>
+                <!-- Botón crear producto rápido (segundo - acción secundaria) -->
+                <button
+                  *ngIf="canCreateProduct"
+                  type="button"
+                  mat-icon-button
+                  matSuffix
+                  (click)="openCreateProductDialog()"
+                  aria-label="Crear nuevo producto"
+                  matTooltip="Crear nuevo producto"
+                  matTooltipPosition="above"
+                  class="create-product-btn"
+                >
+                  <mat-icon>add_circle</mat-icon>
+                </button>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabla de productos -->
+        <div class="mt-16 guide-detail-table" formArrayName="items">
+          <mat-table
+            [dataSource]="guideDetailDataSource"
+            matSort
+            class="mat-elevation-z1 full-width"
+          >
+            <!-- Código -->
+            <ng-container matColumnDef="code">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>
+                Código
+              </mat-header-cell>
+              <mat-cell
+                *matCellDef="let row; let i = index"
+                [formGroupName]="i"
+              >
+                <input type="text" [value]="row.code" readonly />
+              </mat-cell>
+            </ng-container>
+
+            <!-- Cantidad -->
+            <ng-container matColumnDef="quantity">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>
+                Cantidad
+              </mat-header-cell>
+              <mat-cell
+                *matCellDef="let row; let i = index"
+                [formGroupName]="i"
+              >
+                <input
+                  type="number"
+                  formControlName="quantity"
+                  min="1"
+                  step="1"
+                />
+              </mat-cell>
+            </ng-container>
+
+            <!-- Descripción -->
+            <ng-container matColumnDef="description">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>
+                Descripción
+              </mat-header-cell>
+              <mat-cell
+                *matCellDef="let row; let i = index"
+                [formGroupName]="i"
+              >
+                <input type="text" formControlName="description" readonly />
+              </mat-cell>
+            </ng-container>
+
+            <!-- Acciones -->
+            <ng-container matColumnDef="actions">
+              <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+              <mat-cell *matCellDef="let row; let i = index">
+                <button
+                  type="button"
+                  mat-icon-button
+                  color="warn"
+                  (click)="removeProductDetail(i)"
+                  title="Eliminar producto"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </mat-cell>
+            </ng-container>
+
+            <!-- Filas -->
+            <mat-header-row
+              *matHeaderRowDef="displayedColumns"
+            ></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+
+            <!-- Fila para cuando no hay datos -->
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+                No existen productos
+              </td>
+            </tr>
+          </mat-table>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- 8) CAMPOS ADICIONALES -->
+  <mat-card class="card-padding mt-24">
+    <mat-toolbar class="toolbar-primary-sm">Campos adicionales</mat-toolbar>
+    <mat-card-content>
+      <div class="mt-16">
+        <mat-table
+          [dataSource]="additionalFieldsDataSource"
+          class="mat-elevation-z1 full-width"
+        >
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef>Nombre</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.name }}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="description">
+            <mat-header-cell *matHeaderCellDef>Descripción</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.description }}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+            <mat-cell *matCellDef="let row; let i = index">
+              <button
+                type="button"
+                mat-icon-button
+                color="primary"
+                title="Editar campo"
+                (click)="editAdditionalField(i)"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                type="button"
+                mat-icon-button
+                color="warn"
+                title="Eliminar campo"
+                (click)="deleteAdditionalField(i)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row
+            *matHeaderRowDef="displayedAdditionalFieldsColumns"
+          ></mat-header-row>
+          <mat-row
+            *matRowDef="let row; columns: displayedAdditionalFieldsColumns"
+          ></mat-row>
+
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="3">No existen campos adicionales</td>
+          </tr>
+        </mat-table>
+
+        <div class="mt-16">
+          <button
+            type="button"
+            mat-raised-button
+            color="primary"
+            (click)="addAdditionalField()"
+          >
+            <mat-icon>add</mat-icon>
+            Añadir campo adicional
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- 9) BOTONES FINALES -->
+  <mat-card class="actions-card mt-24">
+    <mat-card-content>
+      <div class="actions-container">
+        <!-- Botón primario: Firmar y enviar -->
+        <button
+          type="button"
+          mat-raised-button
+          color="primary"
+          class="btn-primary-action"
+          (click)="signAndSend()"
+          [disabled]="isProcessingGuide"
+          matTooltip="Firma digitalmente y envía la guía al SRI"
+          matTooltipPosition="above"
+        >
+          <mat-spinner
+            *ngIf="isProcessingGuide"
+            diameter="20"
+            class="btn-spinner"
+          ></mat-spinner>
+          <mat-icon *ngIf="!isProcessingGuide">check_circle</mat-icon>
+          <span class="btn-text">
+            <span class="btn-title">{{
+              isProcessingGuide ? "Procesando..." : "Firmar y enviar"
+            }}</span>
+            <span class="btn-subtitle">{{
+              isProcessingGuide
+                ? "Firmando y enviando al SRI"
+                : "Firmar y enviar al SRI"
+            }}</span>
+          </span>
+        </button>
+
+        <!-- Botón secundario: Guardar sin firmar -->
+        <button
+          type="button"
+          mat-stroked-button
+          class="btn-secondary-action"
+          (click)="saveDraft()"
+          [disabled]="isSavingDraft"
+          matTooltip="Guarda temporalmente sin procesar. Podrá editarlo más tarde."
+          matTooltipPosition="above"
+        >
+          <mat-spinner
+            *ngIf="isSavingDraft"
+            diameter="20"
+            class="btn-spinner-draft"
+          ></mat-spinner>
+          <mat-icon *ngIf="!isSavingDraft">drafts</mat-icon>
+          <span class="btn-text">
+            <span class="btn-title">{{
+              isSavingDraft ? "Guardando..." : "Guardar sin firmar"
+            }}</span>
+            <span class="btn-subtitle">Sin procesar ni enviar</span>
+          </span>
+        </button>
+      </div>
+
+      <!-- Indicador de estado de borrador -->
+      <div class="draft-status-info" *ngIf="currentDraftId">
+        <mat-icon class="status-icon">info</mat-icon>
+        <span class="status-text">
+          Editando borrador #{{ currentDraftId }}. Use "Firmar y enviar" para
+          completar el proceso.
+        </span>
+      </div>
+
+      <!-- Mensaje de error -->
+      <div *ngIf="errorMessage" class="error-message mt-16">
+        <mat-icon>error</mat-icon>
+        <span>{{ errorMessage }}</span>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,914 @@
+<router-outlet></router-outlet>
+
+<!-- Sólo muestro esto si no hay rutas hijas activas -->
+<div *ngIf="!route.children.length" class="invoice-page">
+  <!-- 1) TÍTULO -->
+  <mat-toolbar class="toolbar-primary">Factura</mat-toolbar>
+
+  <!-- 2) DATOS DE EMISIÓN -->
+  <mat-card class="card-padding mt-16">
+    <div class="section-header">
+      <mat-icon class="section-icon">description</mat-icon>
+      <h2 class="section-title">Datos de Emisión</h2>
+    </div>
+    <mat-card-content>
+      <form [formGroup]="invoiceForm">
+        <div
+          fxLayout="row"
+          fxLayoutGap="24px"
+          fxLayoutAlign="start baseline"
+          class="form-row"
+        >
+          <!-- Label Establecimiento (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">
+              Establecimiento <span class="required"></span>
+            </div>
+          </div>
+          <!-- Campo Establecimiento (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-select formControlName="branchOffice">
+                <mat-option *ngFor="let b of branchOffices" [value]="b.id">
+                  {{ b.code }} – {{ b.address }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- Label Nombre comercial (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">Nombre comercial</div>
+          </div>
+          <!-- Campo Nombre comercial (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field appearance="outline" class="full-width">
+              <input matInput formControlName="legalName" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div
+          fxLayout="row"
+          fxLayoutGap="24px"
+          fxLayoutAlign="start baseline"
+          class="form-row mt-16"
+        >
+          <!-- Label Fecha emisión (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">
+              Fecha de emisión <span class="required"></span>
+            </div>
+          </div>
+          <!-- Campo Fecha emisión (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field appearance="outline" class="full-width">
+              <input
+                matInput
+                [matDatepicker]="picker"
+                [max]="maxDate"
+                formControlName="issuedDate"
+                placeholder="Seleccione fecha"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="picker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <!-- Label Punto emisión (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">
+              Punto de emisión <span class="required"></span>
+            </div>
+          </div>
+          <!-- Campo Punto emisión (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-select formControlName="emissionPoint">
+                <mat-option *ngFor="let p of emissionPoints" [value]="p.id">
+                  {{ p.code }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- 3) ADQUIRIENTE -->
+  <mat-card class="card-padding mt-24">
+    <div class="section-header">
+      <mat-icon class="section-icon">person</mat-icon>
+      <h2 class="section-title">Adquiriente</h2>
+    </div>
+    <mat-card-content>
+      <form [formGroup]="buyerForm">
+        <!-- fila 1: Identificación + Tipo identificación -->
+        <div
+          fxLayout="row"
+          fxLayoutGap="24px"
+          fxLayoutAlign="start baseline"
+          class="form-row"
+        >
+          <!-- Label Identificación (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">
+              Identificación <span class="required"></span>
+            </div>
+          </div>
+          <!-- Campo Identificación (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Identificación</mat-label>
+              <input
+                matInput
+                placeholder="RUC/CI/Pasaporte/Id. Exterior"
+                formControlName="identification"
+                (keydown.enter)="onIdentificationEnter($event)"
+                aria-label="Identificación del cliente"
+                aria-required="true"
+              />
+              <!-- Botón buscar cliente (primero - acción principal) -->
+              <button
+                type="button"
+                mat-icon-button
+                matSuffix
+                (click)="searchBuyer($event)"
+                [disabled]="isSearchingBuyer"
+                aria-label="Buscar cliente por identificación"
+                matTooltip="Buscar cliente"
+                matTooltipPosition="above"
+                class="search-buyer-btn"
+              >
+                <mat-spinner
+                  *ngIf="isSearchingBuyer"
+                  diameter="20"
+                  class="search-spinner"
+                ></mat-spinner>
+                <mat-icon *ngIf="!isSearchingBuyer">search</mat-icon>
+              </button>
+              <!-- Botón crear cliente rápido (segundo - acción secundaria) -->
+              <button
+                type="button"
+                mat-icon-button
+                matSuffix
+                (click)="openCreateClientDialog()"
+                aria-label="Crear nuevo cliente"
+                matTooltip="Crear nuevo cliente"
+                matTooltipPosition="above"
+                class="create-client-btn"
+              >
+                <mat-icon>add_circle</mat-icon>
+              </button>
+              <mat-error
+                *ngIf="
+                  buyerForm.get('identification')?.hasError('required') &&
+                  buyerForm.get('identification')?.touched
+                "
+              >
+                La identificación es requerida
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Label Tipo identificación (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">
+              Tipo identificación <span class="required"></span>
+            </div>
+          </div>
+          <!-- Campo Tipo identificación (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-select formControlName="idType">
+                <mat-option *ngFor="let t of idTypes" [value]="t.value">
+                  {{ t.viewValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- fila 2: Razón social + Dirección -->
+        <div
+          fxLayout="row"
+          fxLayoutGap="24px"
+          fxLayoutAlign="start baseline"
+          class="form-row mt-16"
+        >
+          <!-- Label Razón social (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">
+              Razón social <span class="required"></span>
+            </div>
+          </div>
+          <!-- Campo Razón social (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field
+              appearance="outline"
+              class="full-width readonly-field"
+            >
+              <mat-label>Razón social</mat-label>
+              <input matInput formControlName="businessName" readonly />
+              <mat-hint align="start">Se completa automáticamente</mat-hint>
+            </mat-form-field>
+          </div>
+          <!-- Label Dirección (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">Dirección</div>
+          </div>
+          <!-- Campo Dirección (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field
+              appearance="outline"
+              class="full-width readonly-field"
+            >
+              <mat-label>Dirección</mat-label>
+              <input matInput formControlName="address" readonly />
+              <mat-hint align="start">Se completa automáticamente</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- fila 3: Teléfono + Correo electrónico -->
+        <div
+          fxLayout="row"
+          fxLayoutGap="24px"
+          fxLayoutAlign="start baseline"
+          class="form-row mt-16"
+        >
+          <!-- Label Teléfono (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">Teléfono</div>
+          </div>
+          <!-- Campo Teléfono (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field
+              appearance="outline"
+              class="full-width readonly-field"
+            >
+              <mat-label>Teléfono</mat-label>
+              <input matInput formControlName="phone" readonly />
+              <mat-hint align="start">Se completa automáticamente</mat-hint>
+            </mat-form-field>
+          </div>
+          <!-- Label Correo electrónico (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">
+              Correo electrónico <span class="required"></span>
+            </div>
+          </div>
+          <!-- Campo Correo electrónico (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field
+              appearance="outline"
+              class="full-width readonly-field"
+            >
+              <mat-label>Correo electrónico</mat-label>
+              <input matInput formControlName="email" readonly type="email" />
+              <mat-hint align="start"
+                >Se completa automáticamente. Revise que sea correcto.</mat-hint
+              >
+              <mat-error
+                *ngIf="
+                  buyerForm.get('email')?.hasError('email') &&
+                  buyerForm.get('email')?.touched
+                "
+              >
+                Formato de email inválido
+              </mat-error>
+              <mat-error
+                *ngIf="
+                  buyerForm.get('email')?.hasError('required') &&
+                  buyerForm.get('email')?.touched
+                "
+              >
+                El correo electrónico es requerido
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Info banner mejorado -->
+        <div class="info-banner mt-16">
+          <mat-icon>info</mat-icon>
+          <span>
+            Recuerde revisar el correo electrónico para garantizar que el
+            comprobante sea entregado exitosamente
+          </span>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- 4) DETALLE DE PRODUCTOS -->
+  <mat-card class="card-padding mt-24">
+    <!-- Cabecera azul pequeña -->
+    <mat-toolbar class="toolbar-primary-sm">Detalle</mat-toolbar>
+
+    <mat-card-content>
+      <form [formGroup]="detailsForm">
+        <!-- buscador -->
+        <div
+          fxLayout="row"
+          fxLayoutAlign="start baseline"
+          fxLayoutGap="16px"
+          class="mt-16"
+        >
+          <!-- Label Código/Descripción (15%) -->
+          <div fxFlex="15%">
+            <div class="input-label">Código/Descripción</div>
+          </div>
+          <!-- Campo de búsqueda y botón (85%) -->
+          <div fxFlex="85%" fxLayout="row" fxLayoutGap="16px">
+            <div fxFlex>
+              <mat-form-field appearance="outline" class="full-width">
+                <input
+                  #productSearchInput
+                  matInput
+                  placeholder="Buscar por código o descripción..."
+                  [formControl]="productCtrl"
+                  (keyup.enter)="searchProduct()"
+                />
+                <!-- Botón buscar producto (primero - acción principal) -->
+                <button
+                  type="button"
+                  mat-icon-button
+                  matSuffix
+                  (click)="searchProduct()"
+                  aria-label="Buscar producto"
+                  matTooltip="Buscar producto"
+                  matTooltipPosition="above"
+                  class="search-product-btn"
+                >
+                  <mat-icon>search</mat-icon>
+                </button>
+                <!-- Botón crear producto rápido (segundo - acción secundaria) -->
+                <button
+                  *ngIf="canCreateProduct"
+                  type="button"
+                  mat-icon-button
+                  matSuffix
+                  (click)="openCreateProductDialog()"
+                  aria-label="Crear nuevo producto"
+                  matTooltip="Crear nuevo producto"
+                  matTooltipPosition="above"
+                  class="create-product-btn"
+                >
+                  <mat-icon>add_circle</mat-icon>
+                </button>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <!-- tabla de productos -->
+        <div class="mt-16 invoice-detail-table" formArrayName="items">
+          <mat-table
+            [dataSource]="invoiceDetailDataSource"
+            matSort
+            class="mat-elevation-z1 full-width"
+            style="position: relative; min-height: 300px"
+          >
+            <!-- Código -->
+            <ng-container matColumnDef="code">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>
+                Código
+              </mat-header-cell>
+              <mat-cell
+                *matCellDef="let row; let i = index"
+                [formGroupName]="i"
+              >
+                <input type="text" formControlName="code" readonly />
+              </mat-cell>
+            </ng-container>
+
+            <!-- Cantidad -->
+            <ng-container matColumnDef="quantity">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>
+                Cantidad
+              </mat-header-cell>
+              <mat-cell
+                *matCellDef="let row; let i = index"
+                [formGroupName]="i"
+              >
+                <input
+                  type="number"
+                  formControlName="quantity"
+                  min="1"
+                  step="1"
+                />
+              </mat-cell>
+            </ng-container>
+
+            <!-- Descripción -->
+            <ng-container matColumnDef="description">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>
+                Descripción
+              </mat-header-cell>
+              <mat-cell
+                *matCellDef="let row; let i = index"
+                [formGroupName]="i"
+              >
+                <input type="text" formControlName="description" readonly />
+              </mat-cell>
+            </ng-container>
+
+            <!-- Precio unitario -->
+            <ng-container matColumnDef="unitPrice">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>
+                Precio unitario
+              </mat-header-cell>
+              <mat-cell
+                *matCellDef="let row; let i = index"
+                [formGroupName]="i"
+              >
+                <input
+                  type="number"
+                  step="0.01"
+                  formControlName="unitPrice"
+                  min="0"
+                />
+              </mat-cell>
+            </ng-container>
+
+            <!-- Descuento % -->
+            <ng-container matColumnDef="discount">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>
+                Descuento %
+              </mat-header-cell>
+              <mat-cell
+                *matCellDef="let row; let i = index"
+                [formGroupName]="i"
+              >
+                <input
+                  type="number"
+                  step="1"
+                  formControlName="discount"
+                  min="0"
+                  max="100"
+                  placeholder="0"
+                />
+              </mat-cell>
+            </ng-container>
+
+            <!-- Valor total -->
+            <ng-container matColumnDef="totalValue">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>
+                Valor total
+              </mat-header-cell>
+              <mat-cell
+                *matCellDef="let row; let i = index"
+                [formGroupName]="i"
+              >
+                <input
+                  type="number"
+                  step="0.01"
+                  formControlName="totalValue"
+                  readonly
+                />
+              </mat-cell>
+            </ng-container>
+
+            <!-- IVA % -->
+            <ng-container matColumnDef="iva">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>
+                IVA %
+              </mat-header-cell>
+              <mat-cell
+                *matCellDef="let row; let i = index"
+                [formGroupName]="i"
+              >
+                <input
+                  type="number"
+                  step="0.01"
+                  formControlName="iva"
+                  readonly
+                />
+              </mat-cell>
+            </ng-container>
+
+            <!-- ICE % -->
+            <ng-container matColumnDef="ice">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>
+                ICE %
+              </mat-header-cell>
+              <mat-cell
+                *matCellDef="let row; let i = index"
+                [formGroupName]="i"
+              >
+                <input
+                  type="number"
+                  step="0.01"
+                  formControlName="ice"
+                  readonly
+                />
+              </mat-cell>
+            </ng-container>
+
+            <!-- Acciones -->
+            <ng-container matColumnDef="actions">
+              <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+              <mat-cell *matCellDef="let row; let i = index">
+                <button
+                  type="button"
+                  mat-icon-button
+                  color="warn"
+                  (click)="removeDetailItem(i)"
+                  title="Eliminar producto"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </mat-cell>
+            </ng-container>
+
+            <!-- Filas -->
+            <mat-header-row
+              *matHeaderRowDef="displayedColumnsPurchaseProofDetail"
+            ></mat-header-row>
+            <mat-row
+              *matRowDef="let row; columns: displayedColumnsPurchaseProofDetail"
+            ></mat-row>
+          </mat-table>
+
+          <!-- Empty state overlay - solo aparece cuando no hay datos -->
+          <div
+            *ngIf="invoiceDetailDataSource.data.length === 0"
+            class="empty-state-overlay"
+          >
+            <mat-icon class="empty-icon">shopping_cart</mat-icon>
+            <p class="empty-title">No existen productos agregados</p>
+            <p class="empty-subtitle">
+              Busca productos por código o descripción, o crea un nuevo
+              producto.
+            </p>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- 5) FORMAS DE PAGO + TOTALES -->
+  <mat-card class="card-padding mt-24">
+    <div fxLayout="row" fxLayoutGap="16px">
+      <!-- Formas de pago (2/3) -->
+      <div fxFlex="66%">
+        <mat-toolbar class="toolbar-primary-sm">Formas de pago</mat-toolbar>
+        <mat-card-content>
+          <div fxLayout="row" fxLayoutGap="8px" class="mt-16">
+            <button
+              type="button"
+              mat-stroked-button
+              color="primary"
+              (click)="addQuickPayment('01')"
+            >
+              <mat-icon>account_balance_wallet</mat-icon>
+              Efectivo
+            </button>
+            <button
+              type="button"
+              mat-stroked-button
+              color="primary"
+              (click)="addQuickPayment('16')"
+            >
+              <mat-icon>credit_card</mat-icon>
+              Tarjeta de débito
+            </button>
+            <button
+              type="button"
+              mat-stroked-button
+              color="primary"
+              (click)="addQuickPayment('19')"
+            >
+              <mat-icon>payment</mat-icon>
+              Tarjeta de crédito
+            </button>
+            <button
+              type="button"
+              mat-flat-button
+              color="primary"
+              (click)="addPayment()"
+            >
+              <mat-icon>add</mat-icon>
+              Añadir forma de pago
+            </button>
+          </div>
+
+          <!-- tabla formas de pago -->
+          <div [formGroup]="paymentsForm">
+            <div formArrayName="items">
+              <mat-table
+                [dataSource]="paymentsDataSource"
+                matSort
+                class="mat-elevation-z1 full-width mt-16 payments-table"
+              >
+                <!-- Tipo de pago -->
+                <ng-container matColumnDef="paymentType">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>
+                    Tipo de pago
+                  </mat-header-cell>
+                  <mat-cell *matCellDef="let row">{{
+                    row.paymentType
+                  }}</mat-cell>
+                </ng-container>
+
+                <!-- Valor (editable) -->
+                <ng-container matColumnDef="value">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>
+                    Valor
+                  </mat-header-cell>
+                  <mat-cell
+                    *matCellDef="let row; let i = index"
+                    [formGroupName]="i"
+                  >
+                    <input
+                      type="number"
+                      formControlName="value"
+                      step="0.01"
+                      min="0.01"
+                      (blur)="onPaymentValueBlur(i)"
+                      (keyup.enter)="onPaymentValueBlur(i)"
+                      placeholder="0.00"
+                      [class.error-input]="
+                        paymentItems.at(i).get('value')?.invalid &&
+                        paymentItems.at(i).get('value')?.touched
+                      "
+                    />
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Plazo -->
+                <ng-container matColumnDef="term">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>
+                    Plazo
+                  </mat-header-cell>
+                  <mat-cell *matCellDef="let row">{{
+                    row.term || "-"
+                  }}</mat-cell>
+                </ng-container>
+
+                <!-- Tiempo -->
+                <ng-container matColumnDef="time">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>
+                    Tiempo
+                  </mat-header-cell>
+                  <mat-cell *matCellDef="let row">{{
+                    row.time || "-"
+                  }}</mat-cell>
+                </ng-container>
+
+                <!-- Acciones -->
+                <ng-container matColumnDef="actions">
+                  <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+                  <mat-cell *matCellDef="let row; let i = index">
+                    <button
+                      type="button"
+                      mat-icon-button
+                      color="warn"
+                      (click)="removePayment(i)"
+                      title="Eliminar forma de pago"
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Cabecera y filas -->
+                <mat-header-row
+                  *matHeaderRowDef="displayedPaymentColumns"
+                ></mat-header-row>
+                <mat-row
+                  *matRowDef="let row; columns: displayedPaymentColumns"
+                ></mat-row>
+
+                <!-- Mensaje cuando no hay datos -->
+                <tr
+                  class="mat-row"
+                  *ngIf="paymentsDataSource.data.length === 0"
+                >
+                  <td
+                    class="mat-cell"
+                    [attr.colspan]="displayedPaymentColumns.length"
+                  >
+                    No existen formas de pago
+                  </td>
+                </tr>
+              </mat-table>
+            </div>
+          </div>
+
+          <!-- Resumen compacto de formas de pago -->
+          <div
+            class="payment-summary-compact mt-8"
+            *ngIf="paymentsDataSource.data.length > 0"
+          >
+            <div fxLayout="row" fxLayoutAlign="space-between center">
+              <span class="summary-text">Total Formas de Pago:</span>
+              <span
+                class="summary-amount"
+                [class.payment-valid]="getTotalPayments() === getTotalInvoice()"
+                [class.payment-invalid]="
+                  getTotalPayments() !== getTotalInvoice()
+                "
+              >
+                ${{ getTotalPayments() | number : "1.2-2" }}
+              </span>
+            </div>
+            <div
+              fxLayout="row"
+              fxLayoutAlign="space-between center"
+              class="mt-4"
+              *ngIf="getTotalPayments() !== getTotalInvoice()"
+            >
+              <span class="diff-text">{{
+                getTotalPayments() < getTotalInvoice() ? "Falta:" : "Excede:"
+              }}</span>
+              <span class="diff-amount">
+                ${{
+                  Math.abs(getTotalInvoice() - getTotalPayments())
+                    | number : "1.2-2"
+                }}
+              </span>
+            </div>
+          </div>
+        </mat-card-content>
+      </div>
+
+      <!-- Totales (1/3) -->
+      <div fxFlex="33%" [formGroup]="invoiceForm">
+        <mat-toolbar class="toolbar-primary-sm">Totales</mat-toolbar>
+        <mat-card-content>
+          <div class="totals-list mt-16">
+            <!-- ✅ SUBTOTALES POR % DE IVA (15%, 5%, 0%) - SIEMPRE VISIBLES -->
+            <div
+              class="totals-item"
+              fxLayout="row"
+              fxLayoutAlign="space-between"
+              *ngFor="let item of subtotalsByIva"
+            >
+              <span>SUBTOTAL {{ item.ivaPercent }}%</span>
+              <span class="value">{{ item.subtotal | number : "1.2-2" }}</span>
+            </div>
+
+            <!-- Subtotal sin impuestos -->
+            <div
+              class="totals-item"
+              fxLayout="row"
+              fxLayoutAlign="space-between"
+            >
+              <span>SUBTOTAL SIN IMPUESTOS</span>
+              <span class="value">{{
+                totals[0].value | number : "1.2-2"
+              }}</span>
+            </div>
+
+            <!-- Descuento -->
+            <div
+              class="totals-item"
+              fxLayout="row"
+              fxLayoutAlign="space-between"
+            >
+              <span>DESCUENTO</span>
+              <span class="value">{{
+                totals[1].value | number : "1.2-2"
+              }}</span>
+            </div>
+
+            <!-- ICE -->
+            <div
+              class="totals-item"
+              fxLayout="row"
+              fxLayoutAlign="space-between"
+            >
+              <span>ICE</span>
+              <span class="value">{{
+                totals[4].value | number : "1.2-2"
+              }}</span>
+            </div>
+
+            <!-- ✅ IVA POR TARIFA (15%, 5%, 0%) - SIEMPRE VISIBLES -->
+            <div
+              class="totals-item"
+              fxLayout="row"
+              fxLayoutAlign="space-between"
+              *ngFor="let item of subtotalsByIva"
+            >
+              <span>IVA {{ item.ivaPercent }}%</span>
+              <span class="value">{{ item.ivaValue | number : "1.2-2" }}</span>
+            </div>
+
+            <!-- Propina 10% con checkbox y valor -->
+            <div
+              class="totals-item mt-8"
+              fxLayout="row"
+              fxLayoutAlign="space-between center"
+            >
+              <div
+                fxLayout="row"
+                fxLayoutAlign="start center"
+                fxLayoutGap="8px"
+              >
+                <span>Propina 10%</span>
+                <label class="custom-checkbox-container" style="margin: 0">
+                  <input
+                    type="checkbox"
+                    formControlName="tip10"
+                    class="custom-checkbox-input"
+                  />
+                  <span class="custom-checkbox-box"></span>
+                </label>
+              </div>
+              <span class="value">{{ getTipAmount() | number : "1.2-2" }}</span>
+            </div>
+
+            <!-- Valor a pagar -->
+            <div
+              class="totals-item"
+              fxLayout="row"
+              fxLayoutAlign="space-between"
+              class="mt-8"
+            >
+              <strong>Valor a pagar:</strong>
+              <strong class="value">{{
+                getTotalInvoice() | number : "1.2-2"
+              }}</strong>
+            </div>
+          </div>
+        </mat-card-content>
+      </div>
+    </div>
+  </mat-card>
+  <!-- 6) BOTONES FINALES -->
+  <mat-card class="actions-card mt-24">
+    <mat-card-content>
+      <div class="actions-container">
+        <!-- Botón primario: Facturar (procesar) -->
+        <button
+          #invoiceButton
+          type="button"
+          mat-raised-button
+          color="primary"
+          class="btn-primary-action"
+          (click)="signAndSend()"
+          [disabled]="isProcessingInvoice"
+          matTooltip="Procesa la factura: genera secuencial, firma digitalmente y envía al SRI"
+          matTooltipPosition="above"
+        >
+          <mat-spinner
+            *ngIf="isProcessingInvoice"
+            diameter="20"
+            class="btn-spinner"
+          ></mat-spinner>
+          <mat-icon *ngIf="!isProcessingInvoice">check_circle</mat-icon>
+          <span class="btn-text">
+            <span class="btn-title">{{
+              isProcessingInvoice ? "Procesando..." : "Facturar"
+            }}</span>
+            <span class="btn-subtitle">{{
+              isProcessingInvoice
+                ? "Firmando y enviando al SRI"
+                : "Firmar y enviar al SRI"
+            }}</span>
+          </span>
+        </button>
+
+        <!-- Botón secundario: Guardar como borrador -->
+        <button
+          type="button"
+          mat-stroked-button
+          class="btn-secondary-action"
+          (click)="saveDraft()"
+          [disabled]="isSavingDraft"
+          matTooltip="Guarda temporalmente sin procesar. Podrá editarlo más tarde."
+          matTooltipPosition="above"
+        >
+          <mat-spinner
+            *ngIf="isSavingDraft"
+            diameter="20"
+            class="btn-spinner-draft"
+          ></mat-spinner>
+          <mat-icon *ngIf="!isSavingDraft">drafts</mat-icon>
+          <span class="btn-text">
+            <span class="btn-title">{{
+              isSavingDraft ? "Guardando..." : "Guardar como borrador"
+            }}</span>
+            <span class="btn-subtitle">Sin procesar ni enviar</span>
+          </span>
+        </button>
+      </div>
+
+      <!-- Indicador de estado de borrador -->
+      <div class="draft-status-info" *ngIf="currentDraftId">
+        <mat-icon class="status-icon">info</mat-icon>
+        <span class="status-text">
+          Editando borrador #{{ currentDraftId }}. Use "Facturar" para completar
+          el proceso.
+        </span>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

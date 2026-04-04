@@ -1,0 +1,149 @@
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <mat-icon class="header-icon">receipt_long</mat-icon>
+    <h2>Seleccionar Factura</h2>
+  </div>
+
+  <!-- Content -->
+  <div class="dialog-content">
+    <p class="dialog-subtitle">
+      Seleccione la factura autorizada para la cual desea crear la nota de
+      crédito.
+    </p>
+
+    <!-- Campo de búsqueda -->
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Buscar por N° Autorización, Factura o Cliente</mat-label>
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        matInput
+        [formControl]="searchControl"
+        placeholder="Escriba para buscar..."
+        autocomplete="off"
+      />
+      <button
+        mat-icon-button
+        matSuffix
+        *ngIf="searchControl.value"
+        (click)="searchControl.setValue('')"
+        type="button"
+      >
+        <mat-icon>clear</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Cargando facturas autorizadas...</p>
+    </div>
+
+    <!-- Lista de facturas -->
+    <div class="invoices-list" *ngIf="!isLoading">
+      <div
+        *ngFor="let invoice of filteredInvoices"
+        class="invoice-card"
+        [class.selected]="isSelected(invoice)"
+        [class.fully-covered]="isFullyCovered(invoice)"
+        (click)="onInvoiceClick(invoice)"
+      >
+        <div class="invoice-main">
+          <div class="invoice-number">
+            <mat-icon>receipt</mat-icon>
+            <span class="number-label">{{ getInvoiceNumber(invoice) }}</span>
+          </div>
+          <div class="invoice-authorization">
+            <span class="auth-label">N° Autorización:</span>
+            <span class="auth-value">{{
+              getAuthorizationNumber(invoice)
+            }}</span>
+          </div>
+          <!-- Badge para facturas sin saldo (solo para notas de crédito) -->
+          <span
+            class="covered-badge"
+            *ngIf="!hideAvailableAmount && isFullyCovered(invoice)"
+            matTooltip="Esta factura ya fue completamente cubierta por notas de crédito"
+          >
+            <mat-icon>check_circle</mat-icon>
+            Sin saldo
+          </span>
+        </div>
+
+        <div class="invoice-details">
+          <div class="detail-row">
+            <span class="detail-label">Cliente:</span>
+            <span class="detail-value">{{ getClientName(invoice) }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Identificación:</span>
+            <span class="detail-value">{{
+              getClientIdentification(invoice)
+            }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Fecha:</span>
+            <span class="detail-value">{{
+              formatDate(invoice.creationDate)
+            }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Total:</span>
+            <span class="detail-value total">{{
+              formatCurrency(invoice.totalAmount)
+            }}</span>
+          </div>
+          <!-- Mostrar propina si existe -->
+          <div class="detail-row" *ngIf="hasTip(invoice)">
+            <span class="detail-label">Propina:</span>
+            <span class="detail-value tip">
+              {{ formatCurrency(getTip(invoice)) }}
+              <span class="tip-hint">(no reembolsable)</span>
+            </span>
+          </div>
+          <!-- Mostrar saldo disponible si existe (solo para notas de crédito) -->
+          <div class="detail-row" *ngIf="!hideAvailableAmount && hasAvailableAmount(invoice)">
+            <span class="detail-label">Saldo disponible:</span>
+            <span
+              class="detail-value"
+              [class.available]="!isFullyCovered(invoice)"
+              [class.no-available]="isFullyCovered(invoice)"
+            >
+              {{ formatCurrency(getAvailableAmountSafe(invoice)) }}
+            </span>
+          </div>
+        </div>
+
+        <div
+          class="invoice-check"
+          *ngIf="isSelected(invoice)"
+        >
+          <mat-icon>check_circle</mat-icon>
+        </div>
+      </div>
+
+      <!-- Sin resultados -->
+      <div *ngIf="filteredInvoices.length === 0" class="no-results">
+        <mat-icon>search_off</mat-icon>
+        <p>No se encontraron facturas autorizadas</p>
+        <p class="hint">Intente con otro término de búsqueda</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="dialog-actions">
+    <button mat-stroked-button color="primary" (click)="cancel()">
+      Cancelar
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="confirm()"
+      [disabled]="!selectedInvoice"
+    >
+      <mat-icon>check</mat-icon>
+      Seleccionar
+    </button>
+  </div>
+</div>

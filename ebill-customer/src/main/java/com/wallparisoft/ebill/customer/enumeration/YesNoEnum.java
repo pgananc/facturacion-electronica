@@ -1,11 +1,8 @@
 package com.wallparisoft.ebill.customer.enumeration;
 
 public enum YesNoEnum {
-    SI("Si"), No("No");
-    private String description;
+  SI("Si"),
+  No("No");
 
-    private YesNoEnum(final String description) {
-        this.description = description;
-
-    }
+  YesNoEnum(final String description) {}
 }

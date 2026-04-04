@@ -1,0 +1,161 @@
+/* ======================
+   DIALOG CONTAINER
+====================== */
+.dialog-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 90vh;
+}
+
+/* ======================
+   DIALOG HEADER
+====================== */
+.dialog-header {
+  flex-shrink: 0;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #f5f5f5;
+}
+
+.dialog-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--primary-color, #0ea5e9);
+}
+
+/* ======================
+   DIALOG CONTENT
+====================== */
+.dialog-content {
+  flex: 1 1 auto;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+/* ======================
+   CHECKBOX NATIVO - IMPORTADO DESDE ARCHIVO COMPARTIDO
+====================== */
+@import '../../../_shared/custom-checkbox.css';
+
+/* ======================
+   ⚠️ TODO EL CSS DE mat-checkbox ELIMINADO
+   Ahora usamos checkbox nativo HTML
+====================== */
+
+/* ======================
+   SUCCESS SNACKBAR - MEJORADO
+====================== */
+::ng-deep .success-snackbar {
+  background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%) !important;
+  color: white !important;
+  box-shadow: 0 4px 20px rgba(76, 175, 80, 0.4) !important;
+  border-radius: 8px !important;
+  animation: slideInDown 0.4s ease-out;
+}
+
+::ng-deep .success-snackbar .mat-simple-snack-bar-content {
+  font-weight: 500;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+::ng-deep .success-snackbar .mat-simple-snackbar-action {
+  color: white !important;
+  font-weight: 600;
+  opacity: 0.9;
+  transition: opacity 0.2s;
+}
+
+::ng-deep .success-snackbar .mat-simple-snackbar-action:hover {
+  opacity: 1;
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ======================
+   ERROR SNACKBAR - MEJORADO
+====================== */
+::ng-deep .error-snackbar {
+  background: linear-gradient(135deg, #f44336 0%, #ef5350 100%) !important;
+  color: white !important;
+  box-shadow: 0 4px 20px rgba(244, 67, 54, 0.4) !important;
+  border-radius: 8px !important;
+  animation: shake 0.4s ease-out;
+}
+
+::ng-deep .error-snackbar .mat-simple-snack-bar-content {
+  font-weight: 500;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+::ng-deep .error-snackbar .mat-simple-snackbar-action {
+  color: white !important;
+  font-weight: 600;
+  opacity: 0.9;
+  transition: opacity 0.2s;
+}
+
+::ng-deep .error-snackbar .mat-simple-snackbar-action:hover {
+  opacity: 1;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+/* ======================
+   WARNING SNACKBAR - EXTRA
+====================== */
+::ng-deep .warning-snackbar {
+  background: linear-gradient(135deg, #ff9800 0%, #ffa726 100%) !important;
+  color: white !important;
+  box-shadow: 0 4px 20px rgba(255, 152, 0, 0.4) !important;
+  border-radius: 8px !important;
+  animation: slideInDown 0.4s ease-out;
+}
+
+::ng-deep .warning-snackbar .mat-simple-snack-bar-content {
+  font-weight: 500;
+  font-size: 15px;
+}
+
+/* ======================
+   DIALOG ACTIONS
+====================== */
+.dialog-actions {
+  flex-shrink: 0;
+  padding: 16px 24px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  background-color: #fafafa;
+}
+
+.dialog-actions button {
+  min-width: 120px;
+}
+

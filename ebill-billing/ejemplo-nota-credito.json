@@ -1,0 +1,116 @@
+{
+	"additionalInformation": "WALLPARISOFT",
+	"companyDto": {
+		"contacts": [
+			{
+				"contactType": "MAI",
+				"status": true,
+				"value": "info@empresa.com"
+			},
+			{
+				"contactType": "TEL",
+				"status": true,
+				"value": "0999999999"
+			},
+			{
+				"contactType": "DIR",
+				"status": true,
+				"value": "Av. Napo y Pedro Pinto s13"
+			}
+		],
+		"forcedToAccounting": "S",
+		"idCompany": 1,
+		"identification": "1722633961001",
+		"idType": 2,
+		"logoPath": "C:\\Users\\PABI1\\companies\\1\\logo.jpg",
+		"name": "WALLPARISOFT",
+		"nameCommercial": "WALLPARISOFT",
+		"regime": "SPECIAL",
+		"specialTaxpayerResolution": "1344",
+		"status": true
+	},
+	"clientDto": {
+		"address": "Pio 12",
+		"email": "pablos.ganan@gmail.com",
+		"idClient": 3,
+		"identification": "1718529934",
+		"idType": 1,
+		"name": "Ana Ceron",
+		"phone": "0998169929"
+	},
+	"discount": 0,
+	"establishment": {
+		"address": "Av. Napo y Pedro Pinto s13",
+		"code": "001",
+		"idEstablishment": 1,
+		"issuancePoint": {
+			"code": "001",
+			"idIssuancePoint": 1
+		},
+		"name": "WALLPARISOFT",
+		"type": "MATRIZ"
+	},
+	"idClient": 3,
+	"creditNoteDetails": [
+		{
+			"discount": 0,
+			"idProduct": 1,
+			"productDto": {
+				"auxiliarCode": null,
+				"description": "M4, 512 SSD, 16GB Ram, Año 2024",
+				"discount": 0,
+				"idCompany": 1,
+				"idProduct": 1,
+				"mainCode": "001",
+				"name": "M4, 512 SSD, 16GB Ram, Año 2024",
+				"productType": 1,
+				"rate": 15,
+				"status": true,
+				"taxCode": "2",
+				"taxCodPercentage": "4",
+				"unitPrice": 2500
+			},
+			"quantity": 1,
+			"subtotal": 2500,
+			"unitPrice": 2500
+		},
+		{
+			"discount": 0,
+			"idProduct": 2,
+			"productDto": {
+				"auxiliarCode": null,
+				"description": "Impresora",
+				"discount": 0,
+				"idCompany": 1,
+				"idProduct": 5,
+				"mainCode": "002",
+				"name": "Impresora",
+				"productType": 1,
+				"rate": 15,
+				"status": true,
+				"taxCode": "2",
+				"taxCodPercentage": "4",
+				"unitPrice": 150.5
+			},
+			"quantity": 1,
+			"subtotal": 150.5,
+			"unitPrice": 150.5
+		}
+	],
+	"issueDate": "2025-11-25T22:30:00.000Z",
+	"subtotalDiscount": 0,
+	"subtotalIce": 0,
+	"subtotalIva": 2650.5,
+	"subtotalZero": 0,
+	"totalAmount": 3048.08,
+	"valorModificacion": 3048.08,
+	"originalInvoiceId": 123,
+	"originalAccessKey": "2511250001172263396100110010010000000011234567890",
+	"originalInvoiceNumber": "001-001-000000001",
+	"originalIssueDate": "2025-11-25T22:22:20.316Z",
+	"documentTypeModified": "01",
+	"reason": "Devolución de productos defectuosos"
+}
+
+
+

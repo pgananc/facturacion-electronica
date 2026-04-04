@@ -1,0 +1,27 @@
+<div class="validation-snackbar" [ngClass]="'snackbar-' + data.type">
+  <div class="snackbar-content">
+    <!-- Icono animado -->
+    <div class="icon-container">
+      <mat-icon class="snackbar-icon">{{ icon }}</mat-icon>
+    </div>
+
+    <!-- Mensaje -->
+    <div class="message-container">
+      <span class="message-text">{{ data.message }}</span>
+    </div>
+
+    <!-- Botón cerrar -->
+    <button
+      mat-icon-button
+      class="close-button"
+      (click)="dismiss()"
+      aria-label="Cerrar"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Barra de progreso -->
+  <div class="progress-bar"></div>
+</div>
+

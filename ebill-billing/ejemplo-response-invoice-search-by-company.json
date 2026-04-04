@@ -1,0 +1,91 @@
+{
+  "content": [
+    {
+      "idInvoice": 504,
+      "idCompany": 1,
+      "idClient": 3,
+      "idIssuancePoint": 1,
+      "sequential": 504,
+      "retryCount": 0,
+      "issueDate": "2025-12-09T14:53:31",
+      "invoiceNumber": "001-001-000000504",
+      "environment": "1",
+      "additionalInformation": null,
+      "totalAmount": 3151.58,
+      "tip": 0.00,
+      "subtotalZero": 0.00,
+      "subtotalIva": 2740.50,
+      "subtotalIce": 0.00,
+      "discount": 0.00,
+      "emailSent": true,
+      "emailSentDate": "2025-12-09T15:00:00",
+      "authorizationSri": null,
+      "invoiceDetails": null,
+      "invoicePayments": null,
+      "creationDate": "2025-12-09T14:53:31",
+      "updateDate": "2025-12-09T15:00:00",
+      "status": true,
+      "clientName": "Ana Ceron",
+      "clientIdentification": "1718529934",
+      "availableAmount": 2900.91
+    },
+    {
+      "idInvoice": 505,
+      "idCompany": 1,
+      "idClient": 3,
+      "idIssuancePoint": 1,
+      "sequential": 505,
+      "retryCount": 0,
+      "issueDate": "2025-12-10T09:15:00",
+      "invoiceNumber": "001-001-000000505",
+      "environment": "1",
+      "additionalInformation": null,
+      "totalAmount": 250.75,
+      "tip": 5.00,
+      "subtotalZero": 0.00,
+      "subtotalIva": 217.83,
+      "subtotalIce": 0.00,
+      "discount": 10.00,
+      "emailSent": true,
+      "emailSentDate": "2025-12-10T09:20:00",
+      "authorizationSri": null,
+      "invoiceDetails": null,
+      "invoicePayments": null,
+      "creationDate": "2025-12-10T09:15:00",
+      "updateDate": "2025-12-10T09:20:00",
+      "status": true,
+      "clientName": "Ana Ceron",
+      "clientIdentification": "1718529934",
+      "availableAmount": 235.75
+    }
+  ],
+  "pageable": {
+    "sort": {
+      "empty": true,
+      "sorted": false,
+      "unsorted": true
+    },
+    "offset": 0,
+    "pageNumber": 0,
+    "pageSize": 100,
+    "paged": true,
+    "unpaged": false
+  },
+  "totalElements": 150,
+  "totalPages": 2,
+  "last": false,
+  "first": true,
+  "size": 100,
+  "number": 0,
+  "sort": {
+    "empty": true,
+    "sorted": false,
+    "unsorted": true
+  },
+  "numberOfElements": 100,
+  "empty": false
+}
+
+
+
+

@@ -1,84 +1,403 @@
-<mat-toolbar>
-  <mat-toolbar-row>
-    <span style="margin: auto">{{
-      edition ? "Actualización Compañía" : " Registro Compañía"
-      }}</span>
-  </mat-toolbar-row>
-</mat-toolbar>
-<form
-  class="principal-container"
-  [formGroup]="form"
-  (ngSubmit)="validateSave()"
-  #frmCompany="ngForm"
->
-  <mat-form-field class="principal-full-width">
-    <input
-      matInput
-      oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
-      placeholder="Codigo de sucursal"
-      required
-      formControlName="branchOfficeCode"
-    />
-  </mat-form-field>
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <h2 mat-dialog-title>
+      {{ edition ? "Actualizar Compañía" : "Nueva Compañía" }}
+    </h2>
+  </div>
 
-  <mat-form-field class="principal-full-width">
-    <input
-      matInput
-      oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
-      placeholder="ID compañía"
-      required
-      formControlName="identification"
-      name="identification"
-    />
-  </mat-form-field>
+  <!-- Content -->
+  <div class="dialog-content" mat-dialog-content>
+    <form [formGroup]="form" #frmCompany="ngForm">
+      <!-- RUC -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>RUC</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >badge</mat-icon
+        >
+        <input
+          matInput
+          type="text"
+          placeholder="RUC (13 dígitos)"
+          formControlName="identification"
+          required
+          maxlength="13"
+          inputmode="numeric"
+          pattern="[0-9]*"
+        />
+        <mat-error *ngIf="form.get('identification')?.hasError('required')">
+          RUC es requerido
+        </mat-error>
+        <mat-error *ngIf="form.get('identification')?.hasError('pattern')">
+          RUC debe ser de 13 dígitos
+        </mat-error>
+      </mat-form-field>
 
-  <mat-form-field class="principal-full-width">
-    <input
-      matInput
-      placeholder="Nombre"
-      required
-      formControlName="name"
-      name="name"
-    />
-  </mat-form-field>
+      <!-- Nombre / Razón Social -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Razón Social</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >business</mat-icon
+        >
+        <input
+          matInput
+          placeholder="Razón social"
+          formControlName="name"
+          required
+        />
+        <mat-error *ngIf="form.get('name')?.hasError('required')">
+          Razón social es requerido
+        </mat-error>
+      </mat-form-field>
 
-  <mat-checkbox
-    labelPosition="before"
-    formControlName="forceToAccounting"
-    class="principal-full-width"
-  >Obligado a llevar contabilidad
-  </mat-checkbox
-  >
+      <!-- Nombre Comercial -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nombre Comercial</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >storefront</mat-icon
+        >
+        <input
+          matInput
+          placeholder="Nombre comercial"
+          formControlName="nameCommercial"
+        />
+      </mat-form-field>
 
-  <mat-checkbox
-    labelPosition="before"
-    formControlName="principal"
-    class="principal-full-width"
-  >Principal
-  </mat-checkbox
-  >
+      <!-- Contribuyente -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Contribuyente</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >account_circle</mat-icon
+        >
+        <mat-select formControlName="regime" placeholder="SELECCIONAR" required>
+          <mat-option value="">SELECCIONAR</mat-option>
+          <mat-option
+            *ngFor="let option of taxRegimeOptions"
+            [value]="option.code"
+          >
+            {{ option.label }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('regime')?.hasError('required')">
+          Contribuyente es requerido
+        </mat-error>
+      </mat-form-field>
 
-  <mat-checkbox
-    labelPosition="before"
-    formControlName="status"
-    class="principal-full-width"
-  >Estado
-  </mat-checkbox
-  >
-  <div class="flex-parent jc-center">
+      <!-- Contribuyente Especial Resolución -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+        [class.mat-form-field-disabled]="
+          form.get('regime')?.value !== 'SPECIAL'
+        "
+      >
+        <mat-label>Contribuyente Especial Resolución</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >description</mat-icon
+        >
+        <input
+          matInput
+          placeholder="Ingrese la resolución"
+          formControlName="specialTaxpayerResolution"
+          [disabled]="form.get('regime')?.value !== 'SPECIAL'"
+        />
+        <mat-hint *ngIf="form.get('regime')?.value !== 'SPECIAL'"
+          >Seleccione "Especial" en Contribuyente para habilitar este
+          campo</mat-hint
+        >
+      </mat-form-field>
+
+      <!-- Checkboxes -->
+      <div class="checkbox-group" style="margin-top: 16px; margin-bottom: 16px">
+        <label class="custom-checkbox-container">
+          <input
+            type="checkbox"
+            formControlName="forceToAccounting"
+            class="custom-checkbox-input"
+          />
+          <span class="custom-checkbox-box"></span>
+          <span class="custom-checkbox-label"
+            >Obligado a llevar contabilidad</span
+          >
+        </label>
+
+        <label class="custom-checkbox-container">
+          <input
+            type="checkbox"
+            formControlName="status"
+            class="custom-checkbox-input"
+            [disabled]="!edition"
+            [checked]="form.get('status')?.value"
+          />
+          <span class="custom-checkbox-box"></span>
+          <span class="custom-checkbox-label">Activo</span>
+        </label>
+      </div>
+
+      <!-- Sección de Suscripción (solo en modo creación) -->
+      <div *ngIf="!edition" class="subscription-section">
+        <!-- Plan de Suscripción -->
+        <mat-form-field
+          appearance="outline"
+          class="full-width"
+          floatLabel="always"
+        >
+          <mat-label>Plan de Suscripción</mat-label>
+          <mat-icon matPrefix>workspace_premium</mat-icon>
+          <mat-select
+            formControlName="planCode"
+            placeholder="Selecciona plan"
+            #planSelect
+          >
+            <!-- Valor seleccionado (colapsado) -->
+            <mat-select-trigger>
+              <span class="selected-plan-display">
+                {{ getSelectedPlanDisplay() }}
+              </span>
+            </mat-select-trigger>
+
+            <!-- Opciones del dropdown -->
+            <mat-option *ngFor="let plan of availablePlans" [value]="plan.code">
+              <div class="plan-option">
+                <div class="plan-name-container">
+                  <span class="plan-name">{{ plan.name }}</span>
+                  <span class="plan-price"
+                    >${{ plan.price | number : "1.2-2" }}/mes</span
+                  >
+                </div>
+                <div class="plan-limit-info">
+                  <mat-icon class="mini-icon">description</mat-icon>
+                  <span *ngIf="plan.documentLimit === -1"
+                    >Documentos ilimitados</span
+                  >
+                  <span *ngIf="plan.documentLimit !== -1"
+                    >{{ plan.documentLimit | number }} doc/año</span
+                  >
+                </div>
+              </div>
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="form.get('planCode')?.hasError('required')">
+            Selecciona un plan
+          </mat-error>
+          <mat-hint *ngIf="selectedPlan">
+            <mat-icon class="hint-icon">check_circle</mat-icon>
+            Plan seleccionado: {{ selectedPlan.name }}
+          </mat-hint>
+        </mat-form-field>
+
+        <!-- Detalles del plan seleccionado -->
+        <div *ngIf="selectedPlan" class="plan-details" @fadeIn>
+          <div class="plan-header">
+            <mat-icon>workspace_premium</mat-icon>
+            <strong>{{ selectedPlan.name }}</strong>
+            <span class="plan-code-badge">{{ selectedPlan.code }}</span>
+          </div>
+          <div class="plan-info-grid">
+            <div class="plan-info-item">
+              <div class="info-icon-wrapper documents">
+                <mat-icon>description</mat-icon>
+              </div>
+              <div class="info-content">
+                <span class="info-label">Documentos anuales</span>
+                <span class="info-value">
+                  <span
+                    *ngIf="selectedPlan.documentLimit === -1"
+                    class="unlimited-badge"
+                  >
+                    <mat-icon class="inline-icon">all_inclusive</mat-icon>
+                    Ilimitado
+                  </span>
+                  <span *ngIf="selectedPlan.documentLimit !== -1">
+                    {{ selectedPlan.documentLimit | number }}
+                  </span>
+                </span>
+              </div>
+            </div>
+            <div class="plan-info-item">
+              <div class="info-icon-wrapper price">
+                <mat-icon>payments</mat-icon>
+              </div>
+              <div class="info-content">
+                <span class="info-label">Precio mensual</span>
+                <span class="info-value price-highlight">
+                  ${{ selectedPlan.price | number : "1.2-2" }}
+                </span>
+              </div>
+            </div>
+            <div class="plan-info-item full-width" *ngIf="calculatedEndDate">
+              <div class="info-icon-wrapper date">
+                <mat-icon>event_available</mat-icon>
+              </div>
+              <div class="info-content">
+                <span class="info-label">Vigencia de la suscripción</span>
+                <span class="info-value date-range">
+                  {{ form.get("startDate")?.value | date : "dd/MMM/yyyy" }}
+                  <mat-icon class="arrow-icon">arrow_forward</mat-icon>
+                  {{ calculatedEndDate | date : "dd/MMM/yyyy" }}
+                </span>
+              </div>
+            </div>
+            <div class="plan-info-item full-width highlighted">
+              <div class="info-icon-wrapper total">
+                <mat-icon>calculate</mat-icon>
+              </div>
+              <div class="info-content">
+                <span class="info-label">Inversión total</span>
+                <span class="info-value total-cost">
+                  ${{ totalCost | number : "1.2-2" }}
+                  <span class="duration-info"
+                    >({{ form.get("durationMonths")?.value }} meses)</span
+                  >
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <mat-divider class="section-divider"></mat-divider>
+
+        <!-- Fecha de Inicio -->
+        <mat-form-field
+          appearance="outline"
+          class="full-width"
+          floatLabel="always"
+        >
+          <mat-label>Fecha de Inicio</mat-label>
+          <mat-icon matPrefix>event</mat-icon>
+          <input
+            matInput
+            [matDatepicker]="picker"
+            formControlName="startDate"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="form.get('startDate')?.hasError('required')">
+            Fecha de inicio es requerida
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Duración en Meses -->
+        <mat-form-field
+          appearance="outline"
+          class="full-width"
+          floatLabel="always"
+        >
+          <mat-label>Duración (meses)</mat-label>
+          <mat-icon matPrefix>schedule</mat-icon>
+          <input
+            matInput
+            type="number"
+            formControlName="durationMonths"
+            placeholder="12"
+            min="1"
+            max="60"
+          />
+          <mat-error *ngIf="form.get('durationMonths')?.hasError('required')">
+            Duración es requerida
+          </mat-error>
+          <mat-error *ngIf="form.get('durationMonths')?.hasError('min')">
+            Mínimo 1 mes
+          </mat-error>
+          <mat-error *ngIf="form.get('durationMonths')?.hasError('max')">
+            Máximo 60 meses
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Logo de la compañía -->
+      <div
+        class="logo-upload-section full-width"
+        style="margin-top: 16px; margin-bottom: 16px"
+      >
+        <label class="logo-label">Logo de la Compañía</label>
+        <div class="logo-upload-container">
+          <input
+            type="file"
+            accept="image/*"
+            (change)="onFileSelected($event)"
+            #fileInput
+            style="display: none"
+          />
+          <button
+            mat-raised-button
+            type="button"
+            color="primary"
+            (click)="fileInput.click()"
+            class="logo-upload-button"
+            [disabled]="
+              !form.get('identification')?.value ||
+              form.get('identification')?.invalid
+            "
+            [matTooltip]="
+              !form.get('identification')?.value ||
+              form.get('identification')?.invalid
+                ? 'Debe ingresar la identificación (RUC) primero'
+                : ''
+            "
+          >
+            <mat-icon>upload</mat-icon>
+            <span>Seleccionar Logo</span>
+          </button>
+          <button
+            *ngIf="edition && (logoPreview || logoPath || logoBlobUrl)"
+            mat-stroked-button
+            type="button"
+            color="warn"
+            (click)="onRemoveLogo()"
+            class="logo-upload-button"
+            style="margin-left: 8px"
+            matTooltip="Quitar el logo de la compañía"
+          >
+            <mat-icon>delete_outline</mat-icon>
+            <span>Quitar logo</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Preview del logo -->
+      <div
+        *ngIf="logoPreview || logoPath"
+        class="logo-preview"
+        style="margin-top: 16px; text-align: center"
+      >
+        <img
+          [src]="logoPreview || logoPath"
+          alt="Logo de la compañía"
+          (error)="onImageError($event)"
+          (load)="onImageLoad()"
+          style="
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 8px;
+            background-color: #f5f5f5;
+            object-fit: contain;
+          "
+        />
+      </div>
+    </form>
+  </div>
+
+  <!-- Actions -->
+  <div class="dialog-actions" mat-dialog-actions>
     <button
-      class="margin-right botton-width"
       mat-raised-button
       color="primary"
-      type="submit"
-      [disabled]="frmCompany.invalid"
+      type="button"
+      [disabled]="form.invalid"
+      (click)="validateSave()"
     >
-      <mat-icon>done</mat-icon>
-      <span>Ok</span>
+      <mat-icon>save</mat-icon>
+      <span>Guardar</span>
     </button>
-    <button mat-raised-button color="accent" routerLink="/company" type="button">
+    <button mat-raised-button type="button" (click)="cancel()">
       <mat-icon>close</mat-icon>
-      <span>Cancel</span>
+      <span>Cancelar</span>
     </button>
   </div>
-</form>
+</div>

@@ -1,0 +1,43 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot - EBillBillingApplication (localhost)",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.wallparisoft.ebillbilling.EBillBillingApplication",
+      "projectName": "ebill-billing",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env",
+      "vmArgs": "-Dspring.profiles.active=localhost",
+      "console": "integratedTerminal",
+      "javaExec": "/Users/jguerreroh/Library/Java/JavaVirtualMachines/corretto-17.0.16/Contents/Home/bin/java"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot - EBillBillingApplication (default)",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.wallparisoft.ebillbilling.EBillBillingApplication",
+      "projectName": "ebill-billing",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env",
+      "console": "integratedTerminal",
+      "javaExec": "/Users/jguerreroh/Library/Java/JavaVirtualMachines/corretto-17.0.16/Contents/Home/bin/java"
+    },
+    {
+      "type": "java",
+      "name": "Debug Spring Boot - EBillBillingApplication (localhost)",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.wallparisoft.ebillbilling.EBillBillingApplication",
+      "projectName": "ebill-billing",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env",
+      "vmArgs": "-Dspring.profiles.active=localhost -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005",
+      "console": "integratedTerminal",
+      "javaExec": "/Users/jguerreroh/Library/Java/JavaVirtualMachines/corretto-17.0.16/Contents/Home/bin/java"
+    }
+  ]
+}

@@ -1,11 +1,10 @@
 package com.wallparisoft.ebill.customer.enumeration;
 
 public enum ContactTypeEnum {
-    TEL("Teléfono"), CEL("Celular"), MAIL("Mail"), DIR("Dirección");
-    private String description;
+  TEL("Teléfono"),
+  CEL("Celular"),
+  MAIL("Mail"),
+  DIR("Dirección");
 
-    private ContactTypeEnum(final String description) {
-        this.description = description;
-
-    }
+  ContactTypeEnum(final String description) {}
 }

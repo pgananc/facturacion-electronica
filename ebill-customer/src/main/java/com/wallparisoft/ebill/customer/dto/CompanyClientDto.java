@@ -1,18 +1,21 @@
 package com.wallparisoft.ebill.customer.dto;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.experimental.FieldDefaults;
-
 import java.io.Serializable;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
-@Getter
+@Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CompanyClientDto implements Serializable {
-    Long idCompany;
-    String companyIdentification;
-    List<ClientDto> clients;
+  Long idCompany;
+  String companyIdentification;
+  List<ClientDto> clients;
 }

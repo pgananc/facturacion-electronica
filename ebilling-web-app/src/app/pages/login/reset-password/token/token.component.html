@@ -1,56 +1,168 @@
-<mat-toolbar *ngIf="!validToken" class="alert alert-danger">
-  La petición no es válida o ha expirado
-</mat-toolbar>
-
-<mat-toolbar *ngIf="validToken">
-  <mat-toolbar-row>
-    <span style="margin: auto">{{ "Cambio de contraseña" }}</span>
-  </mat-toolbar-row>
-</mat-toolbar>
-<form
-  [formGroup]="form"
-  (ngSubmit)="onSubmit()"
-  *ngIf="validToken"
-  class="principal-container"
->
-  <mat-form-field class="principal-full-width">
-    <input
-      matInput
-      type="password"
-      name="password"
-      placeholder="Nueva contraseña"
-      formControlName="password"
-      [formGroup]="form"
-      required
-    />
-  </mat-form-field>
-
-  <mat-form-field class="principal-full-width">
-    <input
-      matInput
-      type="password"
-      placeholder="Repetir contraseña"
-      formControlName="confirmPassword"
-      [formGroup]="form"
-      required
-    />
-  </mat-form-field>
-
-  <mat-toolbar
-    class="alert alert-danger"
-    *ngIf="form.get('confirmPassword')?.errors?.['confirmPasswordValidator']"
-    >Contraseñas no coinciden</mat-toolbar
-  >
-  <mat-toolbar *ngIf="message">{{ message }}</mat-toolbar>
-  <mat-toolbar *ngIf="error">{{ error }}</mat-toolbar>
-  <div class="flex-parent jc-center">
-    <button
-      mat-raised-button
-      color="primary"
-      type="submit"
-      [disabled]="form.invalid"
-    >
-      Cambiar contraseña
-    </button>
+<div class="invoice-page">
+  <!-- Spinner de carga mientras se valida el token -->
+  <div *ngIf="isValidating" class="loading-container">
+    <mat-card class="card-padding">
+      <mat-card-content>
+        <div class="info-section">
+          <div class="info-content loading-content">
+            <mat-spinner diameter="40" class="loading-spinner"></mat-spinner>
+            <div class="info-text">
+              <h3>Validando token...</h3>
+              <p>Por favor espera mientras verificamos tu enlace.</p>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
   </div>
-</form>
+
+  <!-- Mensaje de error cuando el token no es válido (solo si NO fue cambio exitoso) -->
+  <mat-card
+    class="card-padding"
+    *ngIf="!isValidating && !validToken && !passwordChangedSuccessfully"
+  >
+    <mat-card-content>
+      <div class="info-section">
+        <div class="info-content error">
+          <mat-icon class="info-icon">error</mat-icon>
+          <div class="info-text">
+            <h3>Token inválido o expirado</h3>
+            <p>
+              La petición no es válida o ha expirado. Serás redirigido al login.
+            </p>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Mensaje de éxito cuando se cambió la contraseña exitosamente -->
+  <mat-card
+    class="card-padding status-card"
+    *ngIf="passwordChangedSuccessfully && message"
+  >
+    <mat-card-content>
+      <div class="info-section">
+        <div class="info-content">
+          <mat-icon class="info-icon">check_circle</mat-icon>
+          <div class="info-text">
+            <h3>Contraseña cambiada</h3>
+            <p>{{ message }}</p>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Formulario de cambio de contraseña (solo cuando validToken es true) -->
+  <div *ngIf="!isValidating && validToken">
+    <mat-toolbar class="toolbar-primary toolbar-with-action">
+      <span>Cambio de contraseña</span>
+      <span class="spacer"></span>
+    </mat-toolbar>
+
+    <mat-card class="card-padding search-card">
+      <mat-card-content>
+        <form class="search-grid" [formGroup]="form" (ngSubmit)="onSubmit()">
+          <div class="info-section">
+            <div class="info-content">
+              <mat-icon class="info-icon">lock</mat-icon>
+              <div class="info-text">
+                <h3>Nueva contraseña</h3>
+                <p>
+                  Ingresa tu nueva contraseña. Asegúrate de que sea segura y
+                  fácil de recordar.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <mat-form-field
+            appearance="outline"
+            class="search-field password-field"
+          >
+            <mat-label>Nueva contraseña</mat-label>
+            <mat-icon matPrefix>lock_outline</mat-icon>
+            <input
+              matInput
+              type="password"
+              name="password"
+              placeholder="Ingresa tu nueva contraseña"
+              formControlName="password"
+              required
+              autocomplete="new-password"
+            />
+            <mat-error *ngIf="form.get('password')?.errors?.['required']">
+              La contraseña es obligatoria.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field
+            appearance="outline"
+            class="search-field password-field"
+          >
+            <mat-label>Repetir contraseña</mat-label>
+            <mat-icon matPrefix>lock</mat-icon>
+            <input
+              matInput
+              type="password"
+              placeholder="Confirma tu nueva contraseña"
+              formControlName="confirmPassword"
+              required
+              autocomplete="new-password"
+            />
+            <mat-error
+              *ngIf="form.get('confirmPassword')?.errors?.['required']"
+            >
+              Debes confirmar la contraseña.
+            </mat-error>
+            <mat-error
+              *ngIf="form.get('confirmPassword')?.errors?.['confirmPasswordValidator']"
+            >
+              Las contraseñas no coinciden.
+            </mat-error>
+          </mat-form-field>
+
+          <div class="search-actions">
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="form.invalid || isSubmitting"
+              class="btn-search"
+            >
+              <mat-spinner
+                *ngIf="isSubmitting"
+                diameter="20"
+                class="button-spinner"
+              ></mat-spinner>
+              <mat-icon *ngIf="!isSubmitting">check_circle</mat-icon>
+              {{ isSubmitting ? "Cambiando..." : "Cambiar contraseña" }}
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Mensajes de éxito o error -->
+    <mat-card class="card-padding status-card" *ngIf="message || error">
+      <mat-card-content>
+        <div class="info-section">
+          <div class="info-content" [class.error]="!!error">
+            <mat-icon class="info-icon">{{
+              error ? "error" : "check_circle"
+            }}</mat-icon>
+            <div class="info-text">
+              <h3>
+                {{
+                  error ? "Error al cambiar contraseña" : "Contraseña cambiada"
+                }}
+              </h3>
+              <p>{{ error || message }}</p>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

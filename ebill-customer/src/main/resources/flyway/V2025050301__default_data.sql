@@ -1,0 +1,2 @@
+INSERT INTO company (id_company, creation_date, forced_to_accounting, id_type, identification, name, special_taxpayer, status, update_date, name_commercial) VALUES (1, '2022-12-16 10:48:17.000000', 'N', 2, '1722633981001', 'WALLPARISOFT', 1, true, null, null);
+INSERT INTO company (id_company, creation_date, forced_to_accounting, id_type, identification, name, special_taxpayer, status, update_date, name_commercial) VALUES (2, '2025-05-13 20:16:40.765672', 'N', 0, '1721400271001', 'POWER OUT', null, true, '2025-05-13 20:16:54.671674', null);

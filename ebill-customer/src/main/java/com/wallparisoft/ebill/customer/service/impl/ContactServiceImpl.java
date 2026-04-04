@@ -4,37 +4,36 @@ import com.wallparisoft.ebill.customer.entity.Contact;
 import com.wallparisoft.ebill.customer.repository.IContactRepo;
 import com.wallparisoft.ebill.customer.service.IContactService;
 import com.wallparisoft.ebill.utils.exception.ModelNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
+@RequiredArgsConstructor
 @Service
 public class ContactServiceImpl implements IContactService {
 
-	@Autowired
-	private IContactRepo contactRepo;
+  private final IContactRepo contactRepo;
 
+  @Override
+  public Contact save(Contact entity) {
+    return contactRepo.save(entity);
+  }
 
-	@Override
-	public Contact save(Contact entity) {
-		return contactRepo.save(entity);
-	}
+  @Override
+  public Contact update(Contact entity, Long id) {
+    Contact contact = findById(id);
+    return contactRepo.save(entity);
+  }
 
-	@Override
-	public Contact update(Contact entity, Long id) {
-		Contact contact = findById(id);
-		return contactRepo.save(entity);
-	}
+  @Override
+  public List<Contact> findAll() {
+    return contactRepo.findAll();
+  }
 
-	@Override
-	public List<Contact> findAll() {
-		return contactRepo.findAll();
-	}
-
-	@Override
-	public Contact findById(Long id) {
-		return this.contactRepo.findById(id)
-				.orElseThrow(() -> new ModelNotFoundException("Contact not found for this id :: " + id));
-	}
+  @Override
+  public Contact findById(Long id) {
+    return this.contactRepo
+        .findById(id)
+        .orElseThrow(() -> new ModelNotFoundException("Contact not found for this id :: " + id));
+  }
 }

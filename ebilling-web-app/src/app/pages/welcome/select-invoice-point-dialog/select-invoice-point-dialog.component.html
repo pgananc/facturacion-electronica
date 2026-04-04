@@ -1,0 +1,47 @@
+<div class="text-center">
+  <mat-toolbar color="primary">
+    <mat-panel-title style="color: #fff">Puntos de Emisión</mat-panel-title>
+  </mat-toolbar>
+</div>
+
+<div class="principal-container mat-elevation-z8">
+  <p class="subtitle">Seleccione el punto de emisión que desea utilizar</p>
+
+  <mat-selection-list
+    [(ngModel)]="selectedPointArray"
+    [multiple]="false"
+    class="points-list"
+  >
+    <mat-list-option
+      *ngFor="let point of sortedPoints"
+      [value]="point"
+      class="point-option"
+    >
+      <div class="point-item">
+        <mat-icon class="point-icon">location_on</mat-icon>
+        <div class="point-info">
+          <span class="point-code">Punto {{ point.code }}</span>
+          <span class="point-status" *ngIf="point.status">Disponible</span>
+        </div>
+      </div>
+    </mat-list-option>
+  </mat-selection-list>
+
+  <!-- Empty state -->
+  <div class="empty-state" *ngIf="!sortedPoints || sortedPoints.length === 0">
+    <mat-icon>info_outline</mat-icon>
+    <p>No hay puntos de emisión disponibles</p>
+  </div>
+
+  <div class="button-container">
+    <button mat-button (click)="onCancel()">Cancelar</button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onSelect()"
+      [disabled]="!selectedPointArray.length"
+    >
+      Seleccionar
+    </button>
+  </div>
+</div>

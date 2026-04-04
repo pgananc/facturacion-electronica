@@ -1,0 +1,218 @@
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <h2 mat-dialog-title>
+      {{ isEdit ? "Editar Menú" : parentMenu ? "Nuevo Submenú" : "Nuevo Menú" }}
+    </h2>
+  </div>
+
+  <!-- Content -->
+  <div class="dialog-content" mat-dialog-content>
+    <!-- Información del menú padre (si aplica) -->
+    <mat-card *ngIf="parentMenu" class="parent-menu-card">
+      <mat-card-content>
+        <div class="parent-info">
+          <mat-icon>info</mat-icon>
+          <div><strong>Menú padre:</strong> {{ parentMenu.name }}</div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Formulario -->
+    <form [formGroup]="form" class="menu-form">
+      <!-- Nombre -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nombre del Menú</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >label</mat-icon
+        >
+        <input
+          matInput
+          formControlName="name"
+          placeholder="Ej: Facturación"
+          required
+        />
+        <mat-error *ngIf="form.get('name')?.hasError('required')">
+          El nombre es requerido
+        </mat-error>
+        <mat-error *ngIf="form.get('name')?.hasError('maxlength')">
+          {{ getErrorMessage("name") }}
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Icono -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Icono Material</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >palette</mat-icon
+        >
+        <input
+          matInput
+          formControlName="icon"
+          placeholder="Ej: receipt"
+          [matAutocomplete]="iconAuto"
+          required
+        />
+        <mat-autocomplete #iconAuto="matAutocomplete">
+          <mat-option *ngFor="let icon of commonIcons" [value]="icon">
+            <mat-icon>{{ icon }}</mat-icon>
+            <span>{{ icon }}</span>
+          </mat-option>
+        </mat-autocomplete>
+        <mat-hint>Nombre del icono de Material Icons</mat-hint>
+        <mat-error *ngIf="form.get('icon')?.hasError('required')">
+          El icono es requerido
+        </mat-error>
+      </mat-form-field>
+
+      <!-- URL -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>URL (opcional)</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >link</mat-icon
+        >
+        <input
+          matInput
+          formControlName="url"
+          placeholder="Ej: /invoices o null para menú contenedor"
+        />
+        <mat-hint
+          >Ruta del frontend (ej: /invoices). Déjalo vacío si es un menú
+          contenedor.</mat-hint
+        >
+        <mat-error *ngIf="form.get('url')?.hasError('invalidUrl')">
+          {{ getErrorMessage("url") }}
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Feature Code -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Feature Code (opcional)</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >security</mat-icon
+        >
+        <input
+          matInput
+          formControlName="featureCode"
+          placeholder="Ej: INVOICE_CREATE"
+          style="text-transform: uppercase"
+        />
+        <mat-icon
+          *ngIf="checkingFeature"
+          matSuffix
+          class="spinning-icon"
+          style="animation: spin 1s linear infinite"
+        >
+          hourglass_empty
+        </mat-icon>
+        <mat-icon
+          *ngIf="!checkingFeature && featureCodeExists === true"
+          matSuffix
+          color="primary"
+        >
+          check_circle
+        </mat-icon>
+        <mat-icon
+          *ngIf="
+            !checkingFeature &&
+            featureCodeExists === false &&
+            form.get('featureCode')?.value
+          "
+          matSuffix
+          color="accent"
+        >
+          add_circle
+        </mat-icon>
+        <mat-hint>
+          <span *ngIf="checkingFeature"
+            >Verificando si el feature existe...</span
+          >
+          <span *ngIf="!checkingFeature && featureCodeExists === true">
+            ✅ Feature existe en feature_permission y está activo
+          </span>
+          <span
+            *ngIf="
+              !checkingFeature &&
+              featureCodeExists === false &&
+              form.get('featureCode')?.value
+            "
+          >
+            ⚠️ Feature no existe. Se intentará crear automáticamente al guardar.
+            Si el endpoint no está disponible, deberás crearlo manualmente en la base de datos (tabla feature_permission).
+          </span>
+          <span *ngIf="!checkingFeature && featureCodeExists === null">
+            Código de feature para control de permisos. Debe existir en
+            feature_permission o se intentará crear automáticamente.
+          </span>
+        </mat-hint>
+        <mat-error *ngIf="form.get('featureCode')?.hasError('maxlength')">
+          {{ getErrorMessage("featureCode") }}
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Orden -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Orden (opcional)</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >sort</mat-icon
+        >
+        <input
+          matInput
+          type="number"
+          formControlName="order"
+          placeholder="Ej: 1"
+          min="0"
+        />
+        <mat-hint>Orden de visualización en el menú (menor = primero)</mat-hint>
+        <mat-error *ngIf="form.get('order')?.hasError('min')">
+          {{ getErrorMessage("order") }}
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Estado Activo -->
+      <div class="status-section">
+        <label class="custom-checkbox-container">
+          <input
+            type="checkbox"
+            formControlName="active"
+            class="custom-checkbox-input"
+          />
+          <span class="custom-checkbox-box"></span>
+          <span class="custom-checkbox-label">Menú activo</span>
+        </label>
+        <div class="status-hint">
+          Los menús activos aparecerán en el menú lateral y estarán disponibles
+          para los usuarios
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Actions -->
+  <div class="dialog-actions" mat-dialog-actions>
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="onCancel()"
+      [disabled]="isLoading"
+      class="btn-cancel"
+    >
+      <mat-icon>close</mat-icon>
+      <span>Cancelar</span>
+    </button>
+
+    <button
+      mat-raised-button
+      color="primary"
+      type="button"
+      [disabled]="form.invalid || isLoading"
+      (click)="onSubmit()"
+      class="btn-save"
+    >
+      <mat-icon *ngIf="!isLoading">save</mat-icon>
+      <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+      <span *ngIf="!isLoading">{{ isEdit ? "Actualizar" : "Guardar" }}</span>
+      <span *ngIf="isLoading">Guardando...</span>
+    </button>
+  </div>
+</div>

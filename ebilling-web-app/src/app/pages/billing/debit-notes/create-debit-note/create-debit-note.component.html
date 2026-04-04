@@ -1,0 +1,434 @@
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <mat-icon class="header-icon">note_add</mat-icon>
+    <h2>Nueva Nota de Débito</h2>
+  </div>
+
+  <!-- Content -->
+  <div class="dialog-content">
+    <!-- Loading -->
+    <div *ngIf="isLoadingCompany" class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Cargando datos...</p>
+    </div>
+
+    <!-- Información de la factura original -->
+    <div class="invoice-summary" *ngIf="selectedInvoice && !isLoadingCompany">
+      <div class="summary-title">
+        <mat-icon>receipt</mat-icon>
+        <span>Factura: {{ getOriginalInvoiceNumber() }}</span>
+      </div>
+      <div class="summary-details">
+        <div class="detail-item">
+          <span class="label">Cliente:</span>
+          <span class="value">{{ getClientName() }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="label">RUC/CI:</span>
+          <span class="value">{{ getClientIdentification() }}</span>
+        </div>
+      </div>
+    </div>
+
+    <form
+      [formGroup]="form"
+      *ngIf="!isLoadingCompany"
+      (ngSubmit)="preventFormSubmit($event)"
+    >
+      <!-- Fecha de emisión -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Fecha de emisión</mat-label>
+        <input
+          matInput
+          type="date"
+          formControlName="issueDate"
+          [min]="minDate"
+          [max]="maxDate"
+        />
+        <mat-error *ngIf="form.get('issueDate')?.hasError('required')">
+          La fecha es obligatoria
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Observación -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Observación (opcional)</mat-label>
+        <textarea
+          matInput
+          formControlName="observation"
+          rows="3"
+          placeholder="Ingrese una descripción del motivo de la nota de débito..."
+        ></textarea>
+      </mat-form-field>
+
+      <!-- Productos/Servicios -->
+      <div class="section-title">
+        <h3>Productos / Servicios</h3>
+        <button
+          mat-raised-button
+          color="primary"
+          type="button"
+          (click)="openSelectProductDialog()"
+          [disabled]="isLoadingProducts"
+        >
+          <mat-icon>add</mat-icon>
+          Agregar Producto
+        </button>
+      </div>
+
+      <!-- Lista de productos tipo card -->
+      <div class="products-list" *ngIf="productsDataSource.data.length > 0">
+        <div
+          *ngFor="let product of productsDataSource.data; let i = index"
+          class="product-card"
+        >
+          <!-- Header del producto -->
+          <div class="product-header">
+            <div class="product-header-left">
+              <mat-icon class="check-icon">check_circle</mat-icon>
+              <span class="product-badge">{{ product.code }}</span>
+              <span class="product-name">{{ product.description }}</span>
+            </div>
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="removeProduct(i)"
+              matTooltip="Eliminar"
+              class="delete-button"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+
+          <!-- Línea separadora -->
+          <div class="divider"></div>
+
+          <!-- Detalles del producto -->
+          <div class="product-details">
+            <div class="detail-row">
+              <div class="detail-item">
+                <span class="detail-label">CANTIDAD:</span>
+                <input
+                  type="number"
+                  min="1"
+                  [value]="product.quantity"
+                  (change)="
+                    updateProduct(i, 'quantity', $any($event.target).value)
+                  "
+                  class="detail-input"
+                />
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">PRECIO UNITARIO:</span>
+                <span class="detail-value">{{
+                  formatCurrency(product.unitPrice)
+                }}</span>
+              </div>
+            </div>
+
+            <div class="detail-row">
+              <div class="detail-item">
+                <span class="detail-label">VALOR TOTAL:</span>
+                <!-- Si es servicio (productType === 2), permitir edición manual -->
+                <input
+                  *ngIf="product.productDto?.productType === 2"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  [value]="product.subtotal"
+                  (change)="
+                    updateProductSubtotal(i, $any($event.target).value)
+                  "
+                  (blur)="
+                    updateProductSubtotal(i, $any($event.target).value)
+                  "
+                  class="detail-input subtotal-input"
+                />
+                <!-- Si no es servicio, mostrar como texto (solo lectura) -->
+                <span
+                  *ngIf="product.productDto?.productType !== 2"
+                  class="detail-value subtotal-value"
+                  >{{
+                  formatCurrency(product.subtotal)
+                }}</span>
+              </div>
+            </div>
+
+            <div class="detail-row">
+              <div class="detail-item">
+                <span class="detail-label">IVA %:</span>
+                <span class="detail-value">{{
+                  product.ivaPercentage || 0
+                }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">ICE %:</span>
+                <span class="detail-value">{{
+                  product.icePercentage || 0
+                }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty-state" *ngIf="productsDataSource.data.length === 0">
+        <mat-icon>shopping_cart</mat-icon>
+        <p>No hay productos agregados</p>
+        <p class="hint">Haga clic en "Agregar Producto" para comenzar</p>
+      </div>
+
+      <!-- Resumen (Totales) - PRIMERO -->
+      <div class="totals-section">
+        <h3>Resumen</h3>
+        <div class="totals-list">
+          <!-- Subtotales por % de IVA (15%, 5%, 0%) - SIEMPRE VISIBLES -->
+          <div class="total-row" *ngFor="let item of subtotalsByIva">
+            <span class="total-label">SUBTOTAL {{ item.ivaPercent }}%</span>
+            <span class="total-value">{{ formatCurrency(item.subtotal) }}</span>
+          </div>
+
+          <!-- Subtotal sin impuestos -->
+          <div class="total-row">
+            <span class="total-label">SUBTOTAL SIN IMPUESTOS</span>
+            <span class="total-value">{{ formatCurrency(subtotalZero) }}</span>
+          </div>
+
+          <!-- ICE - SIEMPRE VISIBLE -->
+          <div class="total-row">
+            <span class="total-label">ICE</span>
+            <span class="total-value">{{ formatCurrency(totalIce) }}</span>
+          </div>
+
+          <!-- IVA por tarifa (15%, 5%, 0%) - SIEMPRE VISIBLES -->
+          <div class="total-row" *ngFor="let item of subtotalsByIva">
+            <span class="total-label">IVA {{ item.ivaPercent }}%</span>
+            <span class="total-value">{{ formatCurrency(item.ivaValue) }}</span>
+          </div>
+
+          <!-- Valor a pagar -->
+          <div class="total-row total-final">
+            <strong class="total-label">Valor a pagar:</strong>
+            <strong class="total-value">{{
+              formatCurrency(valorTotal)
+            }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formas de pago - DESPUÉS -->
+      <div class="section-title">
+        <h3>Formas de Pago</h3>
+      </div>
+
+      <!-- Botones de formas de pago rápidas -->
+      <div class="quick-payment-buttons">
+        <button
+          type="button"
+          mat-stroked-button
+          color="primary"
+          (click)="addQuickPayment('01')"
+        >
+          <mat-icon>account_balance_wallet</mat-icon>
+          Efectivo
+        </button>
+        <button
+          type="button"
+          mat-stroked-button
+          color="primary"
+          (click)="addQuickPayment('16')"
+        >
+          <mat-icon>credit_card</mat-icon>
+          Tarjeta de débito
+        </button>
+        <button
+          type="button"
+          mat-stroked-button
+          color="primary"
+          (click)="addQuickPayment('19')"
+        >
+          <mat-icon>payment</mat-icon>
+          Tarjeta de crédito
+        </button>
+        <button
+          type="button"
+          mat-flat-button
+          color="primary"
+          (click)="openAddPaymentDialog()"
+        >
+          <mat-icon>add</mat-icon>
+          Agregar Pago
+        </button>
+      </div>
+
+      <!-- Tabla de pagos -->
+      <div class="table-container" *ngIf="paymentsDataSource.length > 0">
+        <mat-table
+          [dataSource]="paymentsDataSource"
+          class="mat-elevation-z1 full-width payments-table"
+        >
+          <!-- Tipo de pago -->
+          <ng-container matColumnDef="paymentType">
+            <mat-header-cell *matHeaderCellDef>Tipo de pago</mat-header-cell>
+            <mat-cell *matCellDef="let payment">
+              {{ payment.paymentType || payment.paymentMethod }}
+            </mat-cell>
+          </ng-container>
+
+          <!-- Valor -->
+          <ng-container matColumnDef="value">
+            <mat-header-cell *matHeaderCellDef>Valor</mat-header-cell>
+            <mat-cell *matCellDef="let payment; let i = index">
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                [value]="payment.total || payment.value || 0"
+                (change)="updatePaymentValue(i, $any($event.target).value)"
+                (blur)="updatePaymentValue(i, $any($event.target).value)"
+                (keydown.enter)="
+                  onPaymentValueEnter(
+                    $any($event),
+                    i,
+                    $any($event.target).value
+                  )
+                "
+                placeholder="0.00"
+                class="payment-value-input"
+                [class.error-input]="
+                  (payment.total || payment.value || 0) > valorTotal
+                "
+              />
+            </mat-cell>
+          </ng-container>
+
+          <!-- Plazo -->
+          <ng-container matColumnDef="term">
+            <mat-header-cell *matHeaderCellDef>Plazo</mat-header-cell>
+            <mat-cell *matCellDef="let payment">
+              {{ payment.term || "-" }}
+            </mat-cell>
+          </ng-container>
+
+          <!-- Tiempo -->
+          <ng-container matColumnDef="time">
+            <mat-header-cell *matHeaderCellDef>Tiempo</mat-header-cell>
+            <mat-cell *matCellDef="let payment">
+              {{ payment.timeUnit || payment.time || "-" }}
+            </mat-cell>
+          </ng-container>
+
+          <!-- Acciones -->
+          <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+            <mat-cell *matCellDef="let payment; let i = index">
+              <button
+                type="button"
+                mat-icon-button
+                color="warn"
+                (click)="removePayment(i)"
+                title="Eliminar forma de pago"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row
+            *matHeaderRowDef="displayedPaymentColumns"
+          ></mat-header-row>
+          <mat-row
+            *matRowDef="let row; columns: displayedPaymentColumns"
+          ></mat-row>
+
+          <!-- Mensaje cuando no hay datos -->
+          <tr class="mat-row" *ngIf="paymentsDataSource.length === 0">
+            <td
+              class="mat-cell"
+              [attr.colspan]="displayedPaymentColumns.length"
+            >
+              No existen formas de pago
+            </td>
+          </tr>
+        </mat-table>
+
+        <!-- Total de formas de pago -->
+        <div
+          class="payment-summary-compact mt-8"
+          *ngIf="paymentsDataSource.length > 0"
+        >
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <span class="summary-text">Total Formas de Pago:</span>
+            <span
+              class="summary-amount"
+              [class.payment-valid]="paymentsMatchTotal()"
+              [class.payment-invalid]="!paymentsMatchTotal()"
+            >
+              {{ formatCurrency(getTotalPayments()) }}
+            </span>
+          </div>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-top: 8px;
+            "
+            *ngIf="!paymentsMatchTotal()"
+          >
+            <span class="diff-text">{{
+              getTotalPayments() < valorTotal ? "Falta:" : "Excede:"
+            }}</span>
+            <span class="diff-amount">
+              {{ formatCurrency(Math.abs(valorTotal - getTotalPayments())) }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty-state" *ngIf="paymentsDataSource.length === 0">
+        <mat-icon>payment</mat-icon>
+        <p>No hay formas de pago agregadas</p>
+        <p class="hint">Haga clic en "Agregar Pago" para comenzar</p>
+      </div>
+    </form>
+  </div>
+
+  <!-- Actions -->
+  <div class="dialog-actions">
+    <button mat-stroked-button color="primary" (click)="cancel()">
+      Cancelar
+    </button>
+    <button
+      mat-stroked-button
+      color="accent"
+      (click)="saveDraft()"
+      [disabled]="isSavingDraft || isSendingToSri"
+      matTooltip="Guardar sin enviar al SRI"
+    >
+      <mat-spinner *ngIf="isSavingDraft" diameter="20"></mat-spinner>
+      <mat-icon *ngIf="!isSavingDraft">save</mat-icon>
+      Guardar Borrador
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="createAndSend()"
+      [disabled]="isSavingDraft || isSendingToSri"
+    >
+      <mat-spinner
+        diameter="20"
+        *ngIf="isSendingToSri"
+        class="inline-spinner"
+      ></mat-spinner>
+      Crear y Enviar al SRI
+    </button>
+  </div>
+</div>

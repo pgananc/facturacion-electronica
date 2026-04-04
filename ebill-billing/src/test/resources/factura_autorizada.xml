@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<autorizacion>
+  <estado>AUTORIZADO</estado>
+  <numeroAutorizacion>0711202501172027808200120010030000003890000039916</numeroAutorizacion>
+  <fechaAutorizacion>2025-11-07 11:59:54</fechaAutorizacion>
+  <ambiente>PRODUCCIÓN</ambiente>
+  <comprobante><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<factura id="comprobante" version="2.1.0">
+  <infoTributaria>
+    <ambiente>2</ambiente>
+    <tipoEmision>1</tipoEmision>
+    <razonSocial>Empresa Demo S.A.</razonSocial>
+    <nombreComercial>Empresa Demo S.A.</nombreComercial>
+    <ruc>1790012345001</ruc>
+    <claveAcceso>0711202501172027808200120010030000003890000039916</claveAcceso>
+    <codDoc>01</codDoc>
+    <estab>001</estab>
+    <ptoEmi>003</ptoEmi>
+    <secuencial>000000389</secuencial>
+    <dirMatriz>PICHINCHA / QUITO / AV. SIEMPRE VIVA 123</dirMatriz>
+  </infoTributaria>
+  <infoFactura>
+    <fechaEmision>07/11/2025</fechaEmision>
+    <dirEstablecimiento>PICHINCHA / QUITO / AV. SIEMPRE VIVA 123</dirEstablecimiento>
+    <obligadoContabilidad>NO</obligadoContabilidad>
+    <tipoIdentificacionComprador>04</tipoIdentificacionComprador>
+    <razonSocialComprador>Cliente Ejemplo</razonSocialComprador>
+    <identificacionComprador>1803861937001</identificacionComprador>
+    <direccionComprador>Dirección del Cliente</direccionComprador>
+    <totalSinImpuestos>4.00</totalSinImpuestos>
+    <totalDescuento>0.00</totalDescuento>
+    <totalConImpuestos>
+      <totalImpuesto>
+        <codigo>2</codigo>
+        <codigoPorcentaje>0</codigoPorcentaje>
+        <baseImponible>4.00</baseImponible>
+        <valor>0.00</valor>
+      </totalImpuesto>
+    </totalConImpuestos>
+    <propina>0.00</propina>
+    <importeTotal>4.00</importeTotal>
+    <moneda>DOLAR</moneda>
+    <pagos>
+      <pago>
+        <formaPago>01</formaPago>
+        <total>4.00</total>
+        <plazo>0</plazo>
+        <unidadTiempo>días</unidadTiempo>
+      </pago>
+    </pagos>
+  </infoFactura>
+  <detalles>
+    <detalle>
+      <codigoPrincipal>FRUTOS007</codigoPrincipal>
+      <codigoAuxiliar>FRUTOS007</codigoAuxiliar>
+      <descripcion>Nuez en cuartos</descripcion>
+      <cantidad>1.000000</cantidad>
+      <precioUnitario>3.000000</precioUnitario>
+      <descuento>0.00</descuento>
+      <precioTotalSinImpuesto>3.00</precioTotalSinImpuesto>
+      <impuestos>
+        <impuesto>
+          <codigo>2</codigo>
+          <codigoPorcentaje>0</codigoPorcentaje>
+          <tarifa>0</tarifa>
+          <baseImponible>3.00</baseImponible>
+          <valor>0.00</valor>
+        </impuesto>
+      </impuestos>
+    </detalle>
+    <detalle>
+      <codigoPrincipal>CHO008</codigoPrincipal>
+      <codigoAuxiliar>CHO008</codigoAuxiliar>
+      <descripcion>Choco pasa negra</descripcion>
+      <cantidad>1.000000</cantidad>
+      <precioUnitario>1.000000</precioUnitario>
+      <descuento>0.00</descuento>
+      <precioTotalSinImpuesto>1.00</precioTotalSinImpuesto>
+      <impuestos>
+        <impuesto>
+          <codigo>2</codigo>
+          <codigoPorcentaje>0</codigoPorcentaje>
+          <tarifa>0</tarifa>
+          <baseImponible>1.00</baseImponible>
+          <valor>0.00</valor>
+        </impuesto>
+      </impuestos>
+    </detalle>
+  </detalles>
+  <infoAdicional>
+    <campoAdicional nombre="Descripción">VENTA DESDE PUNTO DE VENTA</campoAdicional>
+  </infoAdicional>
+</factura>]]></comprobante>
+  <mensajes/>
+</autorizacion>
+

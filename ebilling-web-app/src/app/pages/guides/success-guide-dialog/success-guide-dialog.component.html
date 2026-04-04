@@ -1,0 +1,90 @@
+<div class="dialog-container">
+  <!-- Cabecera -->
+  <mat-toolbar class="toolbar-primary-sm">
+    <span>✅ Guía de Remisión Guardada</span>
+    <span class="spacer"></span>
+    <button
+      type="button"
+      mat-icon-button
+      (click)="onClose()"
+      aria-label="Cerrar"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <mat-dialog-content class="dialog-content">
+    <div class="success-content">
+      <!-- Icono de éxito -->
+      <div class="success-icon">
+        <mat-icon class="success-icon-large">check_circle</mat-icon>
+      </div>
+
+      <!-- Mensaje principal -->
+      <h2 class="success-title">¡Guía de remisión guardada correctamente!</h2>
+      <p class="success-message">
+        La guía de remisión ha sido guardada y enviada al SRI exitosamente.
+      </p>
+
+      <!-- Información de la guía -->
+      <!-- Si hay número de guía, mostrar toda la información -->
+      <div *ngIf="data.guideNumber">
+        <div class="guide-info">
+          <div class="info-row">
+            <span class="info-label">Número de guía:</span>
+            <span class="info-value">{{ data.guideNumber }}</span>
+          </div>
+        </div>
+
+        <div class="guide-info" *ngIf="data.recipientName">
+          <div class="info-row">
+            <span class="info-label">Destinatario:</span>
+            <span class="info-value">{{ data.recipientName }}</span>
+          </div>
+        </div>
+
+        <div class="guide-info" *ngIf="data.startDate && data.endDate">
+          <div class="info-row">
+            <span class="info-label">Período de transporte:</span>
+            <span class="info-value">
+              {{ data.startDate }} - {{ data.endDate }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Si NO hay número de guía, solo mostrar el nombre del destinatario -->
+      <div class="guide-info" *ngIf="!data.guideNumber && data.recipientName">
+        <div class="info-row">
+          <span class="info-label">Destinatario:</span>
+          <span class="info-value">{{ data.recipientName }}</span>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="dialog-actions">
+    <button
+      type="button"
+      mat-raised-button
+      color="primary"
+      (click)="printTicket()"
+      class="print-button"
+    >
+      <mat-icon>print</mat-icon>
+      Recibo
+    </button>
+    <button
+      *ngIf="data.guideNumber && data.authorizationStatusSri === 'AUTORIZADO'"
+      type="button"
+      mat-raised-button
+      color="accent"
+      (click)="printRide()"
+      class="print-ride-button"
+    >
+      <mat-icon>description</mat-icon>
+      RIDE
+    </button>
+  </mat-dialog-actions>
+</div>
+

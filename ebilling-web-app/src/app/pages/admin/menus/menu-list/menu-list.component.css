@@ -1,0 +1,150 @@
+@import '../../../../_shared/toolbar-styles.css';
+@import '../../../../_shared/shared-styles.css';
+@import '../../../../_shared/table-styles.css';
+@import '../../../../_shared/responsive-styles.css';
+
+.menu-management-page {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  background-color: var(--background-color, #f9fafb);
+  min-height: calc(100vh - 64px);
+}
+
+/* Reducir espacio entre toolbar principal y card */
+.menu-management-page .toolbar-primary {
+  margin-bottom: 6px;
+}
+
+/* Clase utilitaria para reducir margen superior */
+.mt-12 {
+  margin-top: 0 !important;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.table-wrapper {
+  margin-top: 0;
+  position: relative;
+}
+
+.loading-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  gap: 16px;
+}
+
+.loading-overlay p {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.menu-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.submenu-indicator {
+  color: #94a3b8;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.icon-name {
+  margin-left: 8px;
+  font-size: 12px;
+  color: #64748b;
+  font-family: 'Courier New', monospace;
+}
+
+.url-cell {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: #475569;
+  word-break: break-all;
+}
+
+.feature-code-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  background-color: #e0e7ff;
+  color: #4338ca;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+  text-transform: uppercase;
+}
+
+.no-feature-code {
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.actions-cell {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.empty-state-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: #b0bec5;
+  margin-bottom: 16px;
+}
+
+.empty-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #424242;
+  margin: 0 0 8px 0;
+}
+
+.empty-subtitle {
+  font-size: 14px;
+  color: #757575;
+  margin: 0;
+  max-width: 400px;
+}
+
+.empty-state-container {
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .menu-management-page {
+    padding: 16px;
+  }
+
+  .menu-name-cell {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+

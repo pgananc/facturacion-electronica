@@ -2,29 +2,37 @@ package com.wallparisoft.ebill.customer.service;
 
 import com.wallparisoft.ebill.customer.dto.ClientDto;
 import com.wallparisoft.ebill.customer.entity.Client;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
 public interface IClientService extends ICRUD<Client> {
 
-    void saveClientAndContact(ClientDto clientDto);
+  ClientDto saveClientAndContact(ClientDto clientDto);
 
+  public void updateClientAndContact(ClientDto clientDto, Long idClient);
 
-    public void updateClientAndContact(ClientDto clientDto, Long idClient);
+  void delete(Long id);
 
-    void delete(Long id);
+  List<ClientDto> findClientByIdAndContact(Long idClient);
 
+  public Page<ClientDto> findClientByIdentificationOrNameOrType(
+      String companyIdentification,
+      String identification,
+      String name,
+      Integer clientType,
+      Boolean status,
+      String email,
+      String phone,
+      String mobile,
+      String address,
+      Pageable pageable);
 
-    List<ClientDto> findClientByIdAndContact(Long idClient);
+  List<ClientDto> findByCompanyIdentificationAndClientsActive(String companyIdentification);
 
+  ClientDto findByIdentificationAndEmail(String identification, String email);
 
-    public Page<ClientDto> findClientByIdentificationOrNameOrType(String companyIdentification, String identification, String name
-            , Integer clientType, Boolean status, Pageable pageable);
-    List<ClientDto> findByCompanyIdentificationAndClientsActive(String companyIdentification);
+  List<ClientDto> findByIdentification(String identification);
 
-    boolean existsByCompanyIdentificationAndClientIdentification(String companyIdentification, String identification);
-
-
+  List<ClientDto> findByIdentificationList(String identification);
 }

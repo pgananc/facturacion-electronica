@@ -1,0 +1,27 @@
+# Producción: usado por el pipeline en el servidor 217.216.94.162
+# Traefik descubre el servicio por labels. REGISTRY_IMAGE e IMAGE_TAG se exportan en el deploy.
+services:
+  ebill-billing:
+    image: ${REGISTRY_IMAGE:-registry.gitlab.com/dev-billing/ebill-billing}:${IMAGE_TAG:-latest}
+    container_name: ebill-billing
+    restart: unless-stopped
+    command: ["tail", "-f", "/dev/null"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ebill-billing.rule=Host(`wallparisoft.com`)" # Ajustar dominio
+      - "traefik.http.routers.ebill-billing.entrypoints=web"
+      - "traefik.http.services.ebill-billing.loadbalancer.server.port=8480"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://${DB_HOST}:5432/${DB_NAME_BILLING}
+      - SPRING_DATASOURCE_USERNAME=${DB_USER_BILLING}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD_BILLING}
+    # Conectar a la red de Traefik si existe (ajustar nombre si tu stack usa otro)
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

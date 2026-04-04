@@ -1,0 +1,67 @@
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <h2 mat-dialog-title>
+      {{ isEdit ? 'Editar Campo Adicional' : 'Nuevo Campo Adicional' }}
+    </h2>
+  </div>
+
+  <!-- Content -->
+  <div class="dialog-content" mat-dialog-content>
+    <form [formGroup]="fieldForm" #frmField="ngForm">
+      <!-- Nombre -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nombre</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px">label</mat-icon>
+        <input
+          matInput
+          placeholder="Ingrese el nombre del campo"
+          formControlName="name"
+          required
+          maxlength="100"
+        />
+        <mat-error *ngIf="fieldForm.get('name')?.hasError('required')">
+          El nombre es requerido
+        </mat-error>
+        <mat-error *ngIf="fieldForm.get('name')?.hasError('maxlength')">
+          El nombre no puede exceder 100 caracteres
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Descripción -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Descripción</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px">description</mat-icon>
+        <textarea
+          matInput
+          placeholder="Ingrese la descripción del campo"
+          formControlName="description"
+          required
+          rows="3"
+          maxlength="500"
+        ></textarea>
+        <mat-error *ngIf="fieldForm.get('description')?.hasError('required')">
+          La descripción es requerida
+        </mat-error>
+        <mat-error *ngIf="fieldForm.get('description')?.hasError('maxlength')">
+          La descripción no puede exceder 500 caracteres
+        </mat-error>
+      </mat-form-field>
+    </form>
+  </div>
+
+  <!-- Actions -->
+  <div mat-dialog-actions class="dialog-actions">
+    <button mat-button (click)="onCancel()" type="button">Cancelar</button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onSave()"
+      [disabled]="fieldForm.invalid"
+      type="button"
+    >
+      {{ isEdit ? 'Actualizar' : 'Guardar' }}
+    </button>
+  </div>
+</div>
+

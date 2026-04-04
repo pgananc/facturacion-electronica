@@ -1,0 +1,201 @@
+<div class="dialog-container">
+  <!-- Cabecera con estilo consistente -->
+  <mat-toolbar class="toolbar-primary-sm">
+    <span>Seleccionar Productos</span>
+    <span class="spacer"></span>
+    <button
+      type="button"
+      mat-icon-button
+      (click)="onCancel()"
+      aria-label="Cerrar"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <mat-dialog-content class="dialog-content">
+    <!-- Campo de filtro -->
+    <div class="filter-container">
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Filtrar productos</mat-label>
+        <input
+          matInput
+          [formControl]="filterControl"
+          placeholder="Buscar por código, nombre o descripción"
+        />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <!-- Tabla de productos -->
+    <div class="table-container">
+      <table mat-table [dataSource]="dataSource" matSort class="products-table">
+        <!-- Columna de selección -->
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef class="col-checkbox">
+            <label class="custom-checkbox-container" style="margin: 0">
+              <input
+                type="checkbox"
+                (change)="$event ? toggleAllRows() : null"
+                [checked]="selection.hasValue() && isAllSelected()"
+                [indeterminate]="selection.hasValue() && !isAllSelected()"
+                class="custom-checkbox-input"
+              />
+              <span class="custom-checkbox-box"></span>
+            </label>
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let row"
+            class="col-checkbox"
+            (click)="$event.stopPropagation()"
+          >
+            <label class="custom-checkbox-container" style="margin: 0">
+              <input
+                type="checkbox"
+                (change)="selection.toggle(row)"
+                [checked]="selection.isSelected(row)"
+                class="custom-checkbox-input"
+              />
+              <span class="custom-checkbox-box"></span>
+            </label>
+          </td>
+        </ng-container>
+
+        <!-- Columna Código -->
+        <ng-container matColumnDef="code">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            class="col-code"
+          >
+            Código
+          </th>
+          <td mat-cell *matCellDef="let product" class="col-code">
+            {{ product.mainCode }}
+          </td>
+        </ng-container>
+
+        <!-- Columna Nombre -->
+        <ng-container matColumnDef="name">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            class="col-name"
+          >
+            Nombre
+          </th>
+          <td mat-cell *matCellDef="let product" class="col-name">
+            <span class="text-wrap">{{ product.name }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Columna Descripción -->
+        <ng-container matColumnDef="description">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            class="col-description"
+          >
+            Descripción
+          </th>
+          <td mat-cell *matCellDef="let product" class="col-description">
+            <span class="text-wrap">{{ product.description || "-" }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Columna Precio Unitario -->
+        <ng-container matColumnDef="unitPrice">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            class="col-price"
+          >
+            Precio Unitario
+          </th>
+          <td mat-cell *matCellDef="let product" class="col-price">
+            {{ product.unitPrice | currency : "USD" : "symbol" : "1.2-2" }}
+          </td>
+        </ng-container>
+
+        <!-- Columna IVA -->
+        <ng-container matColumnDef="ivaTaxType">
+          <th mat-header-cell *matHeaderCellDef class="col-iva">IVA</th>
+          <td mat-cell *matCellDef="let product" class="col-iva">
+            <span class="tax-badge iva-badge" *ngIf="product.ivaTaxType">
+              {{ product.ivaTaxType.value }}%
+            </span>
+            <span class="tax-badge no-tax-badge" *ngIf="!product.ivaTaxType">
+              N/A
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Columna ICE -->
+        <ng-container matColumnDef="iceTaxType">
+          <th mat-header-cell *matHeaderCellDef class="col-ice">ICE</th>
+          <td mat-cell *matCellDef="let product" class="col-ice">
+            <span
+              class="tax-badge ice-badge"
+              *ngIf="product.iceTaxType"
+              [matTooltip]="product.iceTaxType.name"
+              matTooltipPosition="above"
+              matTooltipClass="custom-tooltip"
+            >
+              {{ product.iceTaxType.name }}
+            </span>
+            <span class="tax-badge no-tax-badge" *ngIf="!product.iceTaxType">
+              N/A
+            </span>
+          </td>
+        </ng-container>
+
+        <tr
+          mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"
+        ></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          [class.selected-row]="selection.isSelected(row)"
+        ></tr>
+      </table>
+
+      <!-- Mensaje cuando no hay productos -->
+      <div *ngIf="dataSource.data.length === 0" class="no-products-message">
+        <mat-icon>inventory_2</mat-icon>
+        <p>No se encontraron productos con el criterio de búsqueda.</p>
+      </div>
+    </div>
+
+    <!-- Paginador -->
+    <mat-paginator
+      [pageSizeOptions]="[5, 10, 25, 50]"
+      [pageSize]="10"
+      showFirstLastButtons
+      class="products-paginator"
+    >
+    </mat-paginator>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="dialog-actions">
+    <button type="button" mat-stroked-button (click)="onCancel()">
+      <mat-icon>close</mat-icon>
+      Cancelar
+    </button>
+    <button
+      type="button"
+      mat-raised-button
+      color="primary"
+      (click)="onAdd()"
+      [disabled]="selection.isEmpty()"
+    >
+      <mat-icon>add_shopping_cart</mat-icon>
+      Agregar ({{ selection.selected.length }})
+    </button>
+  </mat-dialog-actions>
+</div>

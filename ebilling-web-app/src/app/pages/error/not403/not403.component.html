@@ -1,19 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <!-- Simple HttpErrorPages | MIT X11 License | https://github.com/AndiDittrich/HttpErrorPages -->
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<div class="invoice-page">
+  <mat-toolbar class="toolbar-primary">
+    <span>Acceso Denegado</span>
+  </mat-toolbar>
 
-    <title>403 - Access Denegado</title>
-  </head>
+  <mat-card class="card-padding mt-24 search-card">
+    <mat-card-content>
+      <!-- Mensaje para error de token de cliente -->
+      <div *ngIf="isClientTokenError" class="error-content">
+        <h1 class="error-title">Acceso Denegado</h1>
+      </div>
 
-  <body>
-    <div class="cover">
-      <h1>Acceso Denegado</h1>
-      <p class="lead">¡ {{ userName }} no tienes permisos para entrar !</p>
-      <a routerLink="/welcome">Ir a principal</a>
-    </div>
-  </body>
-</html>
+      <!-- Mensaje para usuario autenticado sin permisos -->
+      <div *ngIf="!isClientTokenError && userName" class="error-content">
+        <h1 class="error-title">Acceso Denegado</h1>
+        <p class="error-message">
+          ¡ {{ userName }} no tienes permisos para entrar !
+        </p>
+        <div class="actions">
+          <button mat-raised-button color="primary" (click)="goToWelcome()">
+            <mat-icon>home</mat-icon>
+            Ir a Principal
+          </button>
+        </div>
+      </div>
+
+      <!-- Mensaje para usuario no autenticado -->
+      <div *ngIf="!isClientTokenError && !userName" class="error-content">
+        <h1 class="error-title">Acceso Denegado</h1>
+        <p class="error-message">{{ errorMessage }}</p>
+        <div class="actions">
+          <button mat-raised-button color="primary" (click)="goToLogin()">
+            <mat-icon>login</mat-icon>
+            Ir a Login
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

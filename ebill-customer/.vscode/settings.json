@@ -1,0 +1,67 @@
+{
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.compile.nullAnalysis.mode": "automatic",
+  "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx2G -Xms100m",
+  "java.configuration.maven.userSettings": null,
+  "java.maven.downloadSources": true,
+  "java.maven.downloadJavadoc": false,
+  "java.autobuild.enabled": true,
+  "java.import.maven.enabled": true,
+  "java.saveActions.organizeImports": true,
+  "java.sources.organizeImports.starThreshold": 5,
+  "java.sources.organizeImports.staticStarThreshold": 3,
+  "java.completion.importOrder": [
+    "java",
+    "javax",
+    "jakarta",
+    "org",
+    "com"
+  ],
+  "files.exclude": {
+    "**/.classpath": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/.factorypath": true
+  },
+  "java.configuration.runtimes": [
+    {
+      "name": "JavaSE-17",
+      "path": "/Users/jguerreroh/Library/Java/JavaVirtualMachines/corretto-17.0.16/Contents/Home",
+      "default": true
+    },
+    {
+      "name": "JavaSE-21",
+      "path": "/Users/jguerreroh/Library/Java/JavaVirtualMachines/corretto-21.0.8/Contents/Home"
+    },
+    {
+      "name": "JavaSE-23",
+      "path": "/Users/jguerreroh/Library/Java/JavaVirtualMachines/openjdk-23.0.2/Contents/Home"
+    }
+  ],
+  "[java]": {
+    "editor.defaultFormatter": "redhat.java",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "spring-boot.ls.checkJVM": false,
+  "spring-boot.ls.java.home": "/Users/jguerreroh/Library/Java/JavaVirtualMachines/corretto-17.0.16/Contents/Home",
+  "files.associations": {
+    "*.properties": "spring-boot-properties"
+  },
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5433,
+      "driver": "PostgreSQL",
+      "name": "ebill-customer-localhost",
+      "database": "ebill-dev-cus",
+      "username": "postgres",
+      "password": "postgres"
+    }
+  ]
+}
+
+
+

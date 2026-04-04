@@ -1,0 +1,98 @@
+<div class="invoice-page">
+  <mat-toolbar class="toolbar-primary toolbar-with-action">
+    <span>Consulta de Facturas</span>
+    <span class="spacer"></span>
+  </mat-toolbar>
+
+  <mat-card class="card-padding mt-24 search-card">
+    <mat-card-content>
+      <form [formGroup]="consultationForm" (ngSubmit)="onSubmit()">
+        <div class="search-grid">
+          <mat-form-field
+            appearance="outline"
+            class="search-field identification-field"
+          >
+            <mat-label>Número de Identificación</mat-label>
+            <mat-icon matPrefix>badge</mat-icon>
+            <input
+              matInput
+              formControlName="identificationNumber"
+              placeholder="Ingrese su número de identificación"
+              maxlength="13"
+              autocomplete="off"
+            />
+            <mat-hint>Máximo 13 caracteres numéricos</mat-hint>
+            <mat-error *ngIf="identificationNumberError">
+              {{ identificationNumberError }}
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="search-field email-field">
+            <mat-label>Email</mat-label>
+            <mat-icon matPrefix>email</mat-icon>
+            <input
+              matInput
+              formControlName="clientEmail"
+              placeholder="Ingrese su email"
+              type="email"
+              autocomplete="email"
+            />
+            <mat-hint>Email donde recibirá el token de verificación</mat-hint>
+            <mat-error *ngIf="clientEmailError">
+              {{ clientEmailError }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="search-actions">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="!isFormValid() || isLoading"
+            class="search-btn"
+          >
+            <mat-spinner
+              *ngIf="isLoading"
+              diameter="20"
+              class="button-spinner"
+            ></mat-spinner>
+            <mat-icon *ngIf="!isLoading">email</mat-icon>
+            <span>{{
+              isLoading
+                ? "Generando token..."
+                : !isFormValid()
+                ? "Complete todos los campos"
+                : "Generar Token"
+            }}</span>
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="card-padding mt-24">
+    <mat-card-content>
+      <div class="info-section">
+        <div class="info-content">
+          <mat-icon class="info-icon">info</mat-icon>
+          <div class="info-text">
+            <h3>Información Importante</h3>
+            <p>
+              Sus datos están protegidos y solo se utilizan para la consulta de
+              facturas.
+            </p>
+            <p>
+              El número de identificación debe ser válido y corresponder a un
+              cliente registrado en el sistema.
+            </p>
+            <p>
+              Se enviará un token de verificación al email proporcionado para
+              continuar con la consulta.
+            </p>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

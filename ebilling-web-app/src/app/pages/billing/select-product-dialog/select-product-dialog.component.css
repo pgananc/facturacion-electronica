@@ -1,0 +1,309 @@
+/* ======================
+   CHECKBOX NATIVO - IMPORTADO
+====================== */
+@import '../../../_shared/custom-checkbox.css';
+
+/* Contenedor principal del diálogo */
+.dialog-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 90vh;
+}
+
+/* Toolbar azul consistente con el resto de la app */
+.toolbar-blue-sm {
+  background: linear-gradient(135deg, var(--primary-color, #0ea5e9) 0%, var(--primary-dark, #0a82bb) 100%);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+/* Contenido del diálogo */
+.dialog-content {
+  padding: 16px 24px !important;
+  flex: 1 1 auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Contenedor del filtro */
+.filter-container {
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+
+.filter-field {
+  width: 100%;
+}
+
+/* Contenedor de la tabla con scroll */
+.table-container {
+  flex: 1 1 auto;
+  overflow: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  background: white;
+}
+
+/* Tabla de productos - ESTILOS BASE */
+.products-table {
+  width: 100%;
+  background: white;
+}
+
+/* FILAS - Configuración flexbox esencial */
+::ng-deep .products-table .mat-mdc-header-row,
+::ng-deep .products-table .mat-mdc-row {
+  display: flex;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  align-items: center;
+  min-height: 48px;
+  padding: 0 8px;
+}
+
+/* Encabezados sticky */
+::ng-deep .products-table .mat-mdc-header-row {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #f5f5f5;
+  font-weight: 600;
+  border-bottom: 2px solid var(--primary-color, #0ea5e9);
+}
+
+/* CELDAS - Configuración flexbox esencial */
+::ng-deep .products-table .mat-mdc-header-cell,
+::ng-deep .products-table .mat-mdc-cell {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  overflow: hidden;
+}
+
+::ng-deep .products-table .mat-mdc-header-cell {
+  font-weight: 600;
+  color: #424242;
+  background: #f5f5f5;
+}
+
+/* Anchos de columnas - MDC */
+::ng-deep .products-table .mat-mdc-header-cell.col-checkbox,
+::ng-deep .products-table .mat-mdc-cell.col-checkbox {
+  flex: 0 0 60px;
+  max-width: 60px;
+  justify-content: center;
+}
+
+::ng-deep .products-table .mat-mdc-header-cell.col-code,
+::ng-deep .products-table .mat-mdc-cell.col-code {
+  flex: 0 0 100px;
+  max-width: 100px;
+  justify-content: center; /* Centrado horizontal */
+}
+
+::ng-deep .products-table .mat-mdc-header-cell.col-name,
+::ng-deep .products-table .mat-mdc-cell.col-name {
+  flex: 1 1 auto;
+  min-width: 150px;
+  justify-content: center; /* Centrado horizontal */
+}
+
+::ng-deep .products-table .mat-mdc-header-cell.col-description,
+::ng-deep .products-table .mat-mdc-cell.col-description {
+  flex: 2 1 auto;
+  min-width: 200px;
+  justify-content: center; /* Centrado horizontal */
+}
+
+::ng-deep .products-table .mat-mdc-header-cell.col-price,
+::ng-deep .products-table .mat-mdc-cell.col-price {
+  flex: 0 0 140px;
+  max-width: 140px;
+  justify-content: flex-end; /* Alineado a la derecha */
+}
+
+::ng-deep .products-table .mat-mdc-header-cell.col-iva,
+::ng-deep .products-table .mat-mdc-cell.col-iva {
+  flex: 0 0 90px;
+  max-width: 90px;
+  justify-content: center; /* Centrado horizontal */
+}
+
+::ng-deep .products-table .mat-mdc-header-cell.col-ice,
+::ng-deep .products-table .mat-mdc-cell.col-ice {
+  flex: 0 0 90px;
+  max-width: 90px;
+  justify-content: center; /* Centrado horizontal */
+}
+
+/* Texto que envuelve en lugar de cortarse */
+.text-wrap {
+  display: block;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.4;
+  padding: 4px 0;
+}
+
+/* Filas - MDC */
+::ng-deep .products-table .mat-mdc-row {
+  cursor: default;
+}
+
+::ng-deep .products-table .mat-mdc-row:hover {
+  background-color: #fafafa;
+}
+
+/* Solo mostrar el fondo azul cuando la fila esté realmente seleccionada */
+::ng-deep .products-table .mat-mdc-row.selected-row {
+  background-color: rgba(14, 165, 233, 0.15) !important;
+}
+
+::ng-deep .products-table .mat-mdc-row.selected-row:hover {
+  background-color: rgba(14, 165, 233, 0.25) !important;
+}
+
+/* Asegurar que solo las filas seleccionadas tengan el fondo azul */
+::ng-deep .products-table .mat-mdc-row:not(.selected-row) {
+  background-color: transparent;
+}
+
+/* Mensaje cuando no hay productos */
+.no-products-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #757575;
+  text-align: center;
+  min-height: 200px;
+}
+
+.no-products-message mat-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+  color: #bdbdbd;
+}
+
+.no-products-message p {
+  margin: 0;
+  font-size: 16px;
+}
+
+/* Paginador */
+.products-paginator {
+  flex-shrink: 0;
+  border-top: 1px solid #e0e0e0;
+  background: white;
+}
+
+/* Acciones del diálogo */
+.dialog-actions {
+  padding: 16px 24px !important;
+  border-top: 1px solid #e0e0e0;
+  background: #fafafa;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.dialog-actions button {
+  min-width: 120px;
+}
+
+.dialog-actions button mat-icon {
+  margin-right: 8px;
+}
+
+/* Ajustes para mat-checkbox */
+mat-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== COLUMNAS IVA E ICE ===== */
+.col-iva,
+.col-ice {
+  flex: 0 0 90px !important;
+  min-width: 90px !important;
+  max-width: 90px !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+/* ===== BADGES PARA TAX TYPES (IVA E ICE) ===== */
+.tax-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 16px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.iva-badge {
+  background-color: #e3f2fd; /* Light blue */
+  color: #1565c0; /* Darker blue */
+  border: 1px solid #90caf9;
+  cursor: help;
+  transition: all 0.2s ease;
+}
+
+.iva-badge:hover {
+  background-color: #bbdefb;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.ice-badge {
+  background-color: #fff3e0; /* Light orange */
+  color: #e65100; /* Darker orange */
+  border: 1px solid #ffb74d;
+  font-size: 10px;
+  max-width: 75px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: help;
+  transition: all 0.2s ease;
+}
+
+.ice-badge:hover {
+  background-color: #ffe0b2;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.no-tax-badge {
+  background-color: #f5f5f5;
+  color: #9e9e9e;
+  border: 1px solid #e0e0e0;
+}
+
+/* ===== TOOLTIP PERSONALIZADO ===== */
+::ng-deep .custom-tooltip {
+  font-size: 13px !important;
+  background-color: #263238 !important;
+  color: #ffffff !important;
+  padding: 8px 12px !important;
+  border-radius: 4px !important;
+  max-width: 300px !important;
+  line-height: 1.4 !important;
+}

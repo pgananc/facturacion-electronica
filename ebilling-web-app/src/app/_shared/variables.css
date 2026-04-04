@@ -1,0 +1,29 @@
+/* ======================
+   VARIABLES CSS COMPARTIDAS
+   Sistema unificado de valores para toda la aplicación
+   Tema fintech (cyan #0EA5E9)
+====================== */
+
+:root {
+  /* ===== ESPACIADO (Spacing) ===== */
+  --spacing-xs: 8px;    /* Muy pequeño - para gaps mínimos */
+  --spacing-sm: 12px;   /* Pequeño - para padding compacto */
+  --spacing-md: 16px;   /* Medio - estándar para padding/margin */
+  --spacing-lg: 24px;   /* Grande - para secciones importantes */
+  --spacing-xl: 32px;   /* Muy grande - para contenedores principales */
+  --spacing-2xl: 48px;  /* Extra grande - para márgenes de página */
+
+  /* ===== SOMBRAS (Shadows) ===== */
+  --shadow-sm: 0 2px 8px rgba(14, 165, 233, 0.1);   /* Sombra pequeña - para cards ligeros */
+  --shadow-md: 0 4px 12px rgba(14, 165, 233, 0.2);   /* Sombra media - para cards estándar */
+  --shadow-lg: 0 8px 24px rgba(14, 165, 233, 0.3);   /* Sombra grande - para modales */
+  --shadow-xl: 0 12px 32px rgba(14, 165, 233, 0.4);  /* Sombra extra grande - para overlays */
+
+  /* ===== BORDER RADIUS ===== */
+  --radius-sm: 4px;     /* Pequeño - para inputs, badges pequeños */
+  --radius-md: 8px;     /* Medio - para cards, botones estándar */
+  --radius-lg: 12px;    /* Grande - para cards grandes, modales */
+  --radius-xl: 16px;    /* Muy grande - para contenedores especiales */
+  --radius-full: 9999px; /* Completo - para botones redondeados, avatares */
+}
+

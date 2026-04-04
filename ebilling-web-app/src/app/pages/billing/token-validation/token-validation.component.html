@@ -1,0 +1,118 @@
+<div class="invoice-page">
+  <mat-toolbar class="toolbar-primary toolbar-with-action">
+    <button
+      mat-icon-button
+      (click)="goBackToConsultation()"
+      class="back-button"
+    >
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span>Validación de Token</span>
+    <span class="spacer"></span>
+  </mat-toolbar>
+
+  <mat-card class="card-padding mt-24 search-card">
+    <mat-card-content>
+      <form [formGroup]="tokenForm" (ngSubmit)="onSubmit()">
+        <div class="search-grid">
+          <div class="info-section">
+            <div class="info-content">
+              <mat-icon class="info-icon">email</mat-icon>
+              <div class="info-text">
+                <h3>Token Enviado</h3>
+                <p>
+                  Se ha enviado un token de verificación al email:
+                  <strong>{{ clientEmail }}</strong>
+                </p>
+                <p>
+                  Ingrese el token recibido para continuar con la consulta de
+                  facturas.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <mat-form-field appearance="outline" class="search-field token-field">
+            <mat-label>Token de Verificación</mat-label>
+            <mat-icon matPrefix>vpn_key</mat-icon>
+            <input
+              matInput
+              formControlName="token"
+              placeholder="Ingrese el token recibido"
+              maxlength="10"
+              autocomplete="off"
+            />
+            <mat-hint
+              >Ingrese el código de 6 dígitos recibido por email</mat-hint
+            >
+            <mat-error *ngIf="tokenError">
+              {{ tokenError }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="search-actions">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="!isFormValid() || isLoading || isResending"
+            class="search-btn"
+          >
+            <mat-spinner
+              *ngIf="isLoading"
+              diameter="20"
+              class="button-spinner"
+            ></mat-spinner>
+            <mat-icon *ngIf="!isLoading">check_circle</mat-icon>
+            <span>{{
+              isLoading
+                ? "Validando..."
+                : isResending
+                ? "Procesando..."
+                : !isFormValid()
+                ? "Ingrese el token"
+                : "Validar Token"
+            }}</span>
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="card-padding mt-24">
+    <mat-card-content>
+      <div class="info-section">
+        <div class="info-content">
+          <mat-icon class="info-icon">info</mat-icon>
+          <div class="info-text">
+            <h3>Información Importante</h3>
+            <p>
+              El token tiene una duración limitada. Si no lo recibe, verifique
+              su carpeta de spam.
+            </p>
+            <p>
+              Si no recibe el token, puede solicitar uno nuevo haciendo clic en
+              "Reenviar Token".
+            </p>
+            <button
+              mat-stroked-button
+              color="primary"
+              (click)="resendToken()"
+              [disabled]="isResending || isLoading"
+              class="resend-button"
+            >
+              <mat-spinner
+                *ngIf="isResending"
+                diameter="16"
+                class="button-spinner"
+              ></mat-spinner>
+              <mat-icon *ngIf="!isResending">refresh</mat-icon>
+              {{ isResending ? "Reenviando..." : "Reenviar Token" }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

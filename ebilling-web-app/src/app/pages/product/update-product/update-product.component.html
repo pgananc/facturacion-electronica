@@ -1,111 +1,239 @@
-<mat-toolbar>
-  <mat-toolbar-row>
-    <span style="margin: auto">{{
-      edition ? "Actualización Producto" : " Registro Producto"
-      }}</span>
-  </mat-toolbar-row>
-</mat-toolbar>
-<form
-  class="principal-container"
-  [formGroup]="form"
-  (ngSubmit)="validateSave()"
-  #frmProduct="ngForm"
->
-  <mat-form-field class="principal-full-width">
-    <input
-      matInput
-      type="text"
-      placeholder="Codigo principal"
-      required
-      formControlName="mainCode"
-    />
-  </mat-form-field>
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <h2 mat-dialog-title>
+      {{ edition ? "Actualizar Producto" : "Nuevo Producto" }}
+    </h2>
+  </div>
 
-  <mat-form-field class="principal-full-width">
-    <input
-      matInput
-      placeholder="Código auxiliar"
-      required
-      formControlName="auxiliarCode"
-      name="auxiliarCode"
-    />
-  </mat-form-field>
+  <!-- Content -->
+  <div class="dialog-content" mat-dialog-content>
+    <form [formGroup]="form" #frmProduct="ngForm">
+      <!-- Código principal -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Código principal</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >qr_code</mat-icon
+        >
+        <input
+          matInput
+          type="text"
+          placeholder="Ingrese código principal"
+          formControlName="mainCode"
+          required
+        />
+        <mat-error *ngIf="form.get('mainCode')?.hasError('required')">
+          El código principal es requerido
+        </mat-error>
+      </mat-form-field>
 
-  <mat-form-field class="principal-full-width">
-    <input
-      matInput
-      placeholder="Nombre"
-      required
-      formControlName="name"
-      name="name"
-    />
-  </mat-form-field>
+      <!-- Nombre -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nombre</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >label</mat-icon
+        >
+        <input
+          matInput
+          placeholder="Ingrese nombre del producto"
+          formControlName="name"
+          required
+        />
+        <mat-error *ngIf="form.get('name')?.hasError('required')">
+          El nombre es requerido
+        </mat-error>
+      </mat-form-field>
 
-  <mat-form-field class="principal-full-width">
-    <mat-select
-      placeholder="Tipo Producto"
-      [(value)]="productType"
-      required="true"
-    >
-      <mat-option *ngFor="let tp of productTypes" [value]="tp.code">
-        {{ tp.value }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+      <!-- Tipo Producto -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Tipo Producto</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >category</mat-icon
+        >
+        <mat-select
+          placeholder="Seleccione tipo"
+          [(value)]="productType"
+          required
+        >
+          <mat-option *ngFor="let tp of productTypes" [value]="tp.code">
+            {{ tp.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error> El tipo de producto es requerido </mat-error>
+      </mat-form-field>
 
-  <mat-form-field class="principal-full-width">
-    <input
-      matInput
-      placeholder="Descripción"
-      required
-      formControlName="description"
-      name="description"
-    />
-  </mat-form-field>
+      <!-- Tipo de IVA (OBLIGATORIO) -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Tipo de IVA</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >calculate</mat-icon
+        >
+        <mat-select
+          placeholder="Seleccione tipo de IVA"
+          formControlName="ivaTaxType"
+          required
+        >
+          <mat-option *ngFor="let iva of ivaTaxTypes" [value]="iva.idTaxType">
+            {{ iva.name }} ({{ iva.value }}%)
+          </mat-option>
+        </mat-select>
+        <mat-hint>IVA aplicable al producto (obligatorio)</mat-hint>
+        <mat-error *ngIf="form.get('ivaTaxType')?.hasError('required')">
+          El tipo de IVA es requerido
+        </mat-error>
+      </mat-form-field>
 
-  <mat-form-field class="principal-full-width">
-    <input
-      matInput
-      oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
-      placeholder="Precio unitario"
-      required
-      formControlName="unitPrice"
-      name="unitPrice"
-    />
-  </mat-form-field>
+      <!-- Descripción -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Descripción</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >description</mat-icon
+        >
+        <textarea
+          matInput
+          placeholder="Ingrese descripción del producto"
+          formControlName="description"
+          rows="3"
+        ></textarea>
+      </mat-form-field>
 
-  <mat-form-field class="principal-full-width">
-    <input
-      matInput
-      oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
-      placeholder="Descuento"
-      required
-      formControlName="discount"
-      name="discount"
-    />
-  </mat-form-field>
+      <!-- Precio unitario -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Precio unitario</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >attach_money</mat-icon
+        >
+        <input
+          matInput
+          type="number"
+          step="0.01"
+          placeholder="0.00"
+          formControlName="unitPrice"
+        />
+      </mat-form-field>
 
-  <mat-checkbox
-    labelPosition="before"
-    formControlName="status"
-    class="principal-full-width"
-  >Estado
-  </mat-checkbox
-  >
-  <div class="flex-parent jc-center">
+      <!-- Checkboxes mejorados -->
+      <div class="checkboxes-section">
+        <!-- Aplica tarifa IVA turismo -->
+        <div class="checkbox-item">
+          <label class="custom-checkbox-container">
+            <input
+              type="checkbox"
+              formControlName="tourismIva"
+              class="custom-checkbox-input"
+            />
+            <span class="custom-checkbox-box"></span>
+            <span class="custom-checkbox-label">Aplica tarifa IVA turismo</span>
+          </label>
+          <div class="checkbox-hint">
+            Aplica tarifa especial de IVA para servicios turísticos
+          </div>
+        </div>
+
+        <!-- ICE -->
+        <div class="checkbox-item">
+          <label class="custom-checkbox-container">
+            <input
+              type="checkbox"
+              formControlName="ice"
+              class="custom-checkbox-input"
+            />
+            <span class="custom-checkbox-box"></span>
+            <span class="custom-checkbox-label"
+              >ICE (Impuesto a Consumos Especiales)</span
+            >
+          </label>
+          <div class="checkbox-hint">
+            Aplica para productos como alcohol, tabaco, etc.
+          </div>
+        </div>
+      </div>
+
+      <!-- Tipo de ICE (OPCIONAL - Solo si checkbox ice=true) - CON AUTOCOMPLETE -->
+      <mat-form-field
+        *ngIf="form.get('ice')?.value"
+        appearance="outline"
+        class="full-width ice-tax-type-field"
+      >
+        <mat-label>Tipo de ICE</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >local_bar</mat-icon
+        >
+        <input
+          type="text"
+          matInput
+          placeholder="Buscar ICE por nombre..."
+          [formControl]="iceFilterControl"
+          [matAutocomplete]="autoIce"
+        />
+        <button
+          *ngIf="form.get('iceTaxType')?.value"
+          matSuffix
+          mat-icon-button
+          aria-label="Limpiar"
+          (click)="clearIceSelection($event)"
+          type="button"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+        <mat-autocomplete
+          #autoIce="matAutocomplete"
+          [displayWith]="displayIceTaxType"
+          (optionSelected)="onIceOptionSelected($event)"
+        >
+          <mat-option
+            *ngFor="let ice of filteredIceTaxTypes$ | async"
+            [value]="ice"
+          >
+            <span class="ice-option-text">{{ ice.name }}</span>
+          </mat-option>
+        </mat-autocomplete>
+        <mat-hint
+          >Busque y seleccione el ICE aplicable (obligatorio si marcó el
+          checkbox)</mat-hint
+        >
+        <mat-error *ngIf="form.get('iceTaxType')?.hasError('required')">
+          Debe seleccionar un tipo de ICE
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Checkboxes continuación -->
+      <div class="checkboxes-section">
+        <!-- Activo -->
+        <div class="checkbox-item">
+          <label class="custom-checkbox-container">
+            <input
+              type="checkbox"
+              formControlName="status"
+              class="custom-checkbox-input"
+            />
+            <span class="custom-checkbox-box"></span>
+            <span class="custom-checkbox-label">Producto Activo</span>
+          </label>
+          <div class="checkbox-hint">
+            Los productos activos aparecerán en las búsquedas y podrán
+            facturarse
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Actions -->
+  <div class="dialog-actions" mat-dialog-actions>
     <button
-      class="margin-right botton-width"
       mat-raised-button
       color="primary"
-      type="submit"
-      [disabled]="frmProduct.invalid"
+      type="button"
+      [disabled]="form.invalid || !productType"
+      (click)="validateSave()"
     >
-      <mat-icon>done</mat-icon>
-      <span>Ok</span>
+      <mat-icon>save</mat-icon>
+      <span>Guardar</span>
     </button>
-    <button mat-raised-button color="accent" routerLink="/product" type="button">
+    <button mat-raised-button type="button" (click)="cancel()">
       <mat-icon>close</mat-icon>
-      <span>Cancel</span>
+      <span>Cancelar</span>
     </button>
   </div>
-</form>
+</div>

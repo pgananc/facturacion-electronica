@@ -1,0 +1,111 @@
+/* ======================
+   CHECKBOX NATIVO - IMPORTADO
+====================== */
+@import '../../../_shared/custom-checkbox.css';
+
+/* ======================
+   DIALOG CONTAINER
+====================== */
+.dialog-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 90vh;
+}
+
+/* ======================
+   DIALOG HEADER
+====================== */
+.dialog-header {
+  flex-shrink: 0;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #f5f5f5;
+}
+
+.dialog-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--primary-color, #0ea5e9);
+}
+
+/* ======================
+   DIALOG CONTENT
+====================== */
+.dialog-content {
+  flex: 1 1 auto;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+/* ======================
+   CHECKBOX MEJORADO
+====================== */
+.checkbox-item {
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid var(--primary-color, #0ea5e9);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  margin-top: 8px;
+}
+
+.checkbox-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+
+.custom-checkbox {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #263238;
+}
+
+.checkbox-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  color: var(--primary-color, #0ea5e9);
+}
+
+.checkbox-hint {
+  display: block;
+  margin-top: 8px;
+  margin-left: 32px;
+  font-size: 12px;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* ======================
+   DIALOG ACTIONS
+====================== */
+.dialog-actions {
+  flex-shrink: 0;
+  padding: 16px 24px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  background-color: #fafafa;
+}
+
+.dialog-actions button {
+  min-width: 120px;
+}
+

@@ -1,0 +1,130 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Maven: Clean",
+      "type": "shell",
+      "command": "mvn clean",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Maven: Compile",
+      "type": "shell",
+      "command": "mvn compile",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Maven: Package",
+      "type": "shell",
+      "command": "mvn package -DskipTests",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Maven: Install",
+      "type": "shell",
+      "command": "mvn install -DskipTests",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Maven: Test",
+      "type": "shell",
+      "command": "mvn test",
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Maven: Spring Boot Run (localhost)",
+      "type": "shell",
+      "command": "mvn spring-boot:run -Dspring-boot.run.profiles=localhost",
+      "group": "none",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^.*$",
+          "file": 1,
+          "location": 2,
+          "message": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^.*Tomcat started.*$",
+          "endsPattern": "^.*Started EBillBillingApplication.*$"
+        }
+      }
+    },
+    {
+      "label": "Maven: Format Code",
+      "type": "shell",
+      "command": "mvn fmt:format",
+      "group": "none",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Docker: Start PostgreSQL",
+      "type": "shell",
+      "command": "docker run --name ebill-postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=ebill-dev-bill -p 5433:5432 -d postgres:15",
+      "group": "none",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Docker: Stop PostgreSQL",
+      "type": "shell",
+      "command": "docker stop ebill-postgres && docker rm ebill-postgres",
+      "group": "none",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    }
+  ]
+}

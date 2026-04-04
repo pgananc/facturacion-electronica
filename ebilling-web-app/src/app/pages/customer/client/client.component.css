@@ -1,48 +1,396 @@
-.principal-full-width {
-    margin-left: 10px;
+@import '../../../_shared/shared-styles.css';
+@import '../../../_shared/table-styles.css';
+@import '../../../_shared/responsive-styles.css';
+
+/* ===== UTILIDADES DE ESPACIADO (Optimizado) ===== */
+.mt-24 { margin-top: var(--spacing-sm, 12px); } /* Reducido de 24px */
+.mt-16 { margin-top: var(--spacing-sm, 12px); } /* Reducido de 16px */
+.mb-16 { margin-bottom: var(--spacing-sm, 12px); }
+
+/* ===== LAYOUT PRINCIPAL ===== */
+.client-page { 
+  min-height: 100%; 
+  background-color: var(--background-color, #f9fafb); 
+  padding: var(--spacing-sm, 12px) 0 0 0; /* Reducido de 16px */
 }
 
+@media screen and (max-width: 959px) { 
+  .client-page { padding: 0; } 
+}
 
-.principal-container {
-    display: flex;
+.client-container { 
+  max-width: 1320px; 
+  margin: 0 auto; 
+  padding: 0 20px var(--spacing-lg, 24px) 20px;
+  box-sizing: border-box; 
+  width: 100%; 
+}
+
+@media screen and (max-width: 959px) { 
+  .client-container { padding: 0 var(--spacing-md, 16px) var(--spacing-md, 16px) var(--spacing-md, 16px); } 
+}
+
+.principal-full-width { margin-left: 10px; }
+.principal-container { display: flex; flex-direction: column; min-width: 300px; }
+.principal-header { min-height: 64px; padding: var(--spacing-xs, 8px) var(--spacing-lg, 24px) 0; }
+
+.mat-table .mat-column-identification { flex: 0 0 12%; max-width: 12%; }
+.mat-table .mat-column-name { flex: 0 0 16%; max-width: 16%; }
+.mat-table .mat-column-address { flex: 0 0 14%; max-width: 14%; }
+.mat-table .mat-column-mail { flex: 0 0 22%; max-width: 22%; word-break: break-word; white-space: normal; overflow-wrap: break-word; font-size: 13px; padding-left: var(--spacing-xs, 8px) !important; padding-right: var(--spacing-xs, 8px) !important; }
+.mat-table .mat-column-phone { flex: 0 0 11%; max-width: 11%; }
+.mat-table .mat-column-mobil { flex: 0 0 11%; max-width: 11%; }
+.mat-table .mat-column-actions { flex: 0 0 14%; max-width: 14%; } /* Aumentado para 3 botones */
+
+::ng-deep .mat-mdc-table .mat-column-mail.mat-mdc-cell {
+  flex: 0 0 22% !important; max-width: 22% !important; min-width: 22% !important; width: 22% !important;
+  word-break: break-word !important; white-space: normal !important; overflow-wrap: break-word !important;
+  font-size: 13px !important; padding-left: var(--spacing-xs, 8px) !important; padding-right: var(--spacing-xs, 8px) !important; line-height: 1.3 !important;
+}
+::ng-deep .mat-mdc-table .mat-column-mail.mat-mdc-header-cell {
+  flex: 0 0 22% !important; max-width: 22% !important; min-width: 22% !important; width: 22% !important;
+}
+
+::ng-deep .mat-mdc-table .mat-column-identification.mat-mdc-cell,
+::ng-deep .mat-mdc-table .mat-column-identification.mat-mdc-header-cell { flex: 0 0 12% !important; max-width: 12% !important; }
+::ng-deep .mat-mdc-table .mat-column-name.mat-mdc-cell,
+::ng-deep .mat-mdc-table .mat-column-name.mat-mdc-header-cell { flex: 0 0 16% !important; max-width: 16% !important; }
+::ng-deep .mat-mdc-table .mat-column-address.mat-mdc-cell,
+::ng-deep .mat-mdc-table .mat-column-address.mat-mdc-header-cell { flex: 0 0 14% !important; max-width: 14% !important; }
+::ng-deep .mat-mdc-table .mat-column-phone.mat-mdc-cell,
+::ng-deep .mat-mdc-table .mat-column-phone.mat-mdc-header-cell { flex: 0 0 11% !important; max-width: 11% !important; }
+::ng-deep .mat-mdc-table .mat-column-mobil.mat-mdc-cell,
+::ng-deep .mat-mdc-table .mat-column-mobil.mat-mdc-header-cell { flex: 0 0 11% !important; max-width: 11% !important; }
+::ng-deep .mat-mdc-table .mat-column-actions.mat-mdc-cell,
+::ng-deep .mat-mdc-table .mat-column-actions.mat-mdc-header-cell { flex: 0 0 14% !important; max-width: 14% !important; }
+
+.actions-cell { display: flex !important; align-items: center !important; justify-content: center !important; gap: var(--spacing-xs, 8px) !important; }
+.botton-add { width: fit-content; margin-left: 20px; }
+
+@media screen and (max-width: 600px) {
+  .mat-column-address, .mat-column-mail, .mat-column-phone, .mat-column-mobil { display: none; }
+}
+
+/* ===== AJUSTES PERFECCIONISTAS ===== */
+.search-card {
+  margin-top: var(--spacing-sm, 12px) !important;
+}
+
+.search-card mat-card-content {
+  padding: var(--spacing-md, 16px) !important;
+  position: relative;
+}
+
+/* ===== LAYOUT HORIZONTAL: INPUTS + BOTONES EN UNA LÍNEA ===== */
+.search-grid-horizontal {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 12px);
+  max-width: 100%;
+}
+
+.search-field-compact {
+  flex: 1;
+  margin: 0 !important;
+}
+
+/* Wrapper que agrupa los botones y los separa de los inputs */
+.search-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 12px);
+  margin-left: auto;
+  flex-shrink: 0;
+  padding-bottom: 22px; /* compensa el espacio inferior del mat-form-field (label/hint/error) */
+}
+
+.btn-search-compact,
+.btn-clear-compact {
+  height: 40px;
+  min-width: 120px;
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 var(--spacing-md, 16px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+
+.btn-search-compact {
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-search-compact:hover:not([disabled]) {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.btn-clear-compact {
+  border: 2px solid var(--primary-color, #0ea5e9);
+  background-color: transparent !important;
+}
+
+.btn-clear-compact:hover {
+  background-color: rgba(14, 165, 233, 0.08) !important;
+  transform: translateY(-2px);
+}
+
+.btn-search-compact mat-icon,
+.btn-clear-compact mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+/* ===== RESPONSIVE PARA SEARCH GRID HORIZONTAL ===== */
+
+/* Tablet (768px - 959px) */
+@media screen and (max-width: 959px) and (min-width: 768px) {
+  .search-grid-horizontal {
+    gap: 10px;
+  }
+
+  .btn-search-compact,
+  .btn-clear-compact {
+    min-width: 100px;
+    font-size: 13px;
+  }
+}
+
+/* Tablet pequeña (600px - 767px): inputs arriba, botones abajo */
+@media screen and (max-width: 767px) and (min-width: 600px) {
+  .search-grid-horizontal {
+    flex-wrap: wrap;
+    gap: var(--spacing-sm, 12px);
+  }
+
+  .search-field-compact {
+    flex: 1 1 calc(50% - 6px);
+    min-width: 200px;
+  }
+
+  .search-actions {
+    flex: 1 1 100%;
+    justify-content: flex-end;
+    padding-bottom: 0;
+  }
+
+  .btn-search-compact,
+  .btn-clear-compact {
+    flex: 1 1 calc(50% - 6px);
+    width: auto;
+  }
+}
+
+/* Mobile (< 600px): todo vertical */
+@media screen and (max-width: 599px) {
+  .search-card mat-card-content {
+    padding: var(--spacing-sm, 12px) !important;
+  }
+
+  .search-grid-horizontal {
     flex-direction: column;
-    min-width: 300px;
-}
+    gap: var(--spacing-sm, 12px);
+  }
 
-.principal-header {
-    min-height: 64px;
-    padding: 8px 24px 0;
-}
-
-.mat-form-field {
-    font-size: 14px;
+  .search-field-compact {
+    flex: 1 1 100%;
     width: 100%;
+  }
+
+  .search-actions {
+    flex-direction: column;
+    width: 100%;
+    padding-bottom: 0;
+  }
+
+  .btn-search-compact,
+  .btn-clear-compact {
+    width: 100%;
+    height: 48px;
+  }
 }
 
-.mat-table {
-    overflow: auto;
-    max-height: 500px;
+.table-wrapper {
+  margin-top: var(--spacing-sm, 12px) !important;
 }
 
-.text-center {
-    text-align: center;
+/* ===== TABLE CONTAINER ===== */
+.table-container {
+  position: relative;
+  overflow-x: auto;
+  min-height: 300px;
 }
 
-.flex-parent {
-    display: flex;
+/* ===== LOADING STATE ===== */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  border-radius: var(--radius-lg, 12px);
 }
 
-.jc-center {
-    justify-content: center;
+.loading-text {
+  margin-top: var(--spacing-md, 16px);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--primary-color, #0ea5e9);
 }
 
-.text-color-bold {
-    font-weight: bold;
+/* ===== EMPTY STATE OVERLAY ===== */
+.empty-state-overlay {
+  position: absolute;
+  top: 52%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 5;
+  padding: var(--spacing-2xl, 48px) var(--spacing-lg, 24px);
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: var(--radius-md, 8px);
+  width: 90%;
+  max-width: 600px;
+  margin-top: 20px;
 }
 
-.botton-add {
-    margin-right: 20px;
-    margin-bottom: 5px;
-    margin-top: 5px;
-    text-align: left;
+.empty-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: #b0bec5;
+  margin-bottom: var(--spacing-md, 16px);
+}
+
+.empty-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #424242;
+  margin: 0 0 var(--spacing-xs, 8px) 0;
+}
+
+.empty-subtitle {
+  font-size: 14px;
+  color: #757575;
+  margin: 0;
+  max-width: 400px;
+}
+
+/* ===== BOTÓN COPIAR EMAIL ===== */
+.copy-btn {
+  transition: all 0.3s ease !important;
+}
+
+.copy-btn:hover {
+  background-color: rgba(14, 165, 233, 0.1) !important;
+  transform: scale(1.1);
+}
+
+.copy-btn mat-icon {
+  color: var(--primary-color, #0ea5e9);
+}
+
+/* ===== TOAST DE ÉXITO ===== */
+::ng-deep .success-snackbar {
+  background-color: #4caf50 !important;
+  color: white !important;
+}
+
+::ng-deep .success-snackbar .mat-mdc-snack-bar-label {
+  color: white !important;
+  font-weight: 500 !important;
+}
+
+::ng-deep .success-snackbar .mat-mdc-button {
+  color: white !important;
+}
+
+/* ===== CENTRADO DE COLUMNAS DE LA TABLA ===== */
+/* Centrar TODAS las columnas (headers y contenido) */
+::ng-deep .client-page .mat-mdc-table .mat-mdc-header-cell {
+  text-align: center !important;
+  justify-content: center !important;
+}
+
+::ng-deep .client-page .mat-mdc-table .mat-mdc-cell {
+  text-align: center !important;
+  justify-content: center !important;
+}
+
+/* Forzar centrado en headers con clase header-dark */
+::ng-deep .mat-mdc-table .header-dark {
+  text-align: center !important;
+  justify-content: center !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* ✅ CLAVE: Centrar el contenedor interno del mat-sort-header */
+::ng-deep .mat-mdc-table .mat-sort-header-container {
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+::ng-deep .mat-mdc-table .mat-sort-header-content {
+  text-align: center !important;
+  justify-content: center !important;
+}
+
+/* Centrar el button interno del sort header */
+::ng-deep .mat-mdc-table .mat-sort-header-button {
+  text-align: center !important;
+  justify-content: center !important;
+}
+
+/* Casos especiales que ya tenían centrado (mantener) */
+.actions-cell { 
+  display: flex !important; 
+  align-items: center !important; 
+  justify-content: center !important; 
+  gap: var(--spacing-xs, 8px) !important; 
+}
+
+/* ===== PAGINADOR MEJORADO ===== */
+::ng-deep mat-paginator {
+  display: flex !important;
+  justify-content: center !important;
+  padding: var(--spacing-sm, 12px) 0 !important;
+}
+
+::ng-deep mat-paginator .mat-mdc-paginator-container {
+  justify-content: center !important;
+  padding: var(--spacing-xs, 8px) 0 !important;
+}
+
+::ng-deep .custom-dialog-container {
+  max-width: 90vw !important; max-height: 95vh !important;
+}
+::ng-deep .custom-dialog-container .mat-mdc-dialog-container,
+::ng-deep .custom-dialog-container .mat-dialog-container {
+  padding: var(--spacing-lg, 24px) !important; display: flex !important; flex-direction: column !important;
+  max-height: 95vh !important; overflow: hidden !important;
+}
+::ng-deep .custom-dialog-container .mat-mdc-dialog-content,
+::ng-deep .custom-dialog-container mat-dialog-content {
+  flex: 1 1 auto !important; overflow-y: auto !important; overflow-x: hidden !important;
+  margin: 0 !important; padding: 0 !important;
+}
+::ng-deep .custom-dialog-container .mat-mdc-dialog-actions,
+::ng-deep .custom-dialog-container mat-dialog-actions {
+  flex: 0 0 auto !important; margin: 0 !important; padding: 0 !important; min-height: fit-content !important;
 }

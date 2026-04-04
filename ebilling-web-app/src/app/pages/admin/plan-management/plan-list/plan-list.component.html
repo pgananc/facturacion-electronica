@@ -1,0 +1,216 @@
+<!-- Contenedor principal -->
+<div class="plan-page">
+  <!-- Header principal con botón integrado -->
+  <mat-toolbar class="toolbar-primary toolbar-with-action">
+    <span>Gestión de Planes de Suscripción</span>
+    <span class="spacer"></span>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="openCreateDialog()"
+      class="btn-new-plan"
+      [disabled]="isLoading"
+    >
+      <mat-icon>add_circle</mat-icon>
+      Nuevo Plan
+    </button>
+  </mat-toolbar>
+
+  <!-- Filtros -->
+  <mat-card class="search-card">
+    <mat-card-content>
+      <div class="search-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Buscar plan</mat-label>
+          <mat-icon matPrefix>search</mat-icon>
+          <input
+            matInput
+            (keyup)="applyFilter($event)"
+            placeholder="Código o nombre"
+          />
+        </mat-form-field>
+
+        <mat-checkbox
+          [(ngModel)]="includeInactive"
+          (change)="onIncludeInactiveChange()"
+          class="include-inactive-checkbox"
+        >
+          Incluir planes inactivos
+        </mat-checkbox>
+
+        <button
+          mat-raised-button
+          class="search-btn"
+          (click)="loadPlans()"
+          [disabled]="isLoading"
+        >
+          <mat-icon>refresh</mat-icon>
+          <span>Actualizar</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Tabla de Planes -->
+  <div class="table-wrapper">
+    <mat-toolbar class="toolbar-primary-sm">Listado de Planes</mat-toolbar>
+
+    <div class="table-container" style="position: relative; min-height: 300px">
+      <!-- Overlay para empty state -->
+      <div
+        *ngIf="dataSource.data.length === 0 && !isLoading"
+        class="empty-state-overlay"
+      >
+        <mat-icon class="empty-icon">card_membership</mat-icon>
+        <p class="empty-title">No existen planes registrados</p>
+        <p class="empty-subtitle">
+          Crea un nuevo plan usando el botón "Nuevo Plan" en la parte superior.
+        </p>
+      </div>
+
+      <mat-table
+        [dataSource]="dataSource"
+        matSort
+        class="bordered-table"
+        *ngIf="!isLoading"
+      >
+        <!-- Código -->
+        <ng-container matColumnDef="code">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Código
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <strong>{{ row.code }}</strong>
+          </mat-cell>
+        </ng-container>
+
+        <!-- Nombre -->
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Nombre
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            {{ row.name }}
+          </mat-cell>
+        </ng-container>
+
+        <!-- Precio Anual -->
+        <ng-container matColumnDef="priceAnnual">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Precio Anual
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            {{ formatPrice(row.priceAnnual) }}
+          </mat-cell>
+        </ng-container>
+
+        <!-- Precio Mensual -->
+        <ng-container matColumnDef="priceMonthly">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Precio Mensual
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            {{ formatPrice(row.priceMonthly) }}
+          </mat-cell>
+        </ng-container>
+
+        <!-- Límite Documentos -->
+        <ng-container matColumnDef="documentLimit">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Límite Docs/Año
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            {{ formatLimit(row.documentLimitYearly) }}
+          </mat-cell>
+        </ng-container>
+
+        <!-- Límite Usuarios -->
+        <ng-container matColumnDef="userLimit">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Límite Usuarios
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            {{ formatLimit(row.userLimit) }}
+          </mat-cell>
+        </ng-container>
+
+        <!-- Estado -->
+        <ng-container matColumnDef="isActive">
+          <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <span
+              class="status-badge"
+              [class.active]="row.isActive"
+              [class.inactive]="!row.isActive"
+            >
+              {{ row.isActive ? "Activo" : "Inactivo" }}
+            </span>
+          </mat-cell>
+        </ng-container>
+
+        <!-- Orden -->
+        <ng-container matColumnDef="displayOrder">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Orden
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            {{ row.displayOrder }}
+          </mat-cell>
+        </ng-container>
+
+        <!-- Acciones -->
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <button
+              mat-icon-button
+              color="primary"
+              class="action-btn edit-btn"
+              (click)="openEditDialog(row)"
+              matTooltip="Editar plan"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              [color]="row.isActive ? 'warn' : 'primary'"
+              class="action-btn"
+              (click)="toggleActive(row)"
+              [matTooltip]="row.isActive ? 'Desactivar plan' : 'Activar plan'"
+            >
+              <mat-icon>{{
+                row.isActive ? "toggle_on" : "toggle_off"
+              }}</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="warn"
+              class="action-btn delete-btn"
+              (click)="deletePlan(row)"
+              matTooltip="Eliminar plan"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+
+      <!-- Loading spinner -->
+      <div *ngIf="isLoading" class="loading-overlay">
+        <mat-spinner diameter="60"></mat-spinner>
+        <p class="loading-text">Cargando planes...</p>
+      </div>
+    </div>
+
+    <!-- Paginador -->
+    <mat-paginator
+      [pageSizeOptions]="[5, 10, 25, 50, 100]"
+      showFirstLastButtons
+      aria-label="Seleccionar página de planes"
+    >
+    </mat-paginator>
+  </div>
+</div>

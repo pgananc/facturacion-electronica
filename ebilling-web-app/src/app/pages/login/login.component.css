@@ -1,168 +1,780 @@
-html {
-    width: 100%;
-    height: 100%;
+/* ======================
+   MOBILE FIRST APPROACH
+   Base styles para móviles (320px+)
+====================== */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Usar WebP si está disponible (mejor compresión), fallback a PNG optimizado */
+  background-image: 
+    image-set(
+      url('/assets/wallparisoft-bg.webp') type('image/webp'),
+      url('/assets/wallparisoft-bg-optimized.png') type('image/png')
+    );
+  /* Fallback para navegadores que no soportan image-set - usar PNG optimizado */
+  background-image: url('/assets/wallparisoft-bg-optimized.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* Fondo fijo para mejor efecto parallax */
+  padding: 16px;
+  /* Overlay oscuro para mejor legibilidad en móviles */
+  position: relative;
+  /* Optimizaciones de rendimiento */
+  will-change: transform;
+  transform: translateZ(0); /* Force GPU acceleration */
 }
 
-body {
-    background-color: #eff3f4;
-    position: relative;
-    width: 100%;
-    height: 100%;
-    font-weight: 400;
-    -webkit-font-smoothing: antialiased;
+/* Optimización de background para móviles */
+@media (max-width: 767px) {
+  .login-container {
+    background-attachment: scroll; /* Mejor performance en móviles */
+    background-position: center top; /* Ajustar posición en móviles */
+  }
 }
 
-form {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    -webkit-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-    display: block;
-    width: 100%;
-    max-width: 400px;
-    background-color: #FFF;
-    margin: 0;
-    padding: 2.25em;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    border: solid 1px #DDD;
-    border-radius: .5em;
-    font-family: 'Source Sans Pro', sans-serif;
+.login-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 0;
 }
 
-form .svgContainer {
-    position: relative;
-    width: 200px;
-    height: 200px;
-    margin: 0 auto 1em;
-    border-radius: 50%;
-    background: none;
-    border: solid 2.5px #3A5E77;
-    overflow: hidden;
-    pointer-events: none;
+.login-card {
+  padding: 32px 24px 24px 24px;
+  width: 100%;
+  max-width: 100%;
+  position: relative;
+  z-index: 1;
+  /* Sombra moderna mejorada para destacar sobre el fondo */
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  background: #ffffff;
+  /* Animación de entrada */
+  animation: cardSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-form .svgContainer div {
-    position: relative;
-    width: 100%;
-    height: 0;
-    overflow: hidden;
-    padding-bottom: 100%;
+/* Logo container */
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 24px;
+  animation: logoFadeIn 0.5s ease-out 0.2s both;
 }
 
-form .svgContainer .mySVG {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
+.logo-image {
+  max-width: 120px;
+  max-height: 80px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
 }
 
-form .inputGroup {
-    margin: 0 0 2em;
-    padding: 0;
-    position: relative;
-}
-
-form .inputGroup:last-of-type {
-    margin-bottom: 0;
-}
-
-form label {
-    margin: 0 0 12px;
-    display: block;
-    font-size: 1.25em;
-    color: #217093;
-    font-weight: 700;
-    font-family: inherit;
-}
-
-form input[type='email'], form input[type="text"], form input[type='password'] {
-    display: block;
-    margin: 0;
-    padding: 0 1em 0;
-    background-color: #f3fafd;
-    border: solid 2px #217093;
-    border-radius: 4px;
-    -webkit-appearance: none;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    width: 100%;
-    height: 65px;
-    font-size: 1.55em;
-    color: #353538;
-    font-weight: 600;
-    font-family: inherit;
-    -webkit-transition: border-color .25s ease-out, -webkit-box-shadow .2s linear;
-    transition: border-color .25s ease-out, -webkit-box-shadow .2s linear;
-    transition: box-shadow .2s linear, border-color .25s ease-out;
-    transition: box-shadow .2s linear, border-color .25s ease-out, -webkit-box-shadow .2s linear;
-}
-
-form input[type='email']:focus, form input[type="text"]:focus, form input[type='password']:focus {
-    outline: none;
-    -webkit-box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-    border: solid 2px #4eb8dd;
-}
-
-form input[type='email'], form input[type="text"] {
-    padding: 14px 1em 0px;
-}
-
-form button {
-    display: block;
-    margin: 0;
-    padding: .65em 1em 1em;
-    background-color: #4e5cdd;
-    border: none;
-    border-radius: 4px;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    width: 100%;
-    height: 65px;
-    font-size: 1.55em;
-    color: #FFF;
-    font-weight: 600;
-    font-family: inherit;
-    -webkit-transition: background-color .2s ease-out;
-    transition: background-color .2s ease-out;
-}
-
-form button:hover, form button:active {
-    background-color: #217093;
-}
-
-form .inputGroup1 .helper {
-    position: absolute;
-    z-index: 1;
-    font-family: inherit;
-}
-
-form .inputGroup1 .helper1 {
-    top: 0;
-    left: 0;
-    -webkit-transform: translate(1.4em, 2.6em) scale(1);
-    transform: translate(1.4em, 2.6em) scale(1);
-    -webkit-transform-origin: 0 0;
-    transform-origin: 0 0;
-    color: #217093;
-    font-size: 1.25em;
-    font-weight: 400;
-    opacity: .65;
-    pointer-events: none;
-    -webkit-transition: opacity .2s linear, -webkit-transform .2s ease-out;
-    transition: opacity .2s linear, -webkit-transform .2s ease-out;
-    transition: transform .2s ease-out, opacity .2s linear;
-    transition: transform .2s ease-out, opacity .2s linear, -webkit-transform .2s ease-out;
-}
-
-form .inputGroup1.focusWithText .helper {
-    -webkit-transform: translate(1.4em, 2em) scale(0.65);
-    transform: translate(1.4em, 2em) scale(0.65);
+/* Animaciones de entrada */
+@keyframes cardSlideIn {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
     opacity: 1;
+  }
 }
+
+@keyframes logoFadeIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ======================
+   TABLET PORTRAIT
+   (768px - 1023px)
+====================== */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .login-container {
+    padding: 24px;
+  }
+
+  .login-container::before {
+    background: rgba(0, 0, 0, 0.25);
+  }
+
+  .login-card {
+    padding: 36px 32px 28px 32px;
+    max-width: 500px;
+  }
+  
+  .logo-image {
+    max-width: 140px;
+    max-height: 90px;
+  }
+}
+
+/* ======================
+   TABLET LANDSCAPE
+   (1024px - 1365px)
+====================== */
+@media (min-width: 1024px) and (max-width: 1365px) {
+  .login-container {
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 50px;
+    padding-left: 24px;
+  }
+
+  .login-container::before {
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  .login-card {
+    padding: 40px 36px 32px 36px;
+    max-width: 450px;
+  }
+  
+  .logo-image {
+    max-width: 150px;
+    max-height: 100px;
+  }
+}
+
+/* ======================
+   DESKTOP
+   (1366px+)
+====================== */
+@media (min-width: 1366px) {
+  .login-container {
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 200px;
+    padding-left: 0;
+  }
+
+  .login-container::before {
+    background: rgba(0, 0, 0, 0.15);
+  }
+
+  .login-card {
+    padding: 40px 36px 32px 36px;
+    max-width: 420px;
+  }
+  
+  .logo-image {
+    max-width: 160px;
+    max-height: 110px;
+  }
+}
+
+/* ======================
+   LARGE DESKTOP
+   (1920px+)
+====================== */
+@media (min-width: 1920px) {
+  .login-container {
+    padding-right: 300px;
+  }
+
+  .login-card {
+    max-width: 480px;
+    padding: 44px 40px 36px 40px;
+  }
+  
+  .logo-image {
+    max-width: 180px;
+    max-height: 120px;
+  }
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hover effect en campos de formulario */
+.full-width:hover {
+  transform: translateY(-2px);
+}
+
+/* Spacing mejorado en móviles */
+@media (max-width: 767px) {
+  .full-width {
+    margin-bottom: 0.75rem;
+  }
+  
+  .login-card {
+    margin: 0 auto;
+  }
+}
+
+.text-center {
+  text-align: center;
+  color: var(--primary-color, #0ea5e9);
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  font-size: 24px;
+  animation: titleFadeIn 0.5s ease-out 0.3s both;
+}
+
+/* Título responsive */
+@media (min-width: 768px) {
+  .text-center {
+    font-size: 28px;
+    margin-bottom: 2rem;
+  }
+}
+
+@keyframes titleFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Botón con loading state */
+.button-container {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.button-container button {
+  width: 100%;
+  min-width: unset;
+  height: 48px;
+  font-size: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.button-container button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.button-container button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.button-container button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Estado de éxito del botón */
+.button-container button.success-button {
+  background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%) !important;
+  opacity: 1 !important;
+  cursor: default !important;
+  transition: all 0.3s ease;
+}
+
+/* Icono de éxito con animación */
+.success-icon {
+  color: #ffffff !important;
+  font-size: 24px !important;
+  width: 24px !important;
+  height: 24px !important;
+  margin-right: 8px;
+  animation: scaleIn 0.3s ease-out;
+}
+
+.success-icon-animate {
+  animation: scaleIn 0.3s ease-out, pulse 0.6s ease-out 0.3s;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Botón responsive - Tablet y Desktop */
+@media (min-width: 768px) {
+  .button-container button {
+    width: auto;
+    min-width: 200px;
+  }
+}
+
+/* Spinner en botón */
+::ng-deep .btn-spinner {
+  margin-right: 8px;
+}
+
+::ng-deep .btn-spinner circle {
+  stroke: #ffffff !important;
+}
+
+/* Link de recuperación de contraseña */
+.link-container {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+/* ======================
+   SECCIÓN PÚBLICA
+====================== */
+.login-divider {
+  margin: 32px 0 24px 0;
+  background-color: rgba(0, 0, 0, 0.12);
+}
+
+.public-access-section {
+  text-align: center;
+  padding: 0 16px 8px 16px;
+}
+
+.public-access-text {
+  font-size: 14px;
+  color: #616161;
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+}
+
+.public-consultation-btn {
+  width: 100%;
+  height: 48px;
+  font-size: 15px;
+  font-weight: 500;
+  border: 2px solid var(--primary-color, #0ea5e9);
+  transition: all 0.3s ease;
+}
+
+.public-consultation-btn mat-icon {
+  margin-right: 8px;
+}
+
+.public-consultation-btn:hover {
+  background-color: var(--primary-color, #0ea5e9) !important;
+  color: white !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(14, 165, 233, 0.3);
+}
+
+.public-consultation-btn:hover span,
+.public-consultation-btn:hover mat-icon {
+  color: white !important;
+}
+
+/* Asegurar que el texto y el icono sean visibles en hover */
+::ng-deep .public-consultation-btn:hover .mdc-button__label,
+::ng-deep .public-consultation-btn:hover span {
+  color: white !important;
+}
+
+::ng-deep .public-consultation-btn:hover mat-icon {
+  color: white !important;
+}
+
+.forgot-password-link {
+  font-size: 14px;
+  color: var(--primary-color, #0ea5e9);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+.forgot-password-link:hover {
+  text-decoration: underline;
+  color: var(--primary-dark, #0a82bb);
+  transform: translateX(2px);
+}
+
+/* Validación visual mejorada */
+.full-width mat-form-field.ng-invalid.ng-touched .mat-mdc-text-field-wrapper {
+  border-color: #f44336;
+}
+
+.full-width mat-form-field.ng-invalid.ng-touched .mat-mdc-form-field-outline {
+  color: #f44336;
+}
+
+/* Snackbars mejorados */
+::ng-deep .success-snackbar {
+  background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  font-size: 15px !important;
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4) !important;
+  animation: slideInRight 0.3s ease-out !important;
+  border-radius: 8px !important;
+}
+
+::ng-deep .success-snackbar .mat-mdc-button {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+/* ======================
+   ERROR SNACKBAR - DISEÑO MODERNO Y LIMPIO
+====================== */
+/* Aplicar estilos a todos los niveles del snackbar con máxima especificidad */
+.cdk-overlay-container .error-snackbar .mat-mdc-snack-bar-container,
+.cdk-overlay-container .error-snackbar .mat-mdc-snack-bar-surface,
+.cdk-overlay-container .error-snackbar {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
+
+.cdk-overlay-container .error-snackbar .mat-mdc-snack-bar-container {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  color: #212121 !important;
+  border-left: 4px solid #d32f2f !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  animation: slideInDownModern 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  min-width: 320px !important;
+  max-width: 90vw !important;
+  padding: 0 !important;
+}
+
+.cdk-overlay-container .error-snackbar .mat-mdc-snack-bar-surface {
+  padding: 0 !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.cdk-overlay-container .error-snackbar .mat-mdc-snack-bar-label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 16px 20px !important;
+  margin: 0 !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+  color: #212121 !important;
+  flex: 1 !important;
+  background: transparent !important;
+}
+
+/* Botón cerrar moderno y discreto */
+.cdk-overlay-container .error-snackbar .mat-mdc-button {
+  color: #757575 !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  font-size: 14px !important;
+  letter-spacing: normal !important;
+  padding: 6px 12px !important;
+  border-radius: 6px !important;
+  background-color: transparent !important;
+  min-width: auto !important;
+  margin-left: auto !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.cdk-overlay-container .error-snackbar .mat-mdc-button:hover {
+  background-color: rgba(211, 47, 47, 0.08) !important;
+  color: #d32f2f !important;
+}
+
+.cdk-overlay-container .error-snackbar .mat-mdc-button:focus {
+  background-color: rgba(211, 47, 47, 0.12) !important;
+  outline: none !important;
+}
+
+/* Animación moderna de entrada */
+@keyframes slideInDownModern {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes iconPulse {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Snackbar específico para login con mejor diseño */
+::ng-deep .error-snackbar-login {
+  margin-top: 20px !important;
+}
+
+/* Posicionamiento responsive */
+@media (max-width: 767px) {
+  ::ng-deep .error-snackbar-login {
+    margin-top: 16px !important;
+    margin-left: 16px !important;
+    margin-right: 16px !important;
+    max-width: calc(100vw - 32px) !important;
+  }
+}
+
+@media (min-width: 768px) {
+  ::ng-deep .error-snackbar-login {
+    max-width: 500px !important;
+  }
+}
+
+/* ======================
+   WARNING SNACKBAR - DISEÑO MODERNO
+====================== */
+::ng-deep .warning-snackbar {
+  background: #ffffff !important;
+  color: #212121 !important;
+  border-left: 4px solid #f57c00 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08) !important;
+  animation: slideInDownModern 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  min-width: 320px !important;
+  max-width: 90vw !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+::ng-deep .warning-snackbar .mat-mdc-snack-bar-surface {
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+::ng-deep .warning-snackbar .mat-mdc-snack-bar-label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  padding: 16px 20px !important;
+  margin: 0 !important;
+}
+
+/* Icono de warning con contenedor circular */
+::ng-deep .warning-snackbar .mat-mdc-snack-bar-label::before {
+  content: 'warning' !important;
+  font-family: 'Material Icons' !important;
+  font-size: 24px !important;
+  width: 40px !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  background-color: rgba(245, 124, 0, 0.1) !important;
+  color: #f57c00 !important;
+  flex-shrink: 0 !important;
+  animation: iconFadeIn 0.3s ease-out 0.1s both !important;
+}
+
+::ng-deep .warning-snackbar .mat-mdc-snack-bar-label {
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+  color: #212121 !important;
+  flex: 1 !important;
+}
+
+::ng-deep .warning-snackbar .mat-mdc-button {
+  color: #757575 !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  font-size: 14px !important;
+  letter-spacing: normal !important;
+  padding: 8px 16px !important;
+  border-radius: 6px !important;
+  background-color: transparent !important;
+  min-width: auto !important;
+  margin-left: 8px !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+::ng-deep .warning-snackbar .mat-mdc-button:hover {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+  color: #212121 !important;
+}
+
+::ng-deep .warning-snackbar .mat-mdc-button:focus {
+  background-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Snackbar específico para login con mejor diseño */
+::ng-deep .warning-snackbar-login {
+  margin-top: 20px !important;
+}
+
+/* Posicionamiento responsive para warning */
+@media (max-width: 767px) {
+  ::ng-deep .warning-snackbar-login {
+    margin-top: 16px !important;
+    margin-left: 16px !important;
+    margin-right: 16px !important;
+    max-width: calc(100vw - 32px) !important;
+  }
+}
+
+@media (min-width: 768px) {
+  ::ng-deep .warning-snackbar-login {
+    max-width: 500px !important;
+  }
+}
+
+/* Animaciones para snackbars */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0) translateY(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-8px) translateY(-2px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(8px) translateY(2px);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ======================
+   REMEMBER ME CHECKBOX
+====================== */
+.remember-me-container {
+  margin: 8px 0 16px 0;
+  display: flex;
+  align-items: center;
+}
+
+.remember-me-container ::ng-deep .mat-mdc-checkbox {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.remember-me-container ::ng-deep .mat-mdc-checkbox .mdc-checkbox {
+  padding: 0;
+}
+
+/* ======================
+   RATE LIMITING WARNING/INFO
+====================== */
+.rate-limit-warning {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  margin: 12px 0;
+  background-color: #fff3cd;
+  border-left: 4px solid #ff9800;
+  border-radius: 4px;
+  color: #856404;
+  font-size: 14px;
+  animation: slideInDown 0.3s ease-out;
+}
+
+.rate-limit-warning mat-icon {
+  color: #ff9800;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.rate-limit-warning strong {
+  color: #f57c00;
+  font-weight: 600;
+}
+
+.rate-limit-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  margin: 8px 0;
+  background-color: rgba(14, 165, 233, 0.08);
+  border-left: 4px solid var(--primary-color, #0ea5e9);
+  border-radius: 4px;
+  color: var(--primary-dark, #0a82bb);
+  font-size: 13px;
+  animation: slideInDown 0.3s ease-out;
+}
+
+.rate-limit-info mat-icon {
+  color: var(--primary-color, #0ea5e9);
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+/* Estados deshabilitados cuando está bloqueado */
+.login-card input[disabled],
+.login-card button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.login-card mat-form-field[disabled] {
+  opacity: 0.6;
+}
+

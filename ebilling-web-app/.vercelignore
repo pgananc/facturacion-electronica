@@ -1,0 +1,16 @@
+node_modules
+dist
+.angular
+.git
+.gitlab
+coverage
+tmp
+*.log
+*.zip
+*.tar
+*.gz
+*.jar
+*.war
+*.mp4
+*.mov
+*.pdf

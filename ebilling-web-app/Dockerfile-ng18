@@ -1,0 +1,17 @@
+FROM node:18-bullseye
+
+# Instalación de Angular CLI
+RUN npm install -g @angular/cli@18.2.3
+
+# Crear carpeta de trabajo
+WORKDIR /app
+
+# Copiar dependencias primero
+COPY package*.json ./
+RUN npm install
+
+# Copiar el resto del código
+COPY . .
+
+# Comando por defecto
+CMD ["npm", "run", "build"]

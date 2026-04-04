@@ -1,0 +1,141 @@
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <h2 mat-dialog-title>Cancelar Suscripción</h2>
+  </div>
+
+  <mat-dialog-content>
+    <!-- Información actual -->
+    <mat-card class="current-info-card">
+      <mat-card-content>
+        <div class="info-grid">
+          <div class="info-item">
+            <mat-icon class="info-icon">business</mat-icon>
+            <div class="info-content">
+              <strong>Empresa:</strong>
+              <span>{{ data.businessName }}</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <mat-icon class="info-icon">workspace_premium</mat-icon>
+            <div class="info-content">
+              <strong>Plan:</strong>
+              <span
+                class="plan-badge"
+                [class]="'plan-' + data.plan.code.toLowerCase()"
+              >
+                {{ data.plan.name }}
+              </span>
+            </div>
+          </div>
+          <div class="info-item">
+            <mat-icon class="info-icon">event</mat-icon>
+            <div class="info-content">
+              <strong>Expira:</strong>
+              <span class="expiration-date">{{
+                data.expiresAt | date : "dd/MM/yyyy"
+              }}</span>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Advertencia -->
+    <mat-card class="warning-card">
+      <mat-card-content>
+        <div class="warning-content">
+          <mat-icon class="warning-icon">warning</mat-icon>
+          <div>
+            <strong>⚠️ Esta acción no se puede deshacer</strong>
+            <p>
+              Al cancelar la suscripción, la empresa perderá acceso a las
+              funcionalidades del plan. Asegúrate de que esta es la acción
+              correcta.
+            </p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Formulario -->
+    <form [formGroup]="form" class="cancel-form">
+      <!-- Razón de cancelación -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Razón de cancelación</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >cancel</mat-icon
+        >
+        <mat-select formControlName="reason" required>
+          <mat-option
+            *ngFor="let reason of cancelReasons"
+            [value]="reason.value"
+          >
+            {{ reason.label }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('reason')?.hasError('required')">
+          Selecciona una razón de cancelación
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Cancelar inmediatamente -->
+      <mat-card class="cancel-immediately-card">
+        <mat-card-content>
+          <mat-checkbox formControlName="cancelImmediately" color="warn">
+            <strong>Cancelar inmediatamente</strong>
+            <p class="checkbox-hint">
+              Si está marcado, la suscripción se cancela de inmediato. Si no, se
+              cancelará al final del período actual.
+            </p>
+          </mat-checkbox>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Notas adicionales -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Notas adicionales (opcional)</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >note</mat-icon
+        >
+        <textarea
+          matInput
+          formControlName="notes"
+          rows="3"
+          placeholder="Ej: Cliente no realizó el pago, solicitud del área comercial..."
+        ></textarea>
+        <mat-hint
+          >Opcional - Información adicional sobre la cancelación</mat-hint
+        >
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+
+  <!-- Actions -->
+  <div class="dialog-actions" mat-dialog-actions>
+    <button
+      mat-raised-button
+      color="warn"
+      type="button"
+      [disabled]="form.invalid || isLoading"
+      (click)="onSubmit()"
+      class="btn-cancel-subscription"
+    >
+      <mat-icon *ngIf="!isLoading">cancel</mat-icon>
+      <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+      <span *ngIf="!isLoading">Cancelar Suscripción</span>
+      <span *ngIf="isLoading">Cancelando...</span>
+    </button>
+
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="onCancel()"
+      [disabled]="isLoading"
+      class="btn-cancel"
+    >
+      <mat-icon>close</mat-icon>
+      <span>No Cancelar</span>
+    </button>
+  </div>
+</div>

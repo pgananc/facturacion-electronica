@@ -1,0 +1,117 @@
+# Cursor IDE Rules para ebill-product
+
+## Contexto del Proyecto
+Este es un microservicio Spring Boot para gestión de productos en un sistema de facturación electrónica.
+
+## Stack Tecnológico
+- Java 17
+- Spring Boot 3.4.5
+- PostgreSQL
+- MapStruct
+- Lombok
+- Maven
+
+## Convenciones de Código
+
+### Java
+- Usar indentación de 2 espacios
+- Longitud máxima de línea: 100 caracteres
+- Usar Lombok para reducir boilerplate
+- Todas las clases de entidad deben extender BaseEntity
+- Usar @Slf4j para logging
+
+### Naming Conventions
+- Clases: PascalCase
+- Métodos: camelCase
+- Constantes: UPPER_SNAKE_CASE
+- Paquetes: lowercase
+
+### Estructura de Métodos en Controladores
+```java
+@GetMapping("/endpoint")
+public ResponseType methodName(@PathVariable Type param) {
+    StackTraceElement traceElement = Thread.currentThread().getStackTrace()[1];
+    
+    // Log REQUEST
+    setLogs(
+        EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName()),
+        EventType.REQUEST,
+        Level.LEVEL_001
+    );
+    
+    // Business logic
+    
+    // Log RESPONSE
+    setLogs(
+        EventLog.builder()
+            .service(traceElement.getClassName())
+            .method(traceElement.getMethodName())
+            .information(response),
+        EventType.RESPONSE,
+        Level.LEVEL_001
+    );
+    
+    return response;
+}
+```
+
+### Estructura de Servicios
+- Interfaces en el paquete `service`
+- Implementaciones en `service.impl`
+- Usar @RequiredArgsConstructor en lugar de @Autowired
+- Inyección de dependencias vía constructor (final fields)
+
+### DTOs y Entidades
+- DTOs: Usar @Builder y @Data de Lombok
+- Entidades: Usar @SuperBuilder cuando extienda BaseEntity
+- Mappers: Usar MapStruct para conversión
+
+### Manejo de Errores
+- Lanzar ModelNotFoundException cuando no se encuentre un recurso
+- Usar ResponseExceptionHandler para manejo centralizado
+- Retornar respuestas consistentes con ProductResponse o BasicResponse
+
+### Base de Datos
+- Usar Flyway para todas las migraciones
+- Nomenclatura de migraciones: V{YYYYMMDDNN}__{descripcion}.sql
+- Siempre incluir comments en columnas nuevas
+- Usar índices apropiados
+
+### Tests
+- Escribir tests para nueva funcionalidad
+- Usar @SpringBootTest para tests de integración
+- Usar @WebMvcTest para tests de controladores
+- Usar nombres descriptivos: testMethodName_Scenario_ExpectedResult
+
+## Preferencias
+- Preferir Optional sobre null checks
+- Usar streams de Java para operaciones en colecciones
+- Evitar código duplicado
+- Documentar métodos públicos complejos
+- No hardcodear valores, usar propiedades de configuración
+
+## Seguridad
+- Nunca commitear credenciales
+- Usar @PreAuthorize cuando sea necesario
+- Validar todas las entradas de usuario
+
+## Logging
+- Usar LogUtil.setLogs() para logging estructurado
+- No usar System.out.println
+- Niveles: DEBUG para desarrollo, INFO para producción
+
+## Performance
+- Usar paginación para consultas grandes
+- Optimizar queries N+1 con fetch joins
+- Usar índices en columnas frecuentemente consultadas
+
+## Cuando Generes Código
+1. Seguir estrictamente estas convenciones
+2. Incluir imports necesarios
+3. Usar anotaciones de Lombok apropiadamente
+4. Implementar logging con LogUtil
+5. Agregar validaciones con Jakarta Validation
+6. Retornar respuestas consistentes
+

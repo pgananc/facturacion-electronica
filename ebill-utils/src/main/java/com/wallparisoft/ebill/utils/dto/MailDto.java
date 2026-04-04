@@ -1,14 +1,13 @@
 package com.wallparisoft.ebill.utils.dto;
 
+import static lombok.AccessLevel.PRIVATE;
+
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-
-import java.util.Map;
-
-import static lombok.AccessLevel.PRIVATE;
 
 @Data
 @Builder
@@ -17,11 +16,9 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor
 public class MailDto {
 
-	 String from;
-	 String to;
-	 String subject;
-	 String templateHtml;
-	 Map<String, Object> model;
-	
-
+  String from;
+  String to;
+  String subject;
+  String templateHtml;
+  Map<String, Object> model;
 }

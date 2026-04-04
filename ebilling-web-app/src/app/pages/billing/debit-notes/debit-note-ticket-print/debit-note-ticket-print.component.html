@@ -1,0 +1,257 @@
+<div class="ticket-container" *ngIf="!isLoading && !error && debitNote">
+  <!-- ENCABEZADO: Datos de la empresa -->
+  <div class="ticket-header">
+    <div class="company-name">{{ companyName }}</div>
+    <div class="company-ruc">RUC: {{ companyRuc }}</div>
+    <div class="company-address" *ngIf="companyAddress">
+      {{ companyAddress }}
+    </div>
+    <div class="company-phone" *ngIf="companyPhone">
+      Tel: {{ companyPhone }}
+    </div>
+  </div>
+
+  <div class="separator">----------------------------------------</div>
+  <div class="legal-text legal-text-centered">
+    <strong>**DOCUMENTO SIN VALIDEZ TRIBUTARIA**</strong>
+  </div>
+  <!-- DATOS DE LA NOTA DE DÉBITO -->
+  <!-- ✅ CONDICIONAL: Solo mostrar si hay debitNoteNumber -->
+  <div class="invoice-info" *ngIf="hasDebitNoteNumber() && debitNote">
+    <div class="invoice-line">
+      <strong>FECHA:</strong> {{ formatDate(debitNote.issueDate) }}
+    </div>
+    <div class="invoice-line" *ngIf="debitNote.debitNoteNumber">
+      <strong>NOTA DE DÉBITO:</strong> {{ debitNote.debitNoteNumber }}
+    </div>
+    <div class="invoice-line access-key-line" *ngIf="debitNote.accessKey">
+      <strong>Clave Acceso:</strong> {{ debitNote.accessKey }}
+    </div>
+    <div class="invoice-line" *ngIf="debitNote.originalInvoiceNumber">
+      <strong>Factura Original:</strong> {{ debitNote.originalInvoiceNumber }}
+    </div>
+  </div>
+
+  <!-- Si no hay debitNoteNumber, mostrar solo fecha -->
+  <div class="invoice-info" *ngIf="!hasDebitNoteNumber() && debitNote">
+    <div class="invoice-line">
+      <strong>FECHA:</strong> {{ formatDate(debitNote.issueDate) }}
+    </div>
+    <div class="invoice-line" *ngIf="debitNote.originalInvoiceNumber">
+      <strong>Factura Original:</strong> {{ debitNote.originalInvoiceNumber }}
+    </div>
+  </div>
+
+  <div class="separator">----------------------------------------</div>
+
+  <!-- DATOS DEL CLIENTE -->
+  <div class="client-info" *ngIf="debitNote?.clientDto">
+    <div class="client-line">
+      <strong>CLIENTE:</strong> {{ debitNote.clientDto?.name || "N/A" }}
+    </div>
+    <div class="client-line">
+      <strong
+        >{{
+          getIdentificationTypeName(
+            debitNote.clientDto?.idType,
+            debitNote.clientDto?.identification
+          )
+        }}:</strong
+      >
+      {{ debitNote.clientDto?.identification || "N/A" }}
+    </div>
+    <div class="client-line" *ngIf="debitNote.clientDto?.address">
+      <strong>DIR:</strong> {{ debitNote.clientDto?.address }}
+    </div>
+    <div class="client-line" *ngIf="debitNote.clientDto?.phone">
+      <strong>TEL:</strong> {{ debitNote.clientDto?.phone }}
+    </div>
+  </div>
+
+  <!-- Información adicional de la nota de débito -->
+  <div class="invoice-info" *ngIf="debitNote">
+    <div class="invoice-line">
+      <strong>Fecha de Emisión:</strong>
+      {{ formatDateOnly(debitNote.issueDate) }}
+    </div>
+    <div class="invoice-line" *ngIf="debitNote.originalInvoiceNumber">
+      <strong>Documento que se modifica:</strong>
+      {{ debitNote.originalInvoiceNumber }}
+    </div>
+    <div class="invoice-line" *ngIf="debitNote.originalIssueDate">
+      <strong>Fecha Emisión (Documento sustento):</strong>
+      {{ formatDateOnly(debitNote.originalIssueDate) }}
+    </div>
+  </div>
+
+  <div class="separator">----------------------------------------</div>
+
+  <!-- DETALLE DE PRODUCTOS - Formato simplificado con Razón y Valor -->
+  <div class="products-header">
+    <div class="products-row header">
+      <span class="col-razon">Razón</span>
+      <span class="col-valor">Valor</span>
+    </div>
+  </div>
+
+  <div class="products-list">
+    <div class="products-row" *ngFor="let item of getDebitNoteDetails()">
+      <span class="col-razon">
+        {{
+          item.description || item.productDto?.name || item.code || "Producto"
+        }}
+      </span>
+      <span class="col-valor"
+        >${{
+          (
+            item.subtotal || (item.unitPrice || 0) * (item.quantity || 1)
+          ).toFixed(2)
+        }}</span
+      >
+    </div>
+  </div>
+
+  <div class="separator">----------------------------------------</div>
+
+  <!-- ✅ TOTALES DETALLADOS - TODOS SE MUESTRAN SIEMPRE -->
+  <div class="totals">
+    <!-- SUBTOTAL 15% -->
+    <div class="total-row">
+      <span class="total-label">SUBTOTAL 15%:</span>
+      <span class="total-value">${{ getSubtotalByIva(15).toFixed(2) }}</span>
+    </div>
+
+    <!-- SUBTOTAL 5% -->
+    <div class="total-row">
+      <span class="total-label">SUBTOTAL 5%:</span>
+      <span class="total-value">${{ getSubtotalByIva(5).toFixed(2) }}</span>
+    </div>
+
+    <!-- SUBTOTAL 0% -->
+    <div class="total-row">
+      <span class="total-label">SUBTOTAL 0%:</span>
+      <span class="total-value">${{ getSubtotalByIva(0).toFixed(2) }}</span>
+    </div>
+
+    <!-- SUBTOTAL SIN IMPUESTOS -->
+    <div class="total-row">
+      <span class="total-label">SUBTOTAL SIN IMPUESTOS:</span>
+      <span class="total-value">${{ subtotalSinImpuestos.toFixed(2) }}</span>
+    </div>
+
+    <!-- ICE -->
+    <div class="total-row">
+      <span class="total-label">ICE:</span>
+      <span class="total-value">${{ totalICE.toFixed(2) }}</span>
+    </div>
+
+    <!-- IVA 15% -->
+    <div class="total-row">
+      <span class="total-label">IVA 15%:</span>
+      <span class="total-value">${{ getIvaByPercent(15).toFixed(2) }}</span>
+    </div>
+
+    <!-- IVA 5% -->
+    <div class="total-row">
+      <span class="total-label">IVA 5%:</span>
+      <span class="total-value">${{ getIvaByPercent(5).toFixed(2) }}</span>
+    </div>
+
+    <!-- IVA 0% -->
+    <div class="total-row">
+      <span class="total-label">IVA 0%:</span>
+      <span class="total-value">${{ getIvaByPercent(0).toFixed(2) }}</span>
+    </div>
+
+    <!-- Valor a pagar -->
+    <div class="total-row total-final" *ngIf="debitNote">
+      <span class="total-label"><strong>Valor a pagar:</strong></span>
+      <span class="total-value"
+        ><strong
+          >${{
+            (debitNote.valorTotal || debitNote.totalAmount || 0).toFixed(2)
+          }}</strong
+        ></span
+      >
+    </div>
+  </div>
+
+  <div class="separator">----------------------------------------</div>
+
+  <!-- FORMAS DE PAGO -->
+  <div class="payments" *ngIf="getPayments().length > 0">
+    <div class="payments-header"><strong>FORMA DE PAGO:</strong></div>
+    <div class="payment-row" *ngFor="let payment of getPayments()">
+      <span class="payment-type"
+        >{{ payment.paymentType || payment.paymentMethod || "Pago" }}:</span
+      >
+      <span class="payment-value"
+        >${{ (payment.value || payment.total || 0).toFixed(2) }}</span
+      >
+    </div>
+    <div class="payment-row change-row" *ngIf="calculateChange() > 0">
+      <span class="payment-type"><strong>VUELTO:</strong></span>
+      <span class="payment-value"
+        ><strong>${{ calculateChange().toFixed(2) }}</strong></span
+      >
+    </div>
+  </div>
+
+  <div class="separator">----------------------------------------</div>
+
+  <!-- LEYENDA LEGAL -->
+  <div class="legal-notice">
+    <div class="legal-subtext">
+      Consulte su nota de débito electrónica en el portal del SRI
+    </div>
+    <div class="legal-subtext" *ngIf="debitNote?.environment">
+      Ambiente:
+      {{ debitNote.environment === "1" ? "PRODUCCIÓN" : "PRUEBAS" }}
+    </div>
+  </div>
+
+  <div class="separator">----------------------------------------</div>
+
+  <!-- PIE DE PÁGINA -->
+  <div class="footer">
+    <div class="footer-text">¡Gracias por su compra!</div>
+  </div>
+</div>
+
+<!-- Botones de control (ocultos al imprimir y cuando hay error) -->
+<div class="print-controls" *ngIf="!error && !isLoading">
+  <button mat-raised-button color="primary" (click)="printTicket()">
+    <mat-icon>print</mat-icon>
+    Imprimir
+  </button>
+  <button mat-stroked-button (click)="closeWindow()">
+    <mat-icon>close</mat-icon>
+    Cerrar
+  </button>
+</div>
+
+<!-- Estado de carga -->
+<div class="loading" *ngIf="isLoading">
+  <mat-spinner diameter="50"></mat-spinner>
+  <p class="loading-message">Cargando nota de débito...</p>
+  <p class="loading-submessage">
+    Por favor espere mientras se obtienen los datos.
+  </p>
+</div>
+
+<!-- Estado de error -->
+<div class="error" *ngIf="error">
+  <mat-icon class="error-icon">error_outline</mat-icon>
+  <p class="error-title">{{ error }}</p>
+  <p
+    class="error-message"
+    *ngIf="!error.includes('No tiene permisos') && !error.includes('no existe')"
+  >
+    No se pudo cargar la nota de débito. Verifique que la URL sea correcta o
+    intente nuevamente.
+  </p>
+  <button mat-raised-button color="warn" (click)="closeWindow()">
+    <mat-icon>close</mat-icon>
+    Cerrar ventana
+  </button>
+</div>

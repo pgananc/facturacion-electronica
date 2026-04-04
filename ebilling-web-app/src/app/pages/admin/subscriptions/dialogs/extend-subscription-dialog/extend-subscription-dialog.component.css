@@ -1,0 +1,385 @@
+/* ======================
+   DIALOG CONTAINER
+====================== */
+.dialog-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 90vh;
+  width: 600px;
+  min-width: 600px;
+  max-width: 600px;
+}
+
+/* ======================
+   DIALOG HEADER (Estilo replicado de clientes)
+====================== */
+.dialog-header {
+  flex-shrink: 0;
+  padding: 16px 24px;
+  border-bottom: 2px solid var(--primary-color, #0ea5e9);
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.05) 0%, rgba(10, 130, 187, 0.05) 100%);
+}
+
+.dialog-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--primary-color, #0ea5e9);
+  letter-spacing: 0.3px;
+}
+
+.header-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  color: var(--primary-color, #0ea5e9);
+  margin-right: 12px;
+}
+
+/* ======================
+   DIALOG CONTENT
+====================== */
+mat-dialog-content {
+  flex: 1 1 auto;
+  padding: 24px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.current-info-card {
+  margin-bottom: 24px;
+  border-left: 4px solid var(--primary-color, #0ea5e9);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  background-color: #fafafa;
+}
+
+.new-expiration-card {
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  padding: 8px 0;
+}
+
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.info-icon {
+  color: var(--primary-color, #0ea5e9);
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.info-content strong {
+  font-size: 11px;
+  color: #757575;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.info-content span {
+  font-size: 14px;
+  color: #212121;
+  font-weight: 500;
+}
+
+.plan-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+  width: fit-content;
+}
+
+.plan-free {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.plan-basic {
+  background-color: #fff3e0;
+  color: #f57c00;
+}
+
+.plan-professional,
+.plan-pro {
+  background-color: #e8f5e9;
+  color: #388e3c;
+}
+
+.plan-enterprise {
+  background-color: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.expiration-date {
+  color: #f57c00;
+  font-weight: 600;
+}
+
+.extend-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+/* Hint con icono */
+mat-hint {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.hint-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+  color: #757575;
+}
+
+/* Mejorar hint de campos opcionales */
+::ng-deep .full-width .mat-mdc-form-field-hint {
+  color: #666;
+  font-size: 12px;
+  font-style: italic;
+}
+
+/* ======================
+   FORM FIELDS (Mejorados - Estilo replicado de clientes)
+====================== */
+::ng-deep .mat-mdc-form-field {
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+::ng-deep .mat-mdc-form-field input,
+::ng-deep .mat-mdc-form-field textarea {
+  background-color: #ffffff;
+  transition: background-color 0.3s ease;
+}
+
+/* Efecto hover en campos */
+::ng-deep .mat-mdc-form-field:hover:not(.mat-focused) .mat-mdc-form-field-flex {
+  background-color: #f8f9fa;
+}
+
+/* Efecto focus mejorado */
+::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-form-field-flex {
+  background-color: #ffffff;
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.1);
+}
+
+/* Centrar verticalmente el contenido del input (igual que combo box) */
+::ng-deep .mat-mdc-form-field .mat-mdc-text-field-wrapper.mdc-text-field {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  height: auto !important;
+}
+
+::ng-deep .mat-mdc-form-field.mat-form-field-appearance-outline .mat-mdc-form-field-infix {
+  padding-top: 22px !important;
+  padding-bottom: 22px !important;
+  display: flex !important;
+  align-items: center !important;
+  min-height: 56px !important;
+}
+
+::ng-deep .mat-mdc-form-field.mat-form-field-appearance-outline .mat-mdc-input-element {
+  padding: 0 !important;
+  line-height: 1.5 !important;
+  align-self: center !important;
+  margin: 0 !important;
+  height: auto !important;
+}
+
+::ng-deep .mat-mdc-form-field.mat-form-field-appearance-outline .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex {
+  align-items: center !important;
+}
+
+::ng-deep .mat-mdc-form-field.mat-form-field-appearance-outline .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__notch {
+  padding-top: 0 !important;
+}
+
+/* SOLUCIÓN: Forzar que el label siempre flote cuando hay mat-label */
+::ng-deep .mat-mdc-form-field.mat-form-field-should-float .mdc-floating-label,
+::ng-deep .mat-mdc-form-field .mdc-floating-label--float-above {
+  transform: translateY(-106%) scale(0.75) !important;
+}
+
+/* Asegurar que el label siempre flote en outline appearance */
+::ng-deep .mat-mdc-form-field.mat-form-field-appearance-outline .mdc-floating-label {
+  transform: translateY(-106%) scale(0.75) !important;
+}
+
+/* Placeholder solo visible cuando el campo tiene foco */
+::ng-deep .mat-mdc-input-element::placeholder {
+  color: transparent;
+  transition: color 0.3s ease;
+}
+
+::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-input-element::placeholder {
+  color: #9e9e9e;
+  opacity: 1;
+}
+
+/* Error messages */
+::ng-deep .mat-mdc-form-field .mat-error {
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* Hint messages */
+::ng-deep .mat-mdc-form-field .mat-hint {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+}
+
+/* Ajustar posición de iconos prefix para que no se solapen con el label */
+::ng-deep .mat-mdc-form-field .mat-mdc-form-field-icon-prefix {
+  padding-top: 12px;
+  align-self: flex-start;
+  margin-top: 10px;
+}
+
+::ng-deep .mat-mdc-form-field.mat-form-field-appearance-outline .mat-mdc-form-field-icon-prefix {
+  padding-top: 16px;
+}
+
+.new-expiration-card {
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  border-left: 4px solid #4caf50;
+  padding: 20px !important;
+}
+
+.expiration-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.expiration-info mat-icon {
+  color: #2e7d32;
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.expiration-info > div {
+  flex: 1;
+}
+
+.expiration-info strong {
+  font-size: 13px;
+  color: #424242;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.new-date {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1b5e20;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+/* ======================
+   DIALOG ACTIONS (Botones Mejorados - Estilo replicado de clientes)
+====================== */
+mat-dialog-actions {
+  flex-shrink: 0;
+  padding: 16px 24px 20px 24px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  background-color: #fafafa;
+}
+
+mat-dialog-actions button {
+  min-width: 120px;
+  height: 44px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 6px;
+  letter-spacing: 0.3px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-save {
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.35);
+}
+
+.btn-save:hover:not(:disabled) {
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.45);
+  transform: translateY(-2px);
+}
+
+.btn-save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-cancel {
+  border: 2px solid #e0e0e0;
+  color: #666;
+  background-color: white;
+}
+
+.btn-cancel:hover {
+  background-color: #f5f5f5;
+  border-color: var(--primary-color, #0ea5e9);
+  color: var(--primary-color, #0ea5e9);
+  transform: translateY(-1px);
+}
+
+mat-dialog-actions button mat-icon {
+  margin-right: 6px;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+mat-dialog-actions button mat-spinner {
+  display: inline-block;
+  margin-right: 8px;
+}
+
+@media (max-width: 600px) {
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}

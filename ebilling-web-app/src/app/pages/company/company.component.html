@@ -1,173 +1,186 @@
 <router-outlet></router-outlet>
 
-<div [hidden]="route.children.length !== 0">
-  <div class="text-center">
-    <mat-toolbar>Consulta Compañía</mat-toolbar>
-  </div>
-  <mat-accordion>
-    <mat-expansion-panel expanded="true">
-      <mat-expansion-panel-header style="background-color: #673ab7">
-        <mat-panel-title style="color: #fff"> Búsqueda</mat-panel-title>
-      </mat-expansion-panel-header>
-      <form
-        class="principal-container principal-full-width"
-        [formGroup]="form"
-        (ngSubmit)="search()"
-        #frmCompany="ngForm"
-      >
-        <table cellspacing="10">
-          <tr>
-            <td>
-              <mat-form-field class="principal-full-width">
-                <input
-                  matInput
-                  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
-                  placeholder="ID compañía"
-                  formControlName="identification"
-                />
-              </mat-form-field>
-            </td>
-
-            <td>
-              <mat-form-field class="principal-full-width">
-                <input
-                  matInput
-                  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
-                  placeholder="Código sucursal"
-                  formControlName="branchOfficeCode"
-                />
-              </mat-form-field>
-            </td>
-
-            <td style="padding-left: 40px">
-              <mat-form-field class="principal-full-width">
-                <input matInput placeholder="Nombre" formControlName="name"/>
-              </mat-form-field>
-            </td>
-
-            <td style="padding-left: 40px">
-              <mat-form-field class="principal-full-width">
-                <mat-select placeholder="Estado" [(value)]="status">
-                  <mat-option [value]="true">Activo</mat-option>
-                  <mat-option [value]="false">Inactivo</mat-option>
-                </mat-select>
-              </mat-form-field>
-            </td>
-          </tr>
-        </table>
-        <div class="flex-parent jc-center">
-          <button
-            class="margin-right botton-width"
-            mat-raised-button
-            color="primary"
-            type="submit"
-            [disabled]="frmCompany.invalid"
-          >
-            <span>Buscar</span>
-          </button>
-        </div>
-      </form>
-    </mat-expansion-panel>
-  </mat-accordion>
-  <div>
+<div *ngIf="!route.children.length" class="company-page">
+  <!-- Header principal con botón integrado -->
+  <mat-toolbar class="toolbar-primary">
+    <span class="toolbar-title">Consulta Compañía</span>
+    <span class="toolbar-spacer"></span>
     <button
-      matTooltip="Agregar"
-      mat-button
-      color="second"
-      class="botton-add"
-      routerLink="/company/new"
+      *ngIf="roles.includes('super_admin')"
+      mat-raised-button
+      class="new-company-btn"
+      matTooltip="Agregar nueva compañía"
+      (click)="openDialog()"
     >
       <mat-icon>add_circle</mat-icon>
+      <span>Nueva Compañía</span>
     </button>
-  </div>
-  <div class="principal-container mat-elevation-z8">
-    <mat-table [dataSource]="dataSource" matSort>
+  </mat-toolbar>
+
+  <!-- Panel de búsqueda -->
+  <mat-card class="search-card">
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="search()" #frmCompany="ngForm">
+        <div class="search-grid-horizontal">
+          <mat-form-field appearance="outline" class="search-field-compact">
+            <mat-label>RUC</mat-label>
+            <mat-icon matPrefix>badge</mat-icon>
+            <input
+              matInput
+              formControlName="identification"
+              placeholder="Ingrese RUC"
+              oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
+            />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="search-field-compact">
+            <mat-label>Razón Social</mat-label>
+            <mat-icon matPrefix>business</mat-icon>
+            <input
+              matInput
+              formControlName="name"
+              placeholder="Ingrese razón social"
+            />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="search-field-compact">
+            <mat-label>Estado</mat-label>
+            <mat-icon matPrefix>toggle_on</mat-icon>
+            <mat-select [(value)]="status" placeholder="Seleccione estado">
+              <mat-option [value]="true">Activo</mat-option>
+              <mat-option [value]="false">Inactivo</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div class="search-actions">
+            <button mat-raised-button color="primary" type="submit" class="search-btn">
+              <mat-icon>search</mat-icon>
+              <span>Buscar</span>
+            </button>
+            <button
+              mat-stroked-button
+              type="button"
+              class="clear-btn"
+              (click)="limpiar()"
+            >
+              <mat-icon>clear</mat-icon>
+              <span>Limpiar</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Tabla de compañías -->
+  <div class="table-wrapper">
+    <mat-toolbar class="toolbar-primary-sm">Listado de Compañías</mat-toolbar>
+
+    <div class="table-container">
+    <mat-table [dataSource]="dataSource" matSort class="bordered-table">
+      <!-- RUC -->
       <ng-container matColumnDef="identification">
-        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold">
-          ID compañía
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          RUC
         </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{ row.identification }} </mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="branchOfficeCode">
-        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-color-bold">
-          Código sucursal
-        </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{ row.branchOfficeCode }} </mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="name">
-        <mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          class="text-color-bold">
-          Nombre
-        </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{ row.name }} </mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="forceToAccounting">
-        <mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          class="text-color-bold">
-          Obligado a llevar contabilidad
-        </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{ row.forcedToAccounting }} </mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="specialTaxpayer">
-        <mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          class="text-color-bold">
-          Contribuyente especial
-        </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{ row.specialTaxpayer }} </mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="principal">
-        <mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          class="text-color-bold">
-          Principal
-        </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{ row.principal }} </mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="status">
-        <mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          class="text-color-bold"
-        >
-          Estado
-        </mat-header-cell>
-        <mat-cell *matCellDef="let row">
-          {{ row.status ? "Activo" : "Inactivo" }}
+        <mat-cell class="celda-ajustable" *matCellDef="let row">
+          {{ row.identification }}
         </mat-cell>
       </ng-container>
 
-      <ng-container matColumnDef="actions">
-        <mat-header-cell *matHeaderCellDef class="text-color-bold"
-        >Acciones
-        </mat-header-cell
+      <!-- Nombre / Razón Social -->
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Razón Social
+        </mat-header-cell>
+        <mat-cell
+          class="celda-ajustable"
+          *matCellDef="let row"
+          [matTooltip]="row.name || ''"
+          matTooltipPosition="above"
         >
+          {{ row.name }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Nombre Comercial -->
+      <ng-container matColumnDef="nameCommercial">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Nombre Comercial
+        </mat-header-cell>
+        <mat-cell
+          class="celda-ajustable"
+          *matCellDef="let row"
+          [matTooltip]="row.nameCommercial || ''"
+          matTooltipPosition="above"
+        >
+          {{ row.nameCommercial }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Obligado a llevar contabilidad -->
+      <ng-container matColumnDef="forceToAccounting">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Obligado a llevar contabilidad
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <span
+            class="badge"
+            [class.badge-yes]="row.forcedToAccounting === 'S'"
+            [class.badge-no]="row.forcedToAccounting !== 'S'"
+          >
+            {{ row.forcedToAccounting === "S" ? "SI" : "NO" }}
+          </span>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Contribuyente -->
+      <ng-container matColumnDef="regime">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Contribuyente
+        </mat-header-cell>
+        <mat-cell class="celda-ajustable" *matCellDef="let row">
+          {{ row.regime ? getRegimeLabel(row.regime) : "-" }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Estado -->
+      <ng-container matColumnDef="status">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Estado
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <span
+            class="badge"
+            [class.badge-active]="row.status"
+            [class.badge-inactive]="!row.status"
+          >
+            {{ row.status ? "Activo" : "Inactivo" }}
+          </span>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Acciones -->
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef> Acciones </mat-header-cell>
         <mat-cell *matCellDef="let row">
           <button
-            matTooltip="Editar"
-            mat-button
+            *ngIf="roles.includes('super_admin') || roles.includes('admin')"
+            mat-icon-button
             color="primary"
-            [routerLink]="['edit', row.idCompany]"
+            matTooltip="Editar compañía"
+            (click)="openDialog(row)"
+            class="action-btn edit-btn"
           >
             <mat-icon>edit</mat-icon>
           </button>
           <button
-            matTooltip="Eliminar"
-            mat-button
-            color="accent"
+            *ngIf="roles.includes('super_admin') && row.status"
+            mat-icon-button
+            color="warn"
             (click)="delete(row.idCompany)"
+            matTooltip="Eliminar compañía"
+            class="action-btn delete-btn"
           >
             <mat-icon>delete</mat-icon>
           </button>
@@ -179,10 +192,11 @@
     </mat-table>
 
     <mat-paginator
-      [pageSize]="5"
+      [pageSize]="pageSize"
       [pageSizeOptions]="[5, 10, 25, 100]"
       [length]="quantity"
       (page)="showMore($event)"
-    ></mat-paginator>
+    >
+    </mat-paginator>
   </div>
 </div>

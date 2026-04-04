@@ -1,0 +1,180 @@
+/* ======================
+   CHECKBOX NATIVO - IMPORTADO
+====================== */
+@import '../../../_shared/custom-checkbox.css';
+@import '../../../_shared/toolbar-styles.css';
+
+/* ======================
+   DIALOG CONTAINER
+====================== */
+.dialog-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 90vh;
+}
+
+/* ======================
+   DIALOG HEADER
+====================== */
+.dialog-header {
+  flex-shrink: 0;
+  padding: 16px 24px;
+  border-bottom: 2px solid var(--primary-color, #0ea5e9);
+  background: linear-gradient(
+    135deg,
+    rgba(14, 165, 233, 0.05) 0%,
+    rgba(10, 130, 187, 0.05) 100%
+  );
+}
+
+.dialog-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--primary-color, #0ea5e9);
+  letter-spacing: 0.3px;
+}
+
+.dialog-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--primary-color, #0ea5e9);
+}
+
+/* ======================
+   DIALOG CONTENT
+====================== */
+.dialog-content {
+  flex: 1 1 auto;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+/* Mejorar hint de campos opcionales */
+::ng-deep .full-width .mat-mdc-form-field-hint {
+  color: #666;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.principal-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  padding-bottom: 8px;
+}
+
+.principal-full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.principal-container > * {
+  width: 100%;
+}
+
+/* ======================
+   STATUS SECTION (Checkbox Mejorado)
+====================== */
+.status-section {
+  margin-top: 24px;
+  margin-bottom: 8px;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid var(--primary-color, #0ea5e9);
+}
+
+.status-hint {
+  display: block;
+  margin-top: 8px;
+  margin-left: 32px;
+  font-size: 12px;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* ======================
+   DIALOG ACTIONS
+====================== */
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid #e0e0e0;
+  flex-shrink: 0;
+}
+
+.btn-cancel,
+.btn-save {
+  min-width: 120px;
+  height: 44px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-cancel {
+  border: 2px solid var(--primary-color, #0ea5e9);
+  background-color: transparent;
+}
+
+.btn-cancel:hover {
+  background-color: rgba(14, 165, 233, 0.08);
+}
+
+.btn-save {
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+}
+
+.btn-save:hover:not([disabled]) {
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.5);
+  transform: translateY(-2px);
+}
+
+.btn-cancel mat-icon,
+.btn-save mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+/* ======================
+   RESPONSIVE
+====================== */
+@media screen and (max-width: 599px) {
+  .dialog-content {
+    padding: 16px;
+  }
+
+  .dialog-header {
+    padding: 12px 16px;
+  }
+
+  .dialog-header h2 {
+    font-size: 18px;
+  }
+
+  .dialog-actions {
+    flex-direction: column-reverse;
+    padding: 12px 16px;
+  }
+
+  .btn-cancel,
+  .btn-save {
+    width: 100%;
+  }
+}
+

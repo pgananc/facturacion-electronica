@@ -1,97 +1,184 @@
-<mat-expansion-panel hideToggle expanded >
-  <mat-expansion-panel-header>
-    <mat-panel-title>
-      {{
-      edition ? "Actualización Usuario" : " Registro Usuario"
-      }}
-    </mat-panel-title>
-  </mat-expansion-panel-header>
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <h2 mat-dialog-title>
+      {{ edition ? "Actualizar Usuario" : "Nuevo Usuario" }}
+    </h2>
+  </div>
 
-  <form
-    class="principal-container"
-    [formGroup]="form"
-    (ngSubmit)="validateSave()"
-    #frmClient="ngForm"
-  >
-    <mat-form-field class="principal-full-width">
-      <input
-        matInput
-        placeholder="Nombre y Apellido"
-        required
-        formControlName="name"
-        name="name"
-      />
-    </mat-form-field>
-
-    <mat-form-field class="principal-full-width">
-      <input
-        matInput
-        placeholder="Identificación"
-        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
-        required
-        formControlName="identification"
-        name="identification"
-      />
-    </mat-form-field>
-
-    <mat-form-field class="principal-full-width">
-      <input
-        matInput
-        placeholder="Mail"
-        required
-        formControlName="email"
-        id="email"
-        email="true"
-      />
-    </mat-form-field>
-    <div
-      class="text-invalid principal-full-width"
-      *ngIf="f['email'].errors?.['email']"
-    >
-      Formato de email incorrecto.
-    </div>
-
-    <mat-form-field class="principal-full-width">
-      <input
-        type="password"
-        matInput
-        placeholder="Password"
-        required
-        formControlName="password"
-      />
-    </mat-form-field>
-
-    <mat-form-field class="principal-full-width">
-      <mat-select placeholder="Roles" [(value)]="idRole" required="true">
-        <mat-option *ngFor="let role of roles" [value]="role.idRole">
-          {{ role.name }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-checkbox
-      labelPosition="before"
-      formControlName="status"
-      class="principal-full-width"
-    >Estado</mat-checkbox
-    >
-    <div class="flex-parent jc-center">
-      <button
-        class="margin-right botton-width"
-        mat-raised-button
-        color="primary"
-        type="submit"
-        [disabled]="frmClient.invalid"
+  <!-- Content -->
+  <div class="dialog-content" mat-dialog-content>
+    <form [formGroup]="form" (ngSubmit)="validateSave()" #frmUser="ngForm">
+      <!-- Compañía (solo si se permite selección y no es edición) -->
+      <mat-form-field
+        *ngIf="allowCompanySelection && !edition"
+        appearance="outline"
+        class="full-width"
       >
-        <mat-icon>done</mat-icon>
-        <span>Ok</span>
-      </button>
-      <button mat-raised-button color="accent" routerLink="/user" type="button">
-        <mat-icon>close</mat-icon>
-        <span>Cancel</span>
-      </button>
-    </div>
-  </form>
+        <mat-label>Compañía</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >business</mat-icon
+        >
+        <mat-select
+          formControlName="companyId"
+          placeholder="Seleccione una compañía"
+        >
+          <mat-option
+            *ngFor="let company of companies"
+            [value]="company.idCompany"
+          >
+            {{ company.name }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('companyId')?.hasError('required')">
+          Compañía es requerida
+        </mat-error>
+      </mat-form-field>
 
-</mat-expansion-panel>
+      <!-- Nombre y Apellido -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nombre y Apellido</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >person</mat-icon
+        >
+        <input
+          matInput
+          placeholder="Nombre completo del usuario"
+          required
+          formControlName="name"
+          name="name"
+        />
+        <mat-error *ngIf="form.get('name')?.hasError('required')">
+          Nombre es requerido
+        </mat-error>
+      </mat-form-field>
 
+      <!-- Identificación -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Identificación</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >badge</mat-icon
+        >
+        <input
+          matInput
+          placeholder="Número de identificación"
+          required
+          formControlName="userName"
+          name="identification"
+          oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
+        />
+        <mat-error *ngIf="form.get('userName')?.hasError('required')">
+          Identificación es requerida
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Mail -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Correo Electrónico</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >email</mat-icon
+        >
+        <input
+          matInput
+          placeholder="correo@ejemplo.com"
+          required
+          formControlName="email"
+          id="email"
+          email="true"
+        />
+        <mat-error *ngIf="form.get('email')?.hasError('required')">
+          Correo es requerido
+        </mat-error>
+        <mat-error *ngIf="form.get('email')?.hasError('email')">
+          Formato de email incorrecto
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Password -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Contraseña</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >lock</mat-icon
+        >
+        <input
+          [type]="hidePassword ? 'password' : 'text'"
+          matInput
+          [placeholder]="
+            edition ? 'Contraseña actual del usuario' : 'Contraseña del usuario'
+          "
+          [required]="!edition"
+          formControlName="password"
+          autocomplete="new-password"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="hidePassword = !hidePassword"
+          [attr.aria-label]="'Mostrar contraseña'"
+          [attr.aria-pressed]="!hidePassword"
+        >
+          <mat-icon>{{
+            hidePassword ? "visibility_off" : "visibility"
+          }}</mat-icon>
+        </button>
+        <mat-error *ngIf="form.get('password')?.hasError('required')">
+          Contraseña es requerida
+        </mat-error>
+        <mat-hint *ngIf="edition"
+          >Puede modificar la contraseña si lo desea</mat-hint
+        >
+      </mat-form-field>
+
+      <!-- Roles -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Rol</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >admin_panel_settings</mat-icon
+        >
+        <mat-select
+          [(value)]="idRole"
+          required="true"
+          placeholder="Seleccione un rol"
+        >
+          <mat-option *ngFor="let role of roles" [value]="role.idRole">
+            {{ role.description }}
+          </mat-option>
+        </mat-select>
+        <mat-error>Rol es requerido</mat-error>
+      </mat-form-field>
+
+      <!-- Checkbox Estado -->
+      <div class="checkbox-group">
+        <label class="custom-checkbox-container">
+          <input
+            type="checkbox"
+            formControlName="status"
+            class="custom-checkbox-input"
+          />
+          <span class="custom-checkbox-box"></span>
+          <span class="custom-checkbox-label">Activo</span>
+        </label>
+      </div>
+    </form>
+  </div>
+
+  <!-- Actions -->
+  <div class="dialog-actions" mat-dialog-actions>
+    <button
+      mat-raised-button
+      color="primary"
+      type="button"
+      [disabled]="frmUser.invalid"
+      (click)="validateSave()"
+    >
+      <mat-icon>save</mat-icon>
+      <span>Guardar</span>
+    </button>
+
+    <button mat-raised-button type="button" (click)="cancel()">
+      <mat-icon>close</mat-icon>
+      <span>Cancelar</span>
+    </button>
+  </div>
+</div>

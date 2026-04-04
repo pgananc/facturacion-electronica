@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "vscjava.vscode-java-pack",
+    "vscjava.vscode-spring-boot-dashboard",
+    "vscjava.vscode-spring-initializr",
+    "pivotal.vscode-spring-boot",
+    "vmware.vscode-boot-dev-pack",
+    "redhat.java",
+    "vscjava.vscode-maven",
+    "gabrielbb.vscode-lombok",
+    "shengchen.vscode-checkstyle",
+    "sonarsource.sonarlint-vscode"
+  ]
+}

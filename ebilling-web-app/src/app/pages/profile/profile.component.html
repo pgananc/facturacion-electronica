@@ -1,17 +1,59 @@
-<mat-toolbar>
-  <mat-toolbar-row>
-    <span style="margin: auto">Perfil</span>
-  </mat-toolbar-row>
-</mat-toolbar>
+<div class="invoice-page">
+  <mat-toolbar class="toolbar-primary">
+    <span>Perfil</span>
+    <span class="spacer"></span>
+  </mat-toolbar>
 
-<div style="text-align: center" class="principal-container">
-  <br />
-  <label style="font-weight: bolder">Usuario</label>
-  <br />
-  <label>{{ usuario }}</label>
-  <br />
-  <br />
-  <label style="font-weight: bolder">Roles</label>
-  <br />
-  <label>{{ roles }}</label>
+  <mat-card class="card-padding mt-24">
+    <mat-card-content>
+      <div class="profile-container">
+        <div class="profile-info">
+          <div class="info-item">
+            <div class="info-label">
+              <mat-icon>person</mat-icon>
+              <span>Usuario</span>
+            </div>
+            <div class="info-value">{{ userName }}</div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-label">
+              <mat-icon>email</mat-icon>
+              <span>Correo</span>
+            </div>
+            <div class="info-value">{{ mail }}</div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-label">
+              <mat-icon>admin_panel_settings</mat-icon>
+              <span>Roles</span>
+            </div>
+            <div class="info-value roles-container">
+              <span
+                *ngFor="let role of roles"
+                class="role-badge"
+                [ngClass]="getRoleBadgeClass(role)"
+              >
+                {{ getRoleDisplayName(role) }}
+              </span>
+              <span *ngIf="roles.length === 0" class="no-roles">Sin roles asignados</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-actions">
+          <button
+            mat-raised-button
+            color="primary"
+            [routerLink]="['/users/change-password']"
+            class="change-password-btn"
+          >
+            <mat-icon>lock</mat-icon>
+            <span>Cambiar Contraseña</span>
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>

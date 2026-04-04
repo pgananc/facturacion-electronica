@@ -1,0 +1,123 @@
+/* Consistente con el resto del sistema */
+.text-center {
+  text-align: center;
+}
+
+.principal-container {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  min-width: 400px;
+  max-width: 500px;
+}
+
+/* Subtítulo */
+.subtitle {
+  margin: 0 0 20px 0;
+  color: #666;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Lista de puntos */
+.points-list {
+  padding: 0 !important;
+  margin-bottom: 20px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.point-option {
+  height: auto !important;
+  padding: 16px !important;
+  border-bottom: 1px solid #e0e0e0;
+  transition: background-color 0.2s ease;
+}
+
+.point-option:hover {
+  background-color: #f5f5f5;
+}
+
+.point-option:last-child {
+  border-bottom: none;
+}
+
+/* Item del punto */
+.point-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.point-icon {
+  color: var(--primary-color, #0ea5e9);
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.point-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.point-code {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.point-status {
+  font-size: 12px;
+  color: #4caf50;
+  font-weight: 500;
+}
+
+/* Empty state */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: #999;
+  text-align: center;
+}
+
+.empty-state mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Botones */
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .principal-container {
+    min-width: 300px;
+    max-width: 100%;
+    padding: 16px;
+  }
+
+  .point-option {
+    padding: 12px !important;
+  }
+}

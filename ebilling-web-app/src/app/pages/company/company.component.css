@@ -1,48 +1,157 @@
-.principal-full-width {
-    margin-left: 10px;
+@import '../../_shared/toolbar-styles.css';
+@import '../../_shared/shared-styles.css';
+@import '../../_shared/table-styles.css';
+@import '../../_shared/responsive-styles.css';
+
+.company-page { padding: var(--spacing-lg, 24px); max-width: 1400px; margin: 0 auto; background-color: var(--background-color, #f9fafb); min-height: calc(100vh - 64px); }
+.new-company-btn mat-icon { margin-right: var(--spacing-xs, 8px); }
+
+.mat-column-identification { width: 11%; min-width: 110px; }
+.mat-column-name { width: 18%; min-width: 180px; }
+.mat-column-nameCommercial { width: 18%; min-width: 180px; }
+.mat-column-forceToAccounting { width: 16%; min-width: 160px; }
+.mat-column-regime { width: 13%; min-width: 130px; }
+.mat-column-status { width: 8%; min-width: 80px; }
+.mat-column-actions { width: 12%; min-width: 120px; }
+
+.mat-column-name .celda-ajustable { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block !important; }
+.mat-column-identification .celda-ajustable, .mat-column-regime .celda-ajustable {
+  white-space: nowrap; overflow: hidden; text-overflow: clip;
 }
 
-
-.principal-container {
-    display: flex;
-    flex-direction: column;
-    min-width: 300px;
+/* ===== CENTRAR TODAS LAS COLUMNAS ===== */
+/* Headers centrados */
+::ng-deep .company-page .mat-mdc-header-cell {
+  text-align: center !important;
+  justify-content: center !important;
 }
 
-.principal-header {
-    min-height: 64px;
-    padding: 8px 24px 0;
+/* Celdas centradas */
+::ng-deep .company-page .mat-mdc-cell {
+  text-align: center !important;
+  justify-content: center !important;
 }
 
-.mat-form-field {
-    font-size: 14px;
+/* Asegurar que el contenido flex esté centrado */
+::ng-deep .mat-mdc-table .mat-mdc-cell.mat-column-identification,
+::ng-deep .mat-mdc-table .mat-mdc-cell.mat-column-name,
+::ng-deep .mat-mdc-table .mat-mdc-cell.mat-column-nameCommercial,
+::ng-deep .mat-mdc-table .mat-mdc-cell.mat-column-forceToAccounting,
+::ng-deep .mat-mdc-table .mat-mdc-cell.mat-column-regime,
+::ng-deep .mat-mdc-table .mat-mdc-cell.mat-column-status,
+::ng-deep .mat-mdc-table .mat-mdc-cell.mat-column-actions {
+  display: flex !important; 
+  justify-content: center !important; 
+  align-items: center !important; 
+  text-align: center !important;
+}
+
+/* Headers también centrados */
+::ng-deep .mat-mdc-table .mat-mdc-header-cell.mat-column-identification,
+::ng-deep .mat-mdc-table .mat-mdc-header-cell.mat-column-name,
+::ng-deep .mat-mdc-table .mat-mdc-header-cell.mat-column-nameCommercial,
+::ng-deep .mat-mdc-table .mat-mdc-header-cell.mat-column-forceToAccounting,
+::ng-deep .mat-mdc-table .mat-mdc-header-cell.mat-column-regime,
+::ng-deep .mat-mdc-table .mat-mdc-header-cell.mat-column-status,
+::ng-deep .mat-mdc-table .mat-mdc-header-cell.mat-column-actions {
+  text-align: center !important;
+  justify-content: center !important;
+}
+
+/* ===== LAYOUT HORIZONTAL: INPUTS + BOTONES EN UNA LÍNEA ===== */
+.search-grid-horizontal {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 12px);
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
+.search-field-compact {
+  flex: 1;
+  margin: 0 !important;
+  min-width: 180px;
+}
+
+.search-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 12px);
+  margin-left: auto;
+  flex-shrink: 0;
+  padding-bottom: 22px;
+}
+
+@media screen and (max-width: 959px) {
+  .search-field-compact {
+    flex: 1 1 calc(50% - 6px);
+    min-width: 180px;
+  }
+
+  .search-actions {
+    flex: 1 1 100%;
+    justify-content: flex-end;
+    padding-bottom: 0;
+  }
+}
+
+@media screen and (max-width: 599px) {
+  .search-field-compact {
+    flex: 1 1 100%;
     width: 100%;
+  }
+
+  .search-actions {
+    flex-direction: column;
+    width: 100%;
+    padding-bottom: 0;
+  }
+
+  .search-btn,
+  .clear-btn {
+    width: 100%;
+  }
 }
 
-.mat-table {
-    overflow: auto;
-    max-height: 500px;
+/* ===== TABLE CONTAINER CON SCROLL HORIZONTAL ===== */
+.table-wrapper {
+  margin-top: var(--spacing-sm, 12px) !important;
 }
 
-.text-center {
-    text-align: center;
+.table-container {
+  position: relative;
+  overflow-x: auto;
+  min-height: 300px;
+  -webkit-overflow-scrolling: touch;
 }
 
-.flex-parent {
-    display: flex;
-}
-
-.jc-center {
-    justify-content: center;
-}
-
-.text-color-bold {
-    font-weight: bold;
-}
-
-.botton-add {
-    margin-right: 20px;
-    margin-bottom: 5px;
-    margin-top: 5px;
-    text-align: left;
+/* ===== TABLA RESPONSIVE - OCULTAR COLUMNAS EN MOBILE ===== */
+@media screen and (max-width: 600px) {
+  /* Ocultar columnas menos importantes en mobile */
+  .mat-column-nameCommercial,
+  .mat-column-forceToAccounting,
+  .mat-column-regime {
+    display: none !important;
+  }
+  
+  /* Ajustar ancho de columnas visibles */
+  .mat-column-identification {
+    width: 25% !important;
+    min-width: 100px !important;
+  }
+  
+  .mat-column-name {
+    width: 35% !important;
+    min-width: 120px !important;
+  }
+  
+  .mat-column-status {
+    width: 15% !important;
+    min-width: 70px !important;
+  }
+  
+  .mat-column-actions {
+    width: 25% !important;
+    min-width: 100px !important;
+  }
 }

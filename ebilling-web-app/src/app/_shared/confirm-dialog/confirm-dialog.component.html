@@ -1,0 +1,61 @@
+<div class="confirm-dialog">
+  <!-- Icono según el tipo -->
+  <div class="dialog-icon" [ngClass]="'icon-' + data.type">
+    <mat-icon *ngIf="data.type === 'warning'">warning_amber</mat-icon>
+    <mat-icon *ngIf="data.type === 'danger'">delete_forever</mat-icon>
+    <mat-icon *ngIf="data.type === 'info'">info</mat-icon>
+  </div>
+
+  <!-- Título -->
+  <h2 mat-dialog-title class="dialog-title">{{ data.title }}</h2>
+
+  <!-- Mensaje -->
+  <mat-dialog-content class="dialog-content">
+    <p [innerHTML]="data.message"></p>
+
+    <!-- Campo de contraseña (opcional) -->
+    <mat-form-field
+      *ngIf="data.showPasswordInput"
+      appearance="outline"
+      class="password-field"
+    >
+      <mat-label>{{ data.passwordLabel }}</mat-label>
+      <input
+        matInput
+        type="password"
+        [(ngModel)]="password"
+        placeholder="Ingrese la contraseña"
+        (keyup.enter)="canConfirm() && onConfirm()"
+      />
+      <mat-icon matPrefix>lock</mat-icon>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <!-- Botones con orden invertido para danger -->
+  <mat-dialog-actions
+    class="dialog-actions"
+    [class.danger-actions]="data.type === 'danger'"
+  >
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onCancel()"
+      class="cancel-button"
+      cdkFocusInitial
+    >
+      <mat-icon>close</mat-icon>
+      {{ data.cancelText }}
+    </button>
+    <button
+      mat-raised-button
+      [color]="data.type === 'danger' ? 'warn' : 'primary'"
+      (click)="onConfirm()"
+      class="confirm-button"
+      [class.danger-button]="data.type === 'danger'"
+      [disabled]="!canConfirm()"
+    >
+      <mat-icon>{{ data.type === "danger" ? "delete" : "check" }}</mat-icon>
+      {{ data.confirmText }}
+    </button>
+  </mat-dialog-actions>
+</div>

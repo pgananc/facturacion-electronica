@@ -1,0 +1,134 @@
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <h2 mat-dialog-title>Cambiar Plan de Suscripción</h2>
+  </div>
+
+  <mat-dialog-content>
+    <!-- Información actual -->
+    <mat-card class="current-plan-card">
+      <mat-card-header>
+        <mat-card-title>Plan Actual</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="plan-info">
+          <div class="info-row">
+            <strong>Empresa:</strong>
+            <span>{{ data.businessName }}</span>
+          </div>
+          <div class="info-row">
+            <strong>Plan:</strong>
+            <span
+              class="plan-badge"
+              [class]="'plan-' + data.plan.code.toLowerCase()"
+            >
+              {{ data.plan.name }}
+            </span>
+          </div>
+          <div class="info-row">
+            <strong>Documentos:</strong>
+            <span
+              >{{ data.currentYearUsage }} /
+              {{ data.plan.documentLimitYearly }}</span
+            >
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Formulario -->
+    <form [formGroup]="form" class="upgrade-form">
+      <!-- Seleccionar nuevo plan -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nuevo Plan</mat-label>
+        <mat-select formControlName="newPlanCode">
+          <mat-option *ngFor="let plan of availablePlans" [value]="plan.code">
+            {{ plan.name }} -
+            {{
+              plan.documentLimit === -1
+                ? "Ilimitado"
+                : plan.documentLimit + " documentos/año"
+            }}
+          </mat-option>
+        </mat-select>
+        <mat-hint *ngIf="isLoadingPlans">Cargando planes...</mat-hint>
+      </mat-form-field>
+
+      <!-- Información del plan seleccionado -->
+      <mat-card *ngIf="getSelectedPlan()" class="selected-plan-card">
+        <mat-card-header>
+          <mat-card-title>Detalles del Nuevo Plan</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="plan-details">
+            <div class="detail-row">
+              <strong>Plan:</strong>
+              <span>{{ getSelectedPlan()!.name }}</span>
+            </div>
+            <div class="detail-row">
+              <strong>Documentos por año:</strong>
+              <span>{{
+                getSelectedPlan()!.documentLimit === -1
+                  ? "Ilimitado"
+                  : getSelectedPlan()!.documentLimit
+              }}</span>
+            </div>
+            <div class="detail-row">
+              <strong>Precio mensual:</strong>
+              <span>${{ getSelectedPlan()!.price | number : "1.2-2" }}</span>
+            </div>
+            <div class="features-list">
+              <strong>Características:</strong>
+              <ul>
+                <li *ngFor="let feature of getSelectedPlan()!.features">
+                  <mat-icon>check_circle</mat-icon>
+                  {{ feature }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Notas adicionales -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Notas adicionales (opcional)</mat-label>
+        <mat-icon matPrefix>note</mat-icon>
+        <textarea
+          matInput
+          formControlName="notes"
+          rows="3"
+          placeholder="Ej: Cliente solicitó upgrade, necesita más documentos..."
+        ></textarea>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+
+  <!-- Actions -->
+  <div class="dialog-actions" mat-dialog-actions>
+    <button
+      mat-raised-button
+      color="primary"
+      type="button"
+      [disabled]="form.invalid || isLoading"
+      (click)="onSubmit()"
+      class="btn-save"
+    >
+      <mat-icon *ngIf="!isLoading">save</mat-icon>
+      <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+      <span *ngIf="!isLoading">Guardar</span>
+      <span *ngIf="isLoading">Guardando...</span>
+    </button>
+
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="onCancel()"
+      [disabled]="isLoading"
+      class="btn-cancel"
+    >
+      <mat-icon>close</mat-icon>
+      <span>Cancelar</span>
+    </button>
+  </div>
+</div>

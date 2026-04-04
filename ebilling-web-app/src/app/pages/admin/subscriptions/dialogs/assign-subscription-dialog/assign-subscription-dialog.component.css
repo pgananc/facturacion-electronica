@@ -1,0 +1,623 @@
+/* ======================
+   DIALOG CONTAINER
+====================== */
+.dialog-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 90vh;
+  min-width: 550px;
+  max-width: 650px;
+}
+
+/* ======================
+   DIALOG HEADER (Estilo replicado de clientes)
+====================== */
+.dialog-header {
+  flex-shrink: 0;
+  padding: 16px 24px;
+  border-bottom: 2px solid var(--primary-color, #0ea5e9);
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.05) 0%, rgba(10, 130, 187, 0.05) 100%);
+}
+
+.dialog-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--primary-color, #0ea5e9);
+  letter-spacing: 0.3px;
+}
+
+.header-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  color: var(--primary-color, #0ea5e9);
+  margin-right: 12px;
+}
+
+/* ======================
+   DIALOG CONTENT
+====================== */
+mat-dialog-content {
+  flex: 1 1 auto;
+  padding: 24px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.assign-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  /* Sin padding-top adicional - el mat-dialog-content ya tiene padding */
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* Asterisco de campos requeridos - Material Design lo agrega automáticamente */
+::ng-deep .assign-form .mat-mdc-form-field-required-marker {
+  color: #f44336;
+  font-weight: 600;
+}
+
+/* Hint con icono */
+mat-hint {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.hint-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+  color: #757575;
+}
+
+/* Alert cuando no hay empresas */
+.alert-warning {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  background-color: #fff3e0;
+  border-left: 4px solid #ff9800;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.alert-warning mat-icon {
+  color: #ff9800;
+  flex-shrink: 0;
+}
+
+.alert-warning strong {
+  display: block;
+  color: #e65100;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.alert-warning p {
+  margin: 0;
+  font-size: 13px;
+  color: #5d4037;
+}
+
+/* ===== OPCIONES DE DROPDOWNS MEJORADAS ===== */
+
+/* Loading option */
+.loading-option,
+.empty-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  color: #757575;
+  font-size: 14px;
+}
+
+.loading-option mat-spinner {
+  flex-shrink: 0;
+}
+
+.empty-option mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  color: #ff9800;
+}
+
+/* Opción de empresa con layout mejorado */
+.company-option {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 0;
+}
+
+.company-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: #212121;
+  line-height: 1.4;
+}
+
+.company-ruc {
+  font-size: 12px;
+  color: #616161;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Roboto Mono', monospace;
+  letter-spacing: 0.3px;
+  margin-top: 2px;
+}
+
+/* Opción de plan con layout mejorado */
+.plan-option {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px 0;
+  width: 100%;
+}
+
+.plan-name-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.plan-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: #212121;
+}
+
+.plan-price {
+  font-size: 13px;
+  color: #1976d2;
+  background-color: #e3f2fd;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.plan-limit-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #616161;
+}
+
+.mini-icon {
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+  color: #757575 !important;
+}
+
+/* Suffix text en input */
+.suffix-text {
+  color: #757575;
+  font-size: 14px;
+  margin-left: 8px;
+}
+
+/* ===== VALOR SELECCIONADO EN DROPDOWN (COLAPSADO) ===== */
+.selected-company-display {
+  font-weight: 600;
+  color: #212121;
+  font-size: 14px;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Detalles del plan (mejorado con animación) */
+.plan-details {
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  border-left: 4px solid #4caf50;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 0; /* ✅ Sin margen - el gap del form maneja el espaciado */
+  box-shadow: 0 3px 8px rgba(76, 175, 80, 0.15);
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.plan-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  color: #1b5e20;
+  font-size: 15px;
+}
+
+.plan-header mat-icon {
+  color: #4caf50;
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+.plan-code-badge {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+  color: #1b5e20;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 4px 12px;
+  border-radius: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.plan-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.plan-info-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 14px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.plan-info-item:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.plan-info-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.plan-info-item.highlighted {
+  background: linear-gradient(135deg, #fff9c4 0%, #fff59d 100%);
+  border: 2px solid #fbc02d;
+}
+
+.plan-info-item.highlighted:hover {
+  background: linear-gradient(135deg, #fff59d 0%, #ffee58 100%);
+}
+
+/* Icon wrappers con colores específicos */
+.info-icon-wrapper {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #e8f5e9;
+}
+
+.info-icon-wrapper mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  color: #4caf50;
+}
+
+.info-icon-wrapper.documents {
+  background: #e3f2fd;
+}
+
+.info-icon-wrapper.documents mat-icon {
+  color: #1976d2;
+}
+
+.info-icon-wrapper.price {
+  background: #f3e5f5;
+}
+
+.info-icon-wrapper.price mat-icon {
+  color: #9c27b0;
+}
+
+.info-icon-wrapper.date {
+  background: #fff3e0;
+}
+
+.info-icon-wrapper.date mat-icon {
+  color: #ff9800;
+}
+
+.info-icon-wrapper.total {
+  background: #fff9c4;
+}
+
+.info-icon-wrapper.total mat-icon {
+  color: #f57c00;
+}
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.info-label {
+  font-size: 10px;
+  color: #757575;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 600;
+}
+
+.info-value {
+  font-size: 15px;
+  color: #212121;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.unlimited-badge {
+  color: #1b5e20;
+  background-color: #c8e6c9;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.inline-icon {
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.price-highlight {
+  color: #9c27b0;
+  font-size: 19px;
+}
+
+.date-range {
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.arrow-icon {
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+  color: #ff9800 !important;
+}
+
+.total-cost {
+  color: #f57c00;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.duration-info {
+  font-size: 11px;
+  color: #757575;
+  font-weight: 400;
+  margin-left: 6px;
+}
+
+/* Divider mejorado - Espaciado consistente con el gap del form */
+.section-divider {
+  margin: 0 !important; /* ✅ Sin margen - el gap del form maneja el espaciado */
+  border-top-color: #e0e0e0;
+}
+
+/* ===== CAMPO DE DURACIÓN CON ATAJOS RÁPIDOS ===== */
+.duration-field-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.duration-shortcuts {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.shortcut-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px !important;
+  font-size: 13px;
+  font-weight: 500;
+  border: 2px solid #e0e0e0;
+  background-color: #fafafa;
+  color: #616161;
+  transition: all 0.2s ease;
+  border-radius: 20px;
+}
+
+.shortcut-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.shortcut-btn:hover:not(.active) {
+  border-color: #1976d2;
+  background-color: #e3f2fd;
+  color: #1976d2;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(25, 118, 210, 0.2);
+}
+
+.shortcut-btn.active {
+  border-color: #1976d2;
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 3px 8px rgba(25, 118, 210, 0.3);
+}
+
+.shortcut-btn.active mat-icon {
+  color: white;
+}
+
+.shortcut-btn:active {
+  transform: scale(0.95);
+}
+
+/* ======================
+   DIALOG ACTIONS (Botones Mejorados - Estilo replicado de clientes)
+====================== */
+mat-dialog-actions {
+  flex-shrink: 0;
+  padding: 16px 24px 20px 24px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  background-color: #fafafa;
+}
+
+mat-dialog-actions button {
+  min-width: 120px;
+  height: 44px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 6px;
+  letter-spacing: 0.3px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+mat-dialog-actions button mat-icon {
+  margin-right: 6px;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.btn-save {
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.35);
+}
+
+.btn-save:hover:not(:disabled) {
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.45);
+  transform: translateY(-2px);
+}
+
+.btn-save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-cancel {
+  border: 2px solid #e0e0e0;
+  color: #666;
+  background-color: white;
+}
+
+.btn-cancel:hover {
+  background-color: #f5f5f5;
+  border-color: var(--primary-color, #0ea5e9);
+  color: var(--primary-color, #0ea5e9);
+  transform: translateY(-1px);
+}
+
+mat-dialog-actions button.loading mat-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Spinner dentro del botón */
+mat-dialog-actions button mat-spinner {
+  display: inline-block;
+  margin-right: 8px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .dialog-container {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .dialog-header {
+    padding: 16px 20px;
+    gap: 12px;
+  }
+
+  .header-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+
+  .dialog-header h2 {
+    font-size: 18px;
+  }
+
+  mat-dialog-content {
+    padding: 20px 16px;
+  }
+
+  .plan-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  mat-dialog-actions {
+    flex-direction: column-reverse;
+    padding: 12px 16px;
+  }
+
+  mat-dialog-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .summary-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+

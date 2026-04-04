@@ -3,7 +3,7 @@ import { User } from '../../_model/auth/user';
 import { Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { UserResponse } from '../../_model/auth/userResponse';
+import { UserResponse } from '../../_model/auth/user-response';
 
 @Injectable({
   providedIn: 'root',
@@ -41,10 +41,8 @@ export class UserService {
     return this.http.get<UserResponse>(`${this.url}/${id}`);
   }
 
-  existsByIdCompanyAndUserName(idCompany: Number, userName: String) {
-    return this.http.get<boolean>(
-      `${this.url}/exist/company/${idCompany}/user/${userName}`
-    );
+  existsByUserName(userName: String) {
+    return this.http.get<boolean>(`${this.url}/exist/userName/${userName}`);
   }
 
   resetPassword(token: string, clave: string) {
@@ -55,5 +53,20 @@ export class UserService {
 
   findActiveUsersAndNotInCompany(idCompany: number) {
     return this.http.get<UserResponse>(`${this.url}/not-company/${idCompany}`);
+  }
+  existsByMail(mail: String) {
+    return this.http.get<boolean>(`${this.url}/exist/mail/${mail}`);
+  }
+
+  findUserByUserNameAndPassword(user: User) {
+    return this.http.post<UserResponse>(`${this.url}/userName/password`, user);
+  }
+
+  updatePassword(password: string, idUser: Number) {
+    return this.http.patch<boolean>(`${this.url}/${idUser}/password`, { password });
+  }
+
+  findUserByUserName(userName: string) {
+    return this.http.get<UserResponse>(`${this.url}/userName/${userName}`);
   }
 }

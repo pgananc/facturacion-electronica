@@ -1,0 +1,551 @@
+<div class="proforma-page">
+  <!-- Título -->
+  <mat-toolbar class="toolbar-primary">
+    <button mat-icon-button (click)="cancel()" aria-label="Volver">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span>{{ editId ? "Editar Proforma" : "Nueva Proforma" }}</span>
+  </mat-toolbar>
+
+  <div *ngIf="isLoading" class="loading-overlay">
+    <mat-spinner diameter="60"></mat-spinner>
+    <p>Cargando...</p>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="save()" *ngIf="!isLoading">
+    <!-- Fechas -->
+    <mat-card class="card-padding mt-16">
+      <div class="section-header">
+        <mat-icon class="section-icon">event</mat-icon>
+        <h2 class="section-title">Fechas</h2>
+      </div>
+      <mat-card-content>
+        <div
+          fxLayout="row"
+          fxLayoutGap="24px"
+          fxLayoutAlign="start baseline"
+          class="form-row"
+        >
+          <div fxFlex="20%">
+            <div class="input-label">Fecha emisión <span class="required"></span></div>
+          </div>
+          <div fxFlex="30%">
+            <mat-form-field appearance="outline" class="full-width">
+              <input
+                matInput
+                [matDatepicker]="pickerIssue"
+                [min]="editId ? null : todayDate"
+                [max]="editId ? null : todayDate"
+                formControlName="issueDate"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="pickerIssue"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #pickerIssue></mat-datepicker>
+              <mat-hint *ngIf="!editId">Solo fecha actual</mat-hint>
+            </mat-form-field>
+          </div>
+          <div fxFlex="20%">
+            <div class="input-label">Válida hasta <span class="required"></span></div>
+          </div>
+          <div fxFlex="30%">
+            <mat-form-field appearance="outline" class="full-width">
+              <input
+                matInput
+                [matDatepicker]="pickerValid"
+                [min]="minValidUntilDate"
+                formControlName="validUntil"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="pickerValid"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #pickerValid></mat-datepicker>
+              <mat-hint>Igual o posterior a hoy</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Cliente -->
+    <mat-card class="card-padding mt-24">
+      <div class="section-header">
+        <mat-icon class="section-icon">person</mat-icon>
+        <h2 class="section-title">Cliente</h2>
+      </div>
+      <mat-card-content>
+        <!-- fila 1: Identificación -->
+        <div
+          fxLayout="row"
+          fxLayoutGap="24px"
+          fxLayoutAlign="start baseline"
+          class="form-row"
+        >
+          <!-- Label Identificación (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">Identificación <span class="required"></span></div>
+          </div>
+          <!-- Campo Identificación (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Identificación</mat-label>
+              <input
+                matInput
+                formControlName="clientIdentification"
+                placeholder="RUC/CI/Pasaporte/Id. Ex"
+                (keydown.enter)="onClientIdentificationEnter($event)"
+              />
+              <!-- Bot?n buscar cliente (primero - acci?n principal) -->
+              <button
+                type="button"
+                mat-icon-button
+                matSuffix
+                (click)="searchClient()"
+                aria-label="Buscar cliente por identificación"
+                matTooltip="Buscar cliente"
+                matTooltipPosition="above"
+                class="search-buyer-btn"
+              >
+                <mat-icon>search</mat-icon>
+              </button>
+              <!-- Bot?n crear cliente r?pido (segundo - acci?n secundaria) -->
+              <button
+                type="button"
+                mat-icon-button
+                matSuffix
+                (click)="openCreateClientDialog()"
+                aria-label="Crear nuevo cliente"
+                matTooltip="Crear nuevo cliente"
+                matTooltipPosition="above"
+                class="create-client-btn"
+              >
+                <mat-icon>add_circle</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+
+          <!-- Label Tipo identificación (20%) -->
+          <div fxFlex="20%">
+            <div class="input-label">Tipo identificación <span class="required"></span></div>
+          </div>
+          <!-- Campo Tipo identificaci?n (80%) -->
+          <div fxFlex="80%">
+            <mat-form-field
+              appearance="outline"
+              class="full-width readonly-field"
+            >
+              <mat-label>Tipo identificación</mat-label>
+              <mat-select [value]="client?.idType" disabled>
+                <mat-option *ngFor="let t of idTypes" [value]="t.value">
+                  {{ t.viewValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- fila 2: Razón social + Dirección (solo lectura, como Adquiriente) -->
+        <div
+          fxLayout="row"
+          fxLayoutGap="24px"
+          fxLayoutAlign="start baseline"
+          class="form-row mt-16"
+        >
+          <div fxFlex="20%">
+            <div class="input-label">Razón social <span class="required"></span></div>
+          </div>
+          <div fxFlex="80%">
+            <mat-form-field
+              appearance="outline"
+              class="full-width readonly-field"
+            >
+              <mat-label>Razón social</mat-label>
+              <input matInput [value]="client ? client.name : ''" readonly />
+              <mat-hint align="start">Se completa automáticamente</mat-hint>
+            </mat-form-field>
+          </div>
+          <div fxFlex="20%">
+            <div class="input-label">Dirección</div>
+          </div>
+          <div fxFlex="80%">
+            <mat-form-field
+              appearance="outline"
+              class="full-width readonly-field"
+            >
+              <mat-label>Dirección</mat-label>
+              <input
+                matInput
+                [value]="client ? client.address || '' : ''"
+                readonly
+              />
+              <mat-hint align="start">Se completa automáticamente</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- fila 3: Teléfono + Correo electrónico (solo lectura) -->
+        <div
+          fxLayout="row"
+          fxLayoutGap="24px"
+          fxLayoutAlign="start baseline"
+          class="form-row mt-16"
+        >
+          <div fxFlex="20%">
+            <div class="input-label">Teléfono</div>
+          </div>
+          <div fxFlex="80%">
+            <mat-form-field
+              appearance="outline"
+              class="full-width readonly-field"
+            >
+              <mat-label>Teléfono</mat-label>
+              <input
+                matInput
+                [value]="client ? client.phone || '' : ''"
+                readonly
+              />
+              <mat-hint align="start">Se completa automáticamente</mat-hint>
+            </mat-form-field>
+          </div>
+          <div fxFlex="20%">
+            <div class="input-label">Correo electrónico <span class="required"></span></div>
+          </div>
+          <div fxFlex="80%">
+            <mat-form-field
+              appearance="outline"
+              class="full-width readonly-field"
+            >
+              <mat-label>Correo electrónico</mat-label>
+              <input
+                matInput
+                [value]="client ? client.email || '' : ''"
+                readonly
+                type="email"
+              />
+              <mat-hint align="start">
+                Se completa automáticamente. Revise que sea correcto.
+              </mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Detalle de productos -->
+    <mat-card class="card-padding mt-24">
+      <mat-toolbar class="toolbar-primary-sm">Detalle</mat-toolbar>
+      <mat-card-content>
+        <div
+          fxLayout="row"
+          fxLayoutAlign="start baseline"
+          fxLayoutGap="16px"
+          class="mt-16"
+        >
+          <div fxFlex="15%">
+            <div class="input-label">Código/Descripción</div>
+          </div>
+          <div fxFlex="85%" fxLayout="row" fxLayoutGap="16px">
+            <div fxFlex>
+              <mat-form-field appearance="outline" class="full-width">
+                <input
+                  matInput
+                  #productSearchInput
+                  placeholder="Buscar por código o descripción..."
+                  [formControl]="productCtrl"
+                  (keyup.enter)="searchProduct(); $event.preventDefault()"
+                />
+                <!-- Bot?n buscar producto (primero - acci?n principal) -->
+                <button
+                  type="button"
+                  mat-icon-button
+                  matSuffix
+                  (click)="searchProduct()"
+                  aria-label="Buscar producto"
+                  matTooltip="Buscar producto"
+                  matTooltipPosition="above"
+                  class="search-product-btn"
+                >
+                  <mat-icon>search</mat-icon>
+                </button>
+                <!-- Bot?n crear producto r?pido (segundo - acci?n secundaria) -->
+                <button
+                  type="button"
+                  mat-icon-button
+                  matSuffix
+                  (click)="openCreateProductDialog()"
+                  aria-label="Crear nuevo producto"
+                  matTooltip="Crear nuevo producto"
+                  matTooltipPosition="above"
+                  class="create-product-btn"
+                >
+                  <mat-icon>add_circle</mat-icon>
+                </button>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <!-- tabla de productos -->
+        <div class="mt-16 invoice-detail-table" formArrayName="details">
+          <mat-table
+            [dataSource]="detailsDataSource"
+            matSort
+            class="mat-elevation-z1 full-width"
+            style="position: relative; min-height: 300px"
+          >
+            <!-- Código -->
+            <ng-container matColumnDef="code">
+              <mat-header-cell *matHeaderCellDef mat-sort-header
+                >Código</mat-header-cell
+              >
+              <mat-cell *matCellDef="let g; let i = index" [formGroupName]="i">
+                <input type="text" formControlName="productCode" readonly />
+              </mat-cell>
+            </ng-container>
+            <!-- Cantidad -->
+            <ng-container matColumnDef="quantity">
+              <mat-header-cell *matHeaderCellDef mat-sort-header
+                >Cantidad</mat-header-cell
+              >
+              <mat-cell *matCellDef="let g; let i = index" [formGroupName]="i">
+                <input
+                  type="number"
+                  formControlName="quantity"
+                  min="1"
+                  step="1"
+                />
+              </mat-cell>
+            </ng-container>
+            <!-- Descripción -->
+            <ng-container matColumnDef="description">
+              <mat-header-cell *matHeaderCellDef mat-sort-header
+                >Descripción</mat-header-cell
+              >
+              <mat-cell *matCellDef="let g; let i = index" [formGroupName]="i">
+                <input type="text" formControlName="description" readonly />
+              </mat-cell>
+            </ng-container>
+            <!-- Precio unitario -->
+            <ng-container matColumnDef="unitPrice">
+              <mat-header-cell *matHeaderCellDef mat-sort-header
+                >Precio unitario</mat-header-cell
+              >
+              <mat-cell *matCellDef="let g; let i = index" [formGroupName]="i">
+                <input
+                  type="number"
+                  formControlName="unitPrice"
+                  min="0"
+                  step="0.01"
+                />
+              </mat-cell>
+            </ng-container>
+            <!-- Descuento % -->
+            <ng-container matColumnDef="discount">
+              <mat-header-cell *matHeaderCellDef mat-sort-header
+                >Descuento %</mat-header-cell
+              >
+              <mat-cell *matCellDef="let g; let i = index" [formGroupName]="i">
+                <input
+                  type="number"
+                  formControlName="discount"
+                  min="0"
+                  max="100"
+                />
+              </mat-cell>
+            </ng-container>
+            <!-- Valor total -->
+            <ng-container matColumnDef="totalValue">
+              <mat-header-cell *matHeaderCellDef mat-sort-header
+                >Valor total</mat-header-cell
+              >
+              <mat-cell *matCellDef="let g; let i = index">
+                {{ getSubtotal(i) | number: "1.2-2" }}
+              </mat-cell>
+            </ng-container>
+            <!-- IVA % -->
+            <ng-container matColumnDef="iva">
+              <mat-header-cell *matHeaderCellDef mat-sort-header
+                >IVA %</mat-header-cell
+              >
+              <mat-cell *matCellDef="let g; let i = index" [formGroupName]="i">
+                <input
+                  type="number"
+                  formControlName="ivaPercentage"
+                  min="0"
+                  max="100"
+                />
+              </mat-cell>
+            </ng-container>
+            <!-- ICE % -->
+            <ng-container matColumnDef="ice">
+              <mat-header-cell *matHeaderCellDef mat-sort-header
+                >ICE %</mat-header-cell
+              >
+              <mat-cell *matCellDef="let g; let i = index" [formGroupName]="i">
+                <input
+                  type="number"
+                  formControlName="icePercentage"
+                  min="0"
+                  max="100"
+                />
+              </mat-cell>
+            </ng-container>
+            <!-- Acciones -->
+            <ng-container matColumnDef="actions">
+              <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+              <mat-cell *matCellDef="let g; let i = index">
+                <button
+                  type="button"
+                  mat-icon-button
+                  color="warn"
+                  (click)="removeDetail(i)"
+                  title="Eliminar producto"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </mat-cell>
+            </ng-container>
+
+            <!-- Filas (misma estructura que facturación) -->
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+          </mat-table>
+
+          <!-- Empty state overlay - solo aparece cuando no hay datos -->
+          <div *ngIf="detailsDataSource.data.length === 0" class="empty-state-overlay">
+            <mat-icon class="empty-icon">shopping_cart</mat-icon>
+            <p class="empty-title">No existen productos agregados</p>
+            <p class="empty-subtitle">
+              Busca productos por código o descripción, o crea un nuevo producto.
+            </p>
+          </div>
+        </div>
+
+        <!-- Totales (misma presentación que facturación, sin formas de pago) -->
+        <div class="totals-list mt-16" *ngIf="detailsDataSource.data.length > 0">
+          <!-- Subtotales por IVA -->
+          <div
+            class="totals-item"
+            fxLayout="row"
+            fxLayoutAlign="space-between"
+            *ngFor="let item of subtotalsByIva"
+          >
+            <span>SUBTOTAL {{ item.ivaPercent }}%</span>
+            <span class="value">{{ item.subtotal | number: "1.2-2" }}</span>
+          </div>
+
+          <!-- Subtotal sin impuestos -->
+          <div
+            class="totals-item"
+            fxLayout="row"
+            fxLayoutAlign="space-between"
+          >
+            <span>SUBTOTAL SIN IMPUESTOS</span>
+            <span class="value">{{
+              totals[0].value | number: "1.2-2"
+            }}</span>
+          </div>
+
+          <!-- Descuento -->
+          <div
+            class="totals-item"
+            fxLayout="row"
+            fxLayoutAlign="space-between"
+          >
+            <span>DESCUENTO</span>
+            <span class="value">{{
+              totals[1].value | number: "1.2-2"
+            }}</span>
+          </div>
+
+          <!-- ICE -->
+          <div
+            class="totals-item"
+            fxLayout="row"
+            fxLayoutAlign="space-between"
+          >
+            <span>ICE</span>
+            <span class="value">{{
+              totals[4].value | number: "1.2-2"
+            }}</span>
+          </div>
+
+          <!-- IVA por tarifa -->
+          <div
+            class="totals-item"
+            fxLayout="row"
+            fxLayoutAlign="space-between"
+            *ngFor="let item of subtotalsByIva"
+          >
+            <span>IVA {{ item.ivaPercent }}%</span>
+            <span class="value">{{ item.ivaValue | number: "1.2-2" }}</span>
+          </div>
+
+          <!-- Valor a pagar -->
+          <div
+            class="totals-item total-highlight"
+            fxLayout="row"
+            fxLayoutAlign="space-between"
+          >
+            <strong>Valor a pagar:</strong>
+            <strong class="value">{{
+              getTotalProforma() | number: "1.2-2"
+            }}</strong>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Información adicional -->
+    <mat-card class="card-padding mt-24">
+      <div class="section-header">
+        <mat-icon class="section-icon">note</mat-icon>
+        <h2 class="section-title">Información adicional</h2>
+      </div>
+      <mat-card-content>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Notas opcionales</mat-label>
+          <textarea
+            matInput
+            formControlName="additionalInformation"
+            rows="2"
+          ></textarea>
+        </mat-form-field>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Botones -->
+    <mat-card class="actions-card mt-24">
+      <mat-card-content>
+        <div class="actions-container">
+          <button
+            mat-stroked-button
+            type="button"
+            class="btn-action-cancel"
+            (click)="cancel()"
+          >
+            <mat-icon>close</mat-icon>
+            Cancelar
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            class="btn-action-save"
+            [disabled]="isSaving || form.invalid"
+          >
+            <mat-spinner
+              *ngIf="isSaving"
+              diameter="20"
+              class="btn-spinner"
+            ></mat-spinner>
+            <mat-icon *ngIf="!isSaving">save</mat-icon>
+            {{ isSaving ? "Guardando..." : "Guardar" }}
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </form>
+</div>

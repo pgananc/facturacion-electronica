@@ -1,0 +1,1 @@
+update public.params set value_param='6' where code_param='LENGTH_TOKEN';

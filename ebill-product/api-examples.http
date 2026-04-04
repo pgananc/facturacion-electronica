@@ -1,0 +1,131 @@
+### API Examples for ebill-product
+### Usa estos ejemplos con la extensión REST Client de VS Code/Cursor
+### O con Postman/Insomnia
+
+@baseUrl = http://localhost:8380
+@token = YOUR_JWT_TOKEN_HERE
+
+### Health Check (si actuator está habilitado)
+GET {{baseUrl}}/actuator/health
+
+### 1. Obtener productos por empresa
+GET {{baseUrl}}/api/product/company/1
+Authorization: Bearer {{token}}
+
+### 2. Obtener productos por estado (activos)
+GET {{baseUrl}}/api/product/products-status/true
+Authorization: Bearer {{token}}
+
+### 3. Obtener productos por estado (inactivos)
+GET {{baseUrl}}/api/product/products-status/false
+Authorization: Bearer {{token}}
+
+### 4. Obtener producto por ID
+GET {{baseUrl}}/api/product/1
+Authorization: Bearer {{token}}
+
+### 5. Verificar si existe un código principal
+GET {{baseUrl}}/api/product/exist/PROD001
+Authorization: Bearer {{token}}
+
+### 6. Crear nuevo producto
+POST {{baseUrl}}/api/product
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "idCompany": 1,
+  "mainCode": "PROD001",
+  "name": "Producto de Prueba",
+  "productType": 1,
+  "unitPrice": 10.50,
+  "description": "Descripción del producto de prueba",
+  "ice": false,
+  "tourismIva": false,
+  "status": true,
+  "taxType": {
+    "idTaxType": 1
+  }
+}
+
+### 7. Actualizar producto
+PATCH {{baseUrl}}/api/product/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Producto Actualizado",
+  "mainCode": "PROD001",
+  "description": "Descripción actualizada",
+  "unitPrice": 15.75,
+  "status": true,
+  "productType": 1
+}
+
+### 8. Eliminar producto (soft delete)
+DELETE {{baseUrl}}/api/product/1
+Authorization: Bearer {{token}}
+
+### 9. Buscar productos con paginación
+POST {{baseUrl}}/api/product/pageable?page=0&size=10&sort=name,asc
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "idCompany": 1,
+  "mainCode": "",
+  "name": "",
+  "productType": 0,
+  "status": true
+}
+
+### 10. Buscar productos con filtros
+POST {{baseUrl}}/api/product/pageable?page=0&size=20
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "idCompany": 1,
+  "mainCode": "PROD",
+  "name": "Producto",
+  "productType": 1,
+  "status": true
+}
+
+### 11. Listar todos los productos (paginado, sin filtros)
+POST {{baseUrl}}/api/product/pageable?page=0&size=50
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "idCompany": 1,
+  "status": true
+}
+
+### 12. Buscar productos para facturación (con término de búsqueda)
+GET {{baseUrl}}/api/product/billing/search?idCompany=1&term=laptop
+Authorization: Bearer {{token}}
+
+### 13. Obtener TODOS los productos de una compañía para facturación (sin término)
+GET {{baseUrl}}/api/product/billing/search?idCompany=1
+Authorization: Bearer {{token}}
+
+### 14. Buscar productos para facturación con término vacío (igual a sin término)
+GET {{baseUrl}}/api/product/billing/search?idCompany=1&term=
+Authorization: Bearer {{token}}
+
+###
+### Notas:
+### - Reemplaza {{token}} con un JWT válido
+### - Los endpoints requieren autenticación
+### - productType: 1 = Bien, 2 = Servicio (según tu enum)
+### - idTaxType: 1 = IVA 0%, 2 = IVA 12%, etc.
+### 
+### Endpoint de Facturación (billing/search):
+### - idCompany es REQUERIDO
+### - term es opcional
+### - Si term está vacío o null, retorna TODOS los productos activos de la compañía
+### - Solo retorna productos con status=true
+### - Ordenados por mainCode ASC
+###
+

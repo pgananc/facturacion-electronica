@@ -1,0 +1,106 @@
+[1mdiff --git a/src/main/java/com/wallparisoft/ebill/product/service/impl/ProductServiceImpl.java b/src/main/java/com/wallparisoft/ebill/product/service/impl/ProductServiceImpl.java[m
+[1mindex adcc26f..e1e9079 100644[m
+[1m--- a/src/main/java/com/wallparisoft/ebill/product/service/impl/ProductServiceImpl.java[m
+[1m+++ b/src/main/java/com/wallparisoft/ebill/product/service/impl/ProductServiceImpl.java[m
+[36m@@ -22,7 +22,10 @@[m [mimport org.springframework.data.domain.Pageable;[m
+ import org.springframework.http.HttpStatus;[m
+ import org.springframework.stereotype.Service;[m
+ [m
+[31m-@Service @FieldDefaults(level = PRIVATE) @RequiredArgsConstructor @Slf4j[m
+[32m+[m[32m@Service[m
+[32m+[m[32m@FieldDefaults(level = PRIVATE)[m
+[32m+[m[32m@RequiredArgsConstructor[m
+[32m+[m[32m@Slf4j[m
+ public class ProductServiceImpl implements IProductService {[m
+ [m
+   final IProductRepo repo;[m
+[36m@@ -34,8 +37,8 @@[m [mpublic class ProductServiceImpl implements IProductService {[m
+   }[m
+ [m
+   public ProductResponse createProduct(ProductDto productDto) {[m
+[31m-    ProductResponse response = productMapper[m
+[31m-        .toProductResponse(save(productMapper.toProduct(productDto)));[m
+[32m+[m[32m    ProductResponse response =[m
+[32m+[m[32m        productMapper.toProductResponse(save(productMapper.toProduct(productDto)));[m
+     response.setCode(HttpStatus.OK.value());[m
+     response.setStatus(HttpStatus.OK.name());[m
+     return response;[m
+[36m@@ -68,8 +71,13 @@[m [mpublic class ProductServiceImpl implements IProductService {[m
+   }[m
+ [m
+   @Override[m
+[31m-  public Page<ProductDto> findProductByIdCompanyAndMainCodeOrNameOrType(Long idCompany,[m
+[31m-      String mainCode, String name, Integer productType, Boolean status, Pageable pageable) {[m
+[32m+[m[32m  public Page<ProductDto> findProductByIdCompanyAndMainCodeOrNameOrType([m
+[32m+[m[32m      Long idCompany,[m
+[32m+[m[32m      String mainCode,[m
+[32m+[m[32m      String name,[m
+[32m+[m[32m      Integer productType,[m
+[32m+[m[32m      Boolean status,[m
+[32m+[m[32m      Pageable pageable) {[m
+ [m
+     mainCode = StringUtils.isBlank(mainCode) ? null : "%" + mainCode.trim() + "%";[m
+ [m
+[36m@@ -79,13 +87,16 @@[m [mpublic class ProductServiceImpl implements IProductService {[m
+       productType = null;[m
+     }[m
+ [m
+[31m-    Page<Product> products = repo.findProductByIdCompanyAndMainCodeOrNameOrType(idCompany, mainCode,[m
+[31m-        name, productType, status, pageable);[m
+[32m+[m[32m    Page<Product> products =[m
+[32m+[m[32m        repo.findProductByIdCompanyAndMainCodeOrNameOrType([m
+[32m+[m[32m            idCompany, mainCode, name, productType, status, pageable);[m
+     List<ProductDto> productDtoList = new ArrayList<>();[m
+[31m-    products.getContent().parallelStream().forEach(product -> {[m
+[31m-      ProductDto productDto = productMapper.toProductDto(product);[m
+[31m-      productDtoList.add(productDto);[m
+[31m-    });[m
+[32m+[m[32m    products.getContent().parallelStream()[m
+[32m+[m[32m        .forEach([m
+[32m+[m[32m            product -> {[m
+[32m+[m[32m              ProductDto productDto = productMapper.toProductDto(product);[m
+[32m+[m[32m              productDtoList.add(productDto);[m
+[32m+[m[32m            });[m
+     return new PageImpl<>(productDtoList, pageable, products.getTotalElements());[m
+   }[m
+ [m
+[36m@@ -119,9 +130,10 @@[m [mpublic class ProductServiceImpl implements IProductService {[m
+   @Override[m
+   public ProductResponse getProductsByStatus(boolean status) {[m
+     Optional<List<Product>> products = repo.findProductsByStatusOrderByMainCode(status);[m
+[31m-    ProductResponse response = products.isPresent()[m
+[31m-        ? productMapper.toProductResponse(products.get())[m
+[31m-        : ProductResponse.builder().build();[m
+[32m+[m[32m    ProductResponse response =[m
+[32m+[m[32m        products.isPresent()[m
+[32m+[m[32m            ? productMapper.toProductResponse(products.get())[m
+[32m+[m[32m            : ProductResponse.builder().build();[m
+     response.setCode(HttpStatus.OK.value());[m
+     response.setStatus(HttpStatus.OK.name());[m
+     return response;[m
+[36m@@ -130,17 +142,19 @@[m [mpublic class ProductServiceImpl implements IProductService {[m
+   @Override[m
+   public Product findById(Long id) {[m
+     // TODO Auto-generated method stub[m
+[31m-    return this.repo.findById(id)[m
+[32m+[m[32m    return this.repo[m
+[32m+[m[32m        .findById(id)[m
+         .orElseThrow(() -> new ModelNotFoundException("Product not found for id: " + id));[m
+   }[m
+ [m
+   @Override[m
+   public ProductResponse findProductsByIdCompanyAndStatusOrderByMainCode(Long idCompany) {[m
+[31m-    Optional<List<Product>> productOptional = repo[m
+[31m-        .findProductsByIdCompanyAndStatusOrderByMainCode(idCompany, true);[m
+[31m-    ProductResponse response = productOptional.isPresent()[m
+[31m-        ? productMapper.toProductResponse(productOptional.get())[m
+[31m-        : ProductResponse.builder().build();[m
+[32m+[m[32m    Optional<List<Product>> productOptional =[m
+[32m+[m[32m        repo.findProductsByIdCompanyAndStatusOrderByMainCode(idCompany, true);[m
+[32m+[m[32m    ProductResponse response =[m
+[32m+[m[32m        productOptional.isPresent()[m
+[32m+[m[32m            ? productMapper.toProductResponse(productOptional.get())[m
+[32m+[m[32m            : ProductResponse.builder().build();[m
+     response.setCode(HttpStatus.OK.value());[m
+     response.setStatus(HttpStatus.OK.name());[m
+     return response;[m

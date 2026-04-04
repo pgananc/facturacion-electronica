@@ -1,31 +1,31 @@
 package com.wallparisoft.ebill.customer.dto;
 
-import lombok.Builder;
-import lombok.Data;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import com.wallparisoft.ebill.customer.validation.ValidClientIdentification;
+import com.wallparisoft.ebill.customer.validation.ValidEcuadorianIdentification;
 import java.io.Serializable;
 import java.util.List;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@ValidClientIdentification
 public class ClientDto implements Serializable {
 
-    private Long idClient;
+  Long idClient;
+  Integer idType;
 
-    private Integer idType;
+  String identification;
 
-    private String identification;
+  String name;
+  Integer clientType;
+  Boolean status;
 
-    private String name;
+  @ValidEcuadorianIdentification(message = "RUC de la compañía inválido", allowNull = true)
+  String companyIdentification;
 
-    private Integer clientType;
-
-    private Boolean status;
-    private Long idCompany;
-    private String companyIdentification;
-    List<ContactDto> contacts;
-
+  List<ContactDto> contacts;
 }

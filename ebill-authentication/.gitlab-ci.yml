@@ -1,0 +1,254 @@
+stages:
+  - validate_feature
+  - build_beta
+  - deploy_beta
+  - build_prod
+  - docker_prod
+  - deploy_prod
+
+variables:
+  GIT_STRATEGY: none
+  QA_HOST: "85.239.237.88"
+  PROD_HOST: "217.216.94.162"
+  QA_DEPLOY_USER: "deploy"
+  PROD_DEPLOY_USER: "deploy"
+  SSH_KEY_PATH_GIT: "/home/gitlab-runner/.ssh/id_rsa_authentication"
+  SSH_KEY_PATH_QA: "/home/gitlab-runner/.ssh/id_rsa_authentication"
+  SSH_KEY_PATH_PROD: "/home/gitlab-runner/.ssh/id_rsa_prod"
+  GIT_REPO_SSH: "git@85.239.237.88:dev-billing/ebill-authentication.git"
+  GIT_SSH_COMMAND: "ssh -i /home/gitlab-runner/.ssh/id_rsa_authentication -o StrictHostKeyChecking=no"
+
+default:
+  tags:
+    - ebill
+
+.before_maven: &before_maven
+  - set -e
+  - echo "Configurando SSH manual"
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+  - cp "${SSH_KEY_PATH_GIT}" ~/.ssh/id_rsa
+  - chmod 600 ~/.ssh/id_rsa
+  - ssh-keyscan -p 22 "${QA_HOST}" >> ~/.ssh/known_hosts
+  - echo "Generando settings.xml temporal con CI_JOB_TOKEN"
+  - mkdir -p ~/.m2
+  - |
+    cat > ~/.m2/settings.xml <<EOF
+    <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
+      <servers>
+        <server>
+          <id>gitlab-maven-ebill-utils</id>
+          <configuration>
+            <httpHeaders>
+              <property>
+                <name>Job-Token</name>
+                <value>${CI_JOB_TOKEN}</value>
+              </property>
+            </httpHeaders>
+          </configuration>
+        </server>
+        <server>
+          <id>gitlab-maven-ebill-auth-util</id>
+          <configuration>
+            <httpHeaders>
+              <property>
+                <name>Job-Token</name>
+                <value>${CI_JOB_TOKEN}</value>
+              </property>
+            </httpHeaders>
+          </configuration>
+        </server>
+      </servers>
+    </settings>
+    EOF
+  - echo "Eliminando fuente previa si existe"
+  - rm -rf source
+  - echo "Clonando repo manualmente por SSH en branch actual"
+  - git clone --branch "${CI_COMMIT_REF_NAME}" "${GIT_REPO_SSH}" source
+
+validate_feature:
+  stage: validate_feature
+  rules:
+    - if: '$CI_COMMIT_BRANCH != "beta" && $CI_COMMIT_BRANCH != "main"'
+  before_script:
+    - *before_maven
+  script:
+    - cd source
+    - echo "Validando rama feature sin deploy"
+    - java -version
+    - mvn -v
+    - mvn clean package -DskipTests
+
+build_beta:
+  stage: build_beta
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "beta"'
+  before_script:
+    - *before_maven
+  script:
+    - cd source
+    - echo "Compilando ebill-authentication para QA beta"
+    - java -version
+    - mvn -v
+    - mvn clean package -DskipTests
+  artifacts:
+    paths:
+      - source/target/*.jar
+    expire_in: "1 hour"
+
+deploy_beta:
+  stage: deploy_beta
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "beta"'
+  needs:
+    - job: build_beta
+      artifacts: true
+  before_script:
+    - set -e
+    - echo "Configurando SSH para deploy QA"
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - cp "${SSH_KEY_PATH_QA}" ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -p 22 "${QA_HOST}" >> ~/.ssh/known_hosts
+  script:
+    - |
+      echo "Deploy QA por JAR + systemd"
+      JAR_NAME=$(find source/target -name '*.jar' ! -name '*.original' | head -n 1)
+      echo "JAR detectado: ${JAR_NAME}"
+      /usr/bin/scp -i "${SSH_KEY_PATH_QA}" "${JAR_NAME}" "${QA_DEPLOY_USER}@${QA_HOST}:/opt/wallparisoft/ebill-authentication/ebill-authentication.jar"
+      echo "Reiniciando servicio QA"
+      /usr/bin/ssh -i "${SSH_KEY_PATH_QA}" "${QA_DEPLOY_USER}@${QA_HOST}" "sudo systemctl daemon-reload && sudo systemctl restart ebill-authentication"
+      /usr/bin/ssh -i "${SSH_KEY_PATH_QA}" "${QA_DEPLOY_USER}@${QA_HOST}" "sudo systemctl status ebill-authentication --no-pager || true"
+      /usr/bin/ssh -i "${SSH_KEY_PATH_QA}" "${QA_DEPLOY_USER}@${QA_HOST}" "echo Deploy QA completado"
+
+build_prod:
+  stage: build_prod
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+  before_script:
+    - *before_maven
+  script:
+    - cd source
+    - echo "Compilando ebill-authentication para PROD"
+    - java -version
+    - mvn -v
+    - mvn clean package -DskipTests
+  artifacts:
+    paths:
+      - source/
+    expire_in: "1 hour"
+
+docker_prod:
+  stage: docker_prod
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+  needs:
+    - job: build_prod
+      artifacts: true
+  script:
+    - cd source
+    - echo "Login al Container Registry"
+    - echo "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" -u "$CI_REGISTRY_USER" --password-stdin
+    - echo "Build imagen PROD"
+    - |
+      docker build \
+        -t "$CI_REGISTRY_IMAGE:prod" \
+        -t "$CI_REGISTRY_IMAGE:latest" \
+        -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA" \
+        .
+    - echo "Push imagen PROD"
+    - docker push "$CI_REGISTRY_IMAGE:prod"
+    - docker push "$CI_REGISTRY_IMAGE:latest"
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+
+deploy_prod:
+  stage: deploy_prod
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+  needs:
+    - job: docker_prod
+  before_script:
+    - set -e
+    - echo "Configurando SSH para deploy PROD"
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - cp "${SSH_KEY_PATH_PROD}" ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -p 22 "${PROD_HOST}" >> ~/.ssh/known_hosts
+  script:
+    - |
+      ssh -i "${SSH_KEY_PATH_PROD}" "${PROD_DEPLOY_USER}@${PROD_HOST}" \
+      "CI_REGISTRY='${CI_REGISTRY}' \
+       CI_REGISTRY_USER='${CI_REGISTRY_USER}' \
+       CI_REGISTRY_PASSWORD='${CI_REGISTRY_PASSWORD}' \
+       CI_REGISTRY_IMAGE='${CI_REGISTRY_IMAGE}' \
+       CI_COMMIT_SHORT_SHA='${CI_COMMIT_SHORT_SHA}' \
+       bash -s" <<'EOF'
+      set -e
+
+      cd /opt/ebilling/auth
+
+      echo "Login registry"
+      echo "${CI_REGISTRY_PASSWORD}" | docker login "${CI_REGISTRY}" -u "${CI_REGISTRY_USER}" --password-stdin
+
+      NEW_IMAGE="${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}"
+      CURRENT_IMAGE_FILE=".current_image"
+      PREVIOUS_IMAGE_FILE=".previous_image"
+
+      if [ -f "${CURRENT_IMAGE_FILE}" ]; then
+        CURRENT_IMAGE=$(cat "${CURRENT_IMAGE_FILE}")
+      else
+        CURRENT_IMAGE=$(docker inspect ebill-authentication --format='{{.Config.Image}}' 2>/dev/null || true)
+      fi
+
+      echo "Imagen actual: ${CURRENT_IMAGE}"
+      echo "Nueva imagen: ${NEW_IMAGE}"
+
+      if [ -n "${CURRENT_IMAGE}" ]; then
+        echo "${CURRENT_IMAGE}" > "${PREVIOUS_IMAGE_FILE}"
+      fi
+
+      echo "Pull imagen nueva"
+      docker pull "${NEW_IMAGE}"
+
+      echo "Deploy imagen nueva"
+      AUTH_IMAGE="${NEW_IMAGE}" docker compose up -d
+
+      echo "${NEW_IMAGE}" > "${CURRENT_IMAGE_FILE}"
+
+      echo "Esperando arranque..."
+      sleep 15
+
+      echo "Healthcheck..."
+      STATUS="000"
+      for i in 1 2 3 4 5 6; do
+        STATUS=$(curl -k -s -o /dev/null -w "%{http_code}" https://auth.wallparisoft.com/actuator/health || true)
+        echo "Intento ${i} - Health status: ${STATUS}"
+        if [ "${STATUS}" = "200" ]; then
+          break
+        fi
+        sleep 5
+      done
+
+      if [ "${STATUS}" != "200" ]; then
+        echo "Deploy falló — rollback automático"
+
+        if [ -f "${PREVIOUS_IMAGE_FILE}" ]; then
+          ROLLBACK_IMAGE=$(cat "${PREVIOUS_IMAGE_FILE}")
+          echo "Rollback a: ${ROLLBACK_IMAGE}"
+          AUTH_IMAGE="${ROLLBACK_IMAGE}" docker compose up -d
+          echo "${ROLLBACK_IMAGE}" > "${CURRENT_IMAGE_FILE}"
+        else
+          echo "No existe imagen previa para rollback"
+        fi
+
+        exit 1
+      fi
+
+      echo "Deploy exitoso"
+      docker ps --filter name=ebill-authentication
+      
+      echo "Limpiando imagenes viejas"
+      docker image prune -f
+      EOF

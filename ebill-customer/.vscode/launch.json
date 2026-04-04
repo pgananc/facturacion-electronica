@@ -1,0 +1,43 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot - EBillCustomerApplication (localhost)",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.wallparisoft.ebill.customer.EBillCustomerApplication",
+      "projectName": "ebill-customer",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env",
+      "vmArgs": "-Dspring.profiles.active=localhost",
+      "console": "internalConsole"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot - EBillCustomerApplication (default)",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.wallparisoft.ebill.customer.EBillCustomerApplication",
+      "projectName": "ebill-customer",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env",
+      "console": "internalConsole"
+    },
+    {
+      "type": "java",
+      "name": "Debug - EBillCustomerApplication (localhost)",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.wallparisoft.ebill.customer.EBillCustomerApplication",
+      "projectName": "ebill-customer",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env",
+      "vmArgs": "-Dspring.profiles.active=localhost -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005",
+      "console": "internalConsole"
+    }
+  ]
+}
+
+
+

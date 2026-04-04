@@ -1,0 +1,199 @@
+/* ======================
+   DIALOG CONTAINER
+====================== */
+.dialog-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 90vh;
+  min-width: 550px;
+  max-width: 650px;
+}
+
+/* ======================
+   DIALOG HEADER (Estilo replicado de clientes)
+====================== */
+.dialog-header {
+  flex-shrink: 0;
+  padding: 16px 24px;
+  border-bottom: 2px solid var(--primary-color, #0ea5e9);
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.05) 0%, rgba(10, 130, 187, 0.05) 100%);
+}
+
+.dialog-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--primary-color, #0ea5e9);
+  letter-spacing: 0.3px;
+}
+
+.header-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  color: var(--primary-color, #0ea5e9);
+  margin-right: 12px;
+}
+
+/* ======================
+   DIALOG CONTENT
+====================== */
+mat-dialog-content {
+  flex: 1 1 auto;
+  padding: 24px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.current-plan-card,
+.selected-plan-card {
+  margin-bottom: 20px;
+  border-left: 4px solid #1976d2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.selected-plan-card {
+  border-left-color: #4caf50;
+  background-color: #f1f8f4;
+}
+
+.plan-info,
+.plan-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.info-row,
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.plan-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.plan-free {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.plan-basic {
+  background-color: #fff3e0;
+  color: #f57c00;
+}
+
+.plan-professional,
+.plan-pro {
+  background-color: #e8f5e9;
+  color: #388e3c;
+}
+
+.plan-enterprise {
+  background-color: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.upgrade-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.features-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0 0;
+}
+
+.features-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.features-list mat-icon {
+  color: #4caf50;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+/* ======================
+   DIALOG ACTIONS (Botones Mejorados - Estilo replicado de clientes)
+====================== */
+mat-dialog-actions {
+  flex-shrink: 0;
+  padding: 16px 24px 20px 24px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  background-color: #fafafa;
+}
+
+mat-dialog-actions button {
+  min-width: 120px;
+  height: 44px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 6px;
+  letter-spacing: 0.3px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-save {
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.35);
+}
+
+.btn-save:hover:not(:disabled) {
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.45);
+  transform: translateY(-2px);
+}
+
+.btn-save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-cancel {
+  border: 2px solid #e0e0e0;
+  color: #666;
+  background-color: white;
+}
+
+.btn-cancel:hover {
+  background-color: #f5f5f5;
+  border-color: var(--primary-color, #0ea5e9);
+  color: var(--primary-color, #0ea5e9);
+  transform: translateY(-1px);
+}
+
+mat-dialog-actions button mat-icon {
+  margin-right: 6px;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+mat-dialog-actions button mat-spinner {
+  display: inline-block;
+  margin-right: 8px;
+}

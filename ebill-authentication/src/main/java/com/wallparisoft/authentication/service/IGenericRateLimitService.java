@@ -1,0 +1,81 @@
+package com.wallparisoft.authentication.service;
+
+/**
+ * Interfaz para el servicio genérico de rate limiting. Soporta rate limiting por múltiples
+ * dimensiones (EMAIL, IP, CLIENT) para diferentes endpoints.
+ */
+public interface IGenericRateLimitService {
+
+  /** Enum que define las dimensiones de rate limiting disponibles. */
+  enum RateLimitDimension {
+    EMAIL,
+    IP,
+    CLIENT
+  }
+
+  /**
+   * Valida si se puede realizar una solicitud según el rate limit configurado.
+   *
+   * @param endpoint Código del endpoint (ej: "MAIL_SEND", "TOKEN_CLIENT")
+   * @param dimension Dimensión del rate limit (EMAIL, IP, CLIENT)
+   * @param identifier Identificador único (email, IP, o clientNumber)
+   * @return true si puede realizar la solicitud, false si excedió el límite
+   */
+  boolean canMakeRequest(String endpoint, RateLimitDimension dimension, String identifier);
+
+  /**
+   * Incrementa el contador de rate limiting para una solicitud.
+   *
+   * @param endpoint Código del endpoint
+   * @param dimension Dimensión del rate limit
+   * @param identifier Identificador único
+   */
+  void incrementRequest(String endpoint, RateLimitDimension dimension, String identifier);
+
+  /**
+   * Obtiene el tiempo restante hasta el próximo intento permitido.
+   *
+   * @param endpoint Código del endpoint
+   * @param dimension Dimensión del rate limit
+   * @param identifier Identificador único
+   * @return Tiempo restante en segundos
+   */
+  long getTimeUntilNextAttempt(String endpoint, RateLimitDimension dimension, String identifier);
+
+  /**
+   * Obtiene el número de intentos actuales.
+   *
+   * @param endpoint Código del endpoint
+   * @param dimension Dimensión del rate limit
+   * @param identifier Identificador único
+   * @return Número de intentos actuales
+   */
+  int getCurrentAttempts(String endpoint, RateLimitDimension dimension, String identifier);
+
+  /**
+   * Obtiene el máximo de solicitudes permitidas desde params.
+   *
+   * @param endpoint Código del endpoint
+   * @param dimension Dimensión del rate limit
+   * @return Máximo de solicitudes permitidas
+   */
+  int getMaxRequests(String endpoint, RateLimitDimension dimension);
+
+  /**
+   * Obtiene la ventana de tiempo en minutos desde params.
+   *
+   * @param endpoint Código del endpoint
+   * @param dimension Dimensión del rate limit
+   * @return Ventana de tiempo en minutos
+   */
+  int getWindowMinutes(String endpoint, RateLimitDimension dimension);
+
+  /**
+   * Limpia el contador de rate limiting (útil para testing o casos especiales).
+   *
+   * @param endpoint Código del endpoint
+   * @param dimension Dimensión del rate limit
+   * @param identifier Identificador único
+   */
+  void clearAttempts(String endpoint, RateLimitDimension dimension, String identifier);
+}

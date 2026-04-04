@@ -10,5 +10,5 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class TokenSession {
 
-    String token;
+  String token;
 }

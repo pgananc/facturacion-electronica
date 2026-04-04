@@ -1,0 +1,513 @@
+@import '../../../_shared/shared-styles.css';
+@import '../../../_shared/table-styles.css';
+@import '../../../_shared/responsive-styles.css';
+
+/* ===== UTILIDADES DE ESPACIADO (Optimizado) ===== */
+.mt-24 { margin-top: 12px; }
+.mt-16 { margin-top: 12px; }
+.mb-16 { margin-bottom: 12px; }
+
+/* ===== LAYOUT PRINCIPAL ===== */
+.debit-notes-page { 
+  min-height: 100%; 
+  background-color: var(--background-color, #f9fafb); 
+  padding: 12px 0 0 0;
+}
+
+@media screen and (max-width: 959px) { 
+  .debit-notes-page { padding: 0; } 
+}
+
+.debit-notes-container { 
+  max-width: 1320px; 
+  margin: 0 auto; 
+  padding: 0 20px 20px 20px;
+  box-sizing: border-box; 
+  width: 100%; 
+}
+
+@media screen and (max-width: 959px) { 
+  .debit-notes-container { padding: 0 16px 16px 16px; } 
+}
+
+/* ===== COLUMNAS DE TABLA ===== */
+.mat-table .mat-column-debitNoteNumber { flex: 0 0 14%; max-width: 14%; }
+.mat-table .mat-column-originalInvoiceNumber { flex: 0 0 14%; max-width: 14%; }
+.mat-table .mat-column-clientIdentification { flex: 0 0 12%; max-width: 12%; }
+.mat-table .mat-column-clientName { flex: 0 0 16%; max-width: 16%; }
+.mat-table .mat-column-totalAmount { flex: 0 0 10%; max-width: 10%; }
+.mat-table .mat-column-status { flex: 0 0 10%; max-width: 10%; }
+.mat-table .mat-column-creationDate { flex: 0 0 10%; max-width: 10%; }
+.mat-table .mat-column-actions { flex: 0 0 14%; max-width: 14%; }
+
+::ng-deep .mat-mdc-table .mat-column-debitNoteNumber.mat-mdc-cell,
+::ng-deep .mat-mdc-table .mat-column-debitNoteNumber.mat-mdc-header-cell { flex: 0 0 14% !important; max-width: 14% !important; }
+::ng-deep .mat-mdc-table .mat-column-originalInvoiceNumber.mat-mdc-cell,
+::ng-deep .mat-mdc-table .mat-column-originalInvoiceNumber.mat-mdc-header-cell { flex: 0 0 14% !important; max-width: 14% !important; }
+::ng-deep .mat-mdc-table .mat-column-clientIdentification.mat-mdc-cell,
+::ng-deep .mat-mdc-table .mat-column-clientIdentification.mat-mdc-header-cell { flex: 0 0 12% !important; max-width: 12% !important; }
+::ng-deep .mat-mdc-table .mat-column-clientName.mat-mdc-cell,
+::ng-deep .mat-mdc-table .mat-column-clientName.mat-mdc-header-cell { flex: 0 0 16% !important; max-width: 16% !important; }
+::ng-deep .mat-mdc-table .mat-column-totalAmount.mat-mdc-cell,
+::ng-deep .mat-mdc-table .mat-column-totalAmount.mat-mdc-header-cell { flex: 0 0 10% !important; max-width: 10% !important; }
+::ng-deep .mat-mdc-table .mat-column-status.mat-mdc-cell,
+::ng-deep .mat-mdc-table .mat-column-status.mat-mdc-header-cell { flex: 0 0 10% !important; max-width: 10% !important; }
+::ng-deep .mat-mdc-table .mat-column-creationDate.mat-mdc-cell,
+::ng-deep .mat-mdc-table .mat-column-creationDate.mat-mdc-header-cell { flex: 0 0 10% !important; max-width: 10% !important; }
+::ng-deep .mat-mdc-table .mat-column-actions.mat-mdc-cell,
+::ng-deep .mat-mdc-table .mat-column-actions.mat-mdc-header-cell { flex: 0 0 14% !important; max-width: 14% !important; }
+
+.actions-cell { display: flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important; }
+
+/* ===== RESPONSIVE PARA TABLA ===== */
+/* Mobile pequeño (≤390px como iPhone 12 Pro) */
+@media screen and (max-width: 390px) {
+  /* Ocultar más columnas en pantallas muy pequeñas */
+  .mat-column-originalInvoiceNumber,
+  .mat-column-clientIdentification,
+  .mat-column-status,
+  .mat-column-creationDate,
+  .mat-column-totalAmount {
+    display: none !important;
+  }
+
+  /* Mostrar solo columnas esenciales: N° Nota, Cliente, Acciones */
+  .mat-table .mat-column-debitNoteNumber {
+    flex: 0 0 35% !important;
+    max-width: 35% !important;
+  }
+
+  .mat-table .mat-column-clientName {
+    flex: 0 0 40% !important;
+    max-width: 40% !important;
+  }
+
+  .mat-table .mat-column-actions {
+    flex: 0 0 25% !important;
+    max-width: 25% !important;
+  }
+
+  /* Tabla sin scroll, adaptada al ancho disponible */
+  .table-wrapper {
+    overflow-x: visible;
+  }
+
+  .mat-table {
+    width: 100%;
+    min-width: auto;
+  }
+
+  /* Toolbar responsive */
+  .toolbar-primary {
+    flex-direction: column;
+    height: auto;
+    padding: 12px 16px;
+    gap: 12px;
+  }
+
+  .toolbar-primary span {
+    font-size: 16px;
+  }
+
+  .btn-new-debit-note {
+    width: 100%;
+    justify-content: center;
+    font-size: 14px;
+    padding: 0 16px;
+  }
+}
+
+/* Mobile estándar (391px - 599px) */
+@media screen and (max-width: 599px) and (min-width: 391px) {
+  .mat-column-originalInvoiceNumber,
+  .mat-column-clientIdentification,
+  .mat-column-status {
+    display: none !important;
+  }
+
+  /* Tabla con scroll horizontal opcional si es necesario */
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mat-table {
+    width: 100%;
+    min-width: auto;
+  }
+
+  /* Toolbar responsive */
+  .toolbar-primary {
+    padding: 12px 16px;
+  }
+
+  .btn-new-debit-note {
+    font-size: 14px;
+    padding: 0 16px;
+  }
+}
+
+/* ===== AJUSTES SEARCH CARD ===== */
+.search-card {
+  margin-top: 12px !important;
+}
+
+.search-card mat-card-content {
+  padding: 16px !important;
+  position: relative;
+}
+
+/* ===== LAYOUT HORIZONTAL: INPUTS + BOTONES EN UNA LÍNEA ===== */
+.search-grid-horizontal {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 12px);
+  max-width: 100%;
+}
+
+.search-field-compact {
+  flex: 1;
+  margin: 0 !important;
+}
+
+.search-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 12px);
+  margin-left: auto;
+  flex-shrink: 0;
+  padding-bottom: 22px;
+}
+
+.btn-search-compact,
+.btn-clear-compact {
+  height: 40px;
+  min-width: 120px;
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+
+.btn-search-compact {
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+}
+
+.btn-search-compact:hover:not([disabled]) {
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.5);
+  transform: translateY(-2px);
+}
+
+.btn-clear-compact {
+  border: 2px solid var(--primary-color, #0ea5e9);
+  background-color: transparent !important;
+}
+
+.btn-clear-compact:hover {
+  background-color: rgba(14, 165, 233, 0.08) !important;
+  transform: translateY(-2px);
+}
+
+.btn-search-compact mat-icon,
+.btn-clear-compact mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+/* ===== RESPONSIVE PARA SEARCH GRID HORIZONTAL ===== */
+
+@media screen and (max-width: 959px) and (min-width: 768px) {
+  .search-grid-horizontal {
+    gap: 10px;
+  }
+
+  .btn-search-compact,
+  .btn-clear-compact {
+    min-width: 100px;
+    font-size: 13px;
+  }
+}
+
+@media screen and (max-width: 767px) and (min-width: 600px) {
+  .search-grid-horizontal {
+    flex-wrap: wrap;
+    gap: var(--spacing-sm, 12px);
+  }
+
+  .search-field-compact {
+    flex: 1 1 calc(50% - 6px);
+    min-width: 200px;
+  }
+
+  .search-actions {
+    flex: 1 1 100%;
+    justify-content: flex-end;
+    padding-bottom: 0;
+  }
+
+  .btn-search-compact,
+  .btn-clear-compact {
+    flex: 1 1 calc(50% - 6px);
+    width: auto;
+  }
+}
+
+@media screen and (max-width: 599px) {
+  .search-card mat-card-content {
+    padding: 12px !important;
+  }
+
+  .search-grid-horizontal {
+    flex-direction: column;
+    gap: var(--spacing-sm, 12px);
+  }
+
+  .search-field-compact {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .search-actions {
+    flex-direction: column;
+    width: 100%;
+    padding-bottom: 0;
+  }
+
+  .btn-search-compact,
+  .btn-clear-compact {
+    width: 100%;
+    height: 48px;
+  }
+
+  .debit-notes-container {
+    padding: 0 12px 12px 12px !important;
+  }
+
+  .debit-notes-page {
+    padding: 0 !important;
+  }
+}
+
+.table-wrapper {
+  margin-top: 12px !important;
+}
+
+/* ===== LOADING STATE ===== */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  border-radius: 12px;
+}
+
+.loading-text {
+  margin-top: 16px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--primary-color, #0ea5e9);
+}
+
+/* ===== EMPTY STATE OVERLAY (similar to guide-list component) ===== */
+.empty-state-overlay {
+  position: absolute;
+  top: 52%; /* Ajustado para centrado vertical */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 5;
+  padding: 48px 24px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  margin-top: 20px; /* Para evitar que se superponga con el toolbar */
+}
+
+.empty-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: #b0bec5;
+  margin-bottom: 16px;
+}
+
+.empty-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #424242;
+  margin: 0 0 8px 0;
+}
+
+.empty-subtitle {
+  font-size: 14px;
+  color: #757575;
+  margin: 0;
+  max-width: 400px;
+}
+
+/* ===== STATUS BADGE ===== */
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.badge-warning {
+  background-color: #fff3e0;
+  color: #ef6c00;
+}
+
+.badge-danger {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.badge-info {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+.badge-secondary {
+  background-color: #eceff1;
+  color: #546e7a;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.action-btn {
+  transition: all 0.3s ease !important;
+}
+
+.action-btn:hover {
+  transform: scale(1.1);
+}
+
+.pdf-btn:hover {
+  background-color: rgba(211, 47, 47, 0.1) !important;
+}
+
+.pdf-btn mat-icon {
+  color: #d32f2f;
+}
+
+.xml-btn:hover {
+  background-color: rgba(14, 165, 233, 0.1) !important;
+}
+
+.xml-btn mat-icon {
+  color: var(--primary-color, #0ea5e9);
+}
+
+.delete-btn:hover {
+  background-color: rgba(211, 47, 47, 0.1) !important;
+}
+
+.delete-btn mat-icon {
+  color: #d32f2f;
+}
+
+/* ===== CENTRADO DE COLUMNAS DE LA TABLA ===== */
+::ng-deep .debit-notes-page .mat-mdc-table .mat-mdc-header-cell {
+  text-align: center !important;
+  justify-content: center !important;
+}
+
+::ng-deep .debit-notes-page .mat-mdc-table .mat-mdc-cell {
+  text-align: center !important;
+  justify-content: center !important;
+}
+
+::ng-deep .mat-mdc-table .header-dark {
+  text-align: center !important;
+  justify-content: center !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+::ng-deep .mat-mdc-table .mat-sort-header-container {
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+::ng-deep .mat-mdc-table .mat-sort-header-content {
+  text-align: center !important;
+  justify-content: center !important;
+}
+
+::ng-deep .mat-mdc-table .mat-sort-header-button {
+  text-align: center !important;
+  justify-content: center !important;
+}
+
+/* ===== PAGINADOR MEJORADO ===== */
+::ng-deep mat-paginator {
+  display: flex !important;
+  justify-content: center !important;
+  padding: 12px 0 !important;
+}
+
+::ng-deep mat-paginator .mat-mdc-paginator-container {
+  justify-content: center !important;
+  padding: 8px 0 !important;
+}
+
+/* Responsive para paginador en móvil */
+@media screen and (max-width: 599px) {
+  ::ng-deep mat-paginator {
+    padding: 8px 4px !important;
+  }
+
+  ::ng-deep mat-paginator .mat-mdc-paginator-range-label {
+    margin: 0 8px !important;
+    font-size: 12px !important;
+  }
+
+  ::ng-deep mat-paginator .mat-mdc-icon-button {
+    width: 32px !important;
+    height: 32px !important;
+    padding: 4px !important;
+  }
+}
+
+/* ===== TOAST DE ÉXITO ===== */
+::ng-deep .success-snackbar {
+  background-color: #4caf50 !important;
+  color: white !important;
+}
+
+::ng-deep .success-snackbar .mat-mdc-snack-bar-label {
+  color: white !important;
+  font-weight: 500 !important;
+}
+
+::ng-deep .success-snackbar .mat-mdc-button {
+  color: white !important;
+}
+

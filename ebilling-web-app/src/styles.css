@@ -1,4 +1,954 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+/* Importar variables CSS compartidas */
+@import './app/_shared/variables.css';
+
+html, body { 
+  height: 100%; 
+  background-color: var(--background-color, #f9fafb);
+}
+
+body { 
+  margin: 0; 
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  color: var(--text-primary, #111827);
+  background-color: var(--background-color, #f9fafb);
+}
+
+/* ========================================
+   ALINEACIÓN VERTICAL DE INPUTS EN MODALES
+   (User, Product, Company, Client)
+   Usando .cdk-overlay-pane para máxima especificidad
+======================================== */
+.cdk-overlay-pane .mat-mdc-dialog-container .mat-mdc-form-field.mat-form-field-appearance-outline .mat-mdc-text-field-wrapper {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.cdk-overlay-pane .mat-mdc-dialog-container .mat-mdc-form-field.mat-form-field-appearance-outline .mat-mdc-form-field-infix {
+  padding-top: 24px !important;
+  padding-bottom: 24px !important;
+  min-height: 56px !important;
+}
+
+.cdk-overlay-pane .mat-mdc-dialog-container .mat-mdc-form-field.mat-form-field-appearance-outline .mat-mdc-input-element {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin: 0 !important;
+  line-height: 1.5 !important;
+}
+
+/* ========================================
+   ESTILOS PARA DIÁLOGOS (Header y Footer)
+   Usando .cdk-overlay-pane para máxima especificidad
+======================================== */
+/* Remover padding por defecto del contenedor del diálogo */
+.cdk-overlay-pane .mat-mdc-dialog-container .mdc-dialog__surface {
+  padding: 0 !important;
+}
+
+/* Header del diálogo */
+.cdk-overlay-pane .mat-mdc-dialog-container .dialog-header {
+  padding: var(--spacing-sm, 12px) var(--spacing-lg, 24px) !important;
+  background-color: #f5f5f5 !important;
+}
+
+/* ========================================
+   BADGES DE ESTADO GLOBAL (Reportes, Facturas, etc.)
+   Paleta corporativa consistente
+======================================== */
+.status-badge {
+  display: inline-block;
+  padding: calc(var(--spacing-xs, 8px) / 2) var(--spacing-sm, 12px);
+  border-radius: var(--radius-lg, 12px);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+/* Estados de éxito */
+.status-success,
+.status-badge.status-success {
+  background-color: #d1fae5;
+  color: #065f46;
+  border: 1px solid #10b981;
+}
+
+/* Estados de error */
+.status-error,
+.status-badge.status-error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #ef4444;
+}
+
+/* Estados de advertencia */
+.status-warning,
+.status-badge.status-warning {
+  background-color: #fed7aa;
+  color: #92400e;
+  border: 1px solid #f59e0b;
+}
+
+/* Estados informativos */
+.status-info,
+.status-badge.status-info {
+  background-color: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #3b82f6;
+}
+
+/* Estados inactivos/caducados */
+.status-inactive,
+.status-badge.status-inactive {
+  background-color: #e5e7eb;
+  color: #374151;
+  border: 1px solid #9ca3af;
+}
+
+/* ========================================
+   FIN BADGES DE ESTADO
+======================================== */
+
+/* Continúa con el resto de estilos del diálogo */
+.cdk-overlay-pane .mat-mdc-dialog-container .dialog-header {
+  padding: var(--spacing-sm, 12px) var(--spacing-lg, 24px) !important;
+  background-color: #f5f5f5 !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  margin: 0 !important;
+}
+
+.cdk-overlay-pane .mat-mdc-dialog-container .dialog-header h2 {
+  margin: 0 !important;
+  font-size: 18px !important;
+  font-weight: 500 !important;
+  color: var(--primary-color, #0ea5e9) !important;
+}
+
+/* Contenido del diálogo */
+.cdk-overlay-pane .mat-mdc-dialog-container .dialog-content {
+  padding: var(--spacing-lg, 24px) !important;
+}
+
+/* Footer del diálogo */
+.cdk-overlay-pane .mat-mdc-dialog-container .dialog-actions {
+  padding: 20px var(--spacing-lg, 24px) var(--spacing-lg, 24px) var(--spacing-lg, 24px) !important;
+  background-color: #fafafa !important;
+  border-top: 1px solid #e0e0e0 !important;
+  margin: 0 !important;
+}
+
+/* ========================================
+   MEJORAS UX/UI - CHECKBOX Y BOTONES
+   Usando .cdk-overlay-pane para máxima especificidad
+======================================== */
+/* Status Section (Checkbox mejorado) */
+.cdk-overlay-pane .mat-mdc-dialog-container .status-section {
+  margin-top: var(--spacing-lg, 24px) !important;
+  margin-bottom: var(--spacing-xs, 8px) !important;
+  padding: var(--spacing-md, 16px) !important;
+  background-color: #f8f9fa !important;
+  border-radius: var(--radius-md, 8px) !important;
+  border-left: 4px solid var(--primary-color, #0ea5e9) !important;
+  box-shadow: var(--shadow-sm, 0 2px 8px rgba(14, 165, 233, 0.1)) !important;
+  transition: all 0.3s ease !important;
+}
+
+.cdk-overlay-pane .mat-mdc-dialog-container .status-section:hover {
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(14, 165, 233, 0.2)) !important;
+  transform: translateY(-1px) !important;
+}
+
+.cdk-overlay-pane .mat-mdc-dialog-container .status-checkbox {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.cdk-overlay-pane .mat-mdc-dialog-container .checkbox-label {
+  display: flex !important;
+  align-items: center !important;
+  gap: var(--spacing-xs, 8px) !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  color: #263238 !important;
+}
+
+.cdk-overlay-pane .mat-mdc-dialog-container .checkbox-icon {
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+  color: #4caf50 !important;
+}
+
+.cdk-overlay-pane .mat-mdc-dialog-container .status-hint {
+  display: block !important;
+  margin-top: var(--spacing-xs, 8px) !important;
+  margin-left: var(--spacing-xl, 32px) !important;
+  font-size: 12px !important;
+  color: #666 !important;
+  line-height: 1.4 !important;
+}
+
+/* Botones mejorados */
+.cdk-overlay-pane .mat-mdc-dialog-container .dialog-actions button {
+  min-width: 130px !important;
+  height: 42px !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  border-radius: 6px !important;
+  transition: all 0.3s ease !important;
+}
+
+.cdk-overlay-pane .mat-mdc-dialog-container .btn-save {
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3) !important;
+}
+
+.cdk-overlay-pane .mat-mdc-dialog-container .btn-save:hover:not(:disabled) {
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4) !important;
+  transform: translateY(-1px) !important;
+}
+
+.cdk-overlay-pane .mat-mdc-dialog-container .btn-save:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
+.cdk-overlay-pane .mat-mdc-dialog-container .btn-cancel {
+  border: 2px solid #e0e0e0 !important;
+  color: #666 !important;
+  background-color: white !important;
+}
+
+.cdk-overlay-pane .mat-mdc-dialog-container .btn-cancel:hover {
+  background-color: #f5f5f5 !important;
+  border-color: #bdbdbd !important;
+}
+
+.cdk-overlay-pane .mat-mdc-dialog-container .dialog-actions button mat-icon {
+  margin-right: 6px !important;
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+}
+
+/* Efectos interactivos en campos */
+.cdk-overlay-pane .mat-mdc-dialog-container .mat-mdc-form-field:hover:not(.mat-focused) .mat-mdc-form-field-flex {
+  background-color: #f8f9fa !important;
+}
+
+.cdk-overlay-pane .mat-mdc-dialog-container .mat-mdc-form-field.mat-focused .mat-mdc-form-field-flex {
+  background-color: #ffffff !important;
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.1) !important;
+}
+
+/* Espaciado mejorado entre campos */
+.cdk-overlay-pane .mat-mdc-dialog-container .full-width {
+  margin-bottom: 20px !important;
+}
+
+/* ========================================
+   MEJORAS ADICIONALES DE UX
+   Usando .cdk-overlay-pane para máxima especificidad
+======================================== */
+/* Indicador de scroll con gradiente - DESHABILITADO para confirm dialog */
+/* .cdk-overlay-pane .mat-mdc-dialog-container .dialog-content::after {
+  content: '';
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.9), transparent);
+  pointer-events: none;
+  display: block;
+  margin: 0 -24px -24px -24px;
+} */
+
+/* Mejorar hints de campos opcionales */
+.cdk-overlay-pane .mat-mdc-dialog-container .mat-mdc-form-field .mat-mdc-form-field-hint {
+  font-size: 11px !important;
+  color: #999 !important;
+  font-style: italic !important;
+}
+
+/* Asterisco de campos requeridos más visible */
+.cdk-overlay-pane .mat-mdc-dialog-container .mat-mdc-form-field-required-marker {
+  color: #f44336 !important;
+  font-weight: bold !important;
+}
+
+/* Animación sutil al hacer check */
+.cdk-overlay-pane .mat-mdc-dialog-container .status-checkbox .mdc-checkbox__background {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Mejorar el estado checked del checkbox */
+.cdk-overlay-pane .mat-mdc-dialog-container .mat-mdc-checkbox.mat-mdc-checkbox-checked .mdc-checkbox__background {
+  background-color: #4caf50 !important;
+  border-color: #4caf50 !important;
+}
+
+/* ========================================
+   ESTILOS PARA CONFIRM DIALOG
+   Usando selectores CDK Overlay para máxima especificidad
+======================================== */
+/* Animar entrada del diálogo */
+.cdk-overlay-pane .mat-mdc-dialog-container {
+  animation: dialogFadeIn 0.3s ease-out !important;
+}
+
+@keyframes dialogFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0) scale(1); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px) scale(1); }
+  20%, 40%, 60%, 80% { transform: translateX(5px) scale(1); }
+}
+
+/* Estilos del confirm dialog con máxima especificidad */
+.cdk-overlay-pane app-confirm-dialog .confirm-dialog,
+.cdk-overlay-pane .confirm-dialog {
+  padding: 8px !important;
+  text-align: center !important;
+}
+
+.cdk-overlay-pane app-confirm-dialog .dialog-icon,
+.cdk-overlay-pane .confirm-dialog .dialog-icon {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 80px !important;
+  height: 80px !important;
+  margin: 24px auto 20px !important;
+  border-radius: 50% !important;
+  animation: scaleIn 0.3s ease-out !important;
+}
+
+.cdk-overlay-pane app-confirm-dialog .dialog-icon mat-icon,
+.cdk-overlay-pane .confirm-dialog .dialog-icon mat-icon {
+  font-size: 48px !important;
+  width: 48px !important;
+  height: 48px !important;
+  color: white !important;
+}
+
+.cdk-overlay-pane app-confirm-dialog .icon-warning,
+.cdk-overlay-pane .confirm-dialog .icon-warning {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%) !important;
+  box-shadow: 0 4px 20px rgba(255, 152, 0, 0.4) !important;
+}
+
+.cdk-overlay-pane app-confirm-dialog .icon-danger,
+.cdk-overlay-pane .confirm-dialog .icon-danger {
+  background: linear-gradient(135deg, #ef5350 0%, #e53935 100%) !important;
+  box-shadow: 0 4px 20px rgba(244, 67, 54, 0.5) !important;
+  animation: shake 0.5s ease-in-out !important;
+}
+
+.cdk-overlay-pane app-confirm-dialog .icon-info,
+.cdk-overlay-pane .confirm-dialog .icon-info {
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%) !important;
+  box-shadow: 0 4px 20px rgba(33, 150, 243, 0.4) !important;
+}
+
+.cdk-overlay-pane app-confirm-dialog .dialog-title,
+.cdk-overlay-pane .confirm-dialog .dialog-title {
+  font-size: 24px !important;
+  font-weight: 600 !important;
+  margin: 0 0 16px 0 !important;
+  color: #333 !important;
+}
+
+.cdk-overlay-pane app-confirm-dialog .dialog-content,
+.cdk-overlay-pane .confirm-dialog .dialog-content {
+  padding: 0 24px 24px !important;
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+}
+
+.cdk-overlay-pane app-confirm-dialog .dialog-content p,
+.cdk-overlay-pane .confirm-dialog .dialog-content p,
+.cdk-overlay-pane app-confirm-dialog .dialog-content *,
+.cdk-overlay-pane .confirm-dialog .dialog-content * {
+  margin: 0 !important;
+  color: #212121 !important;
+  font-weight: 500 !important;
+  opacity: 1 !important;
+}
+
+.cdk-overlay-pane app-confirm-dialog .dialog-actions,
+.cdk-overlay-pane .confirm-dialog .dialog-actions {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  padding: 16px 24px 24px !important;
+  margin: 0 !important;
+}
+
+.cdk-overlay-pane app-confirm-dialog .dialog-actions button,
+.cdk-overlay-pane .confirm-dialog .dialog-actions button {
+  min-width: 130px !important;
+  height: 44px !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+}
+
+.cdk-overlay-pane app-confirm-dialog .cancel-button,
+.cdk-overlay-pane .confirm-dialog .cancel-button {
+  background-color: var(--primary-color, #0ea5e9) !important;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3) !important;
+}
+
+.cdk-overlay-pane app-confirm-dialog .cancel-button:hover,
+.cdk-overlay-pane .confirm-dialog .cancel-button:hover {
+  background-color: var(--primary-dark, #0a82bb) !important;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4) !important;
+  transform: translateY(-1px) !important;
+}
+
+.cdk-overlay-pane app-confirm-dialog .confirm-button.danger-button,
+.cdk-overlay-pane .confirm-dialog .confirm-button.danger-button {
+  background-color: var(--warn-color, #ef4444) !important;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3) !important;
+}
+
+.cdk-overlay-pane app-confirm-dialog .confirm-button.danger-button:hover,
+.cdk-overlay-pane .confirm-dialog .confirm-button.danger-button:hover {
+  background-color: #dc2626 !important; /* Variante más oscura del warn */
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4) !important;
+  transform: translateY(-1px) !important;
+}
+
+.cdk-overlay-pane app-confirm-dialog .dialog-actions button mat-icon,
+.cdk-overlay-pane .confirm-dialog .dialog-actions button mat-icon {
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+}
+
+/* Forzar que los botones de Material usen nuestros colores */
+.cdk-overlay-pane .mat-mdc-dialog-actions .mdc-button {
+  border-radius: 8px !important;
+}
+
+.cdk-overlay-pane .mat-mdc-dialog-actions .cancel-button.mat-mdc-raised-button .mdc-button__label {
+  color: white !important;
+}
+
+.cdk-overlay-pane .mat-mdc-dialog-actions .confirm-button.mat-mdc-raised-button .mdc-button__label {
+  color: white !important;
+}
+
+/* ========================================
+   SELECTORES ALTERNATIVOS CON MÁXIMA ESPECIFICIDAD
+   Por si .cdk-overlay-pane no es suficiente
+======================================== */
+/* Selectores sin .cdk-overlay-pane para mayor compatibilidad */
+.mat-mdc-dialog-container .dialog-header {
+  padding: 12px 24px !important;
+  background-color: #f5f5f5 !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  margin: 0 !important;
+}
+
+.mat-mdc-dialog-container .dialog-header h2 {
+  margin: 0 !important;
+  font-size: 18px !important;
+  font-weight: 500 !important;
+  color: var(--primary-color, #0ea5e9) !important;
+}
+
+.mat-mdc-dialog-container .dialog-actions {
+  padding: 20px 24px 24px 24px !important;
+  background-color: #fafafa !important;
+  border-top: 1px solid #e0e0e0 !important;
+  margin: 0 !important;
+}
+
+.mat-mdc-dialog-container .status-section {
+  margin-top: 24px !important;
+  margin-bottom: 8px !important;
+  padding: 16px !important;
+  background-color: #f8f9fa !important;
+  border-radius: 8px !important;
+  border-left: 4px solid var(--primary-color, #0ea5e9) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  transition: all 0.3s ease !important;
+}
+
+.mat-mdc-dialog-container .btn-save {
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3) !important;
+}
+
+.mat-mdc-dialog-container .btn-cancel {
+  border: 2px solid #e0e0e0 !important;
+  color: #666 !important;
+  background-color: white !important;
+}
+
+/* Confirm Dialog sin .cdk-overlay-pane */
+.confirm-dialog {
+  padding: 0 8px 8px 8px !important;
+  text-align: center !important;
+}
+
+.confirm-dialog .dialog-content {
+  padding: 0 24px 24px !important;
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+}
+
+.confirm-dialog .dialog-content p,
+.confirm-dialog .dialog-content * {
+  margin: 0 !important;
+  color: #212121 !important;
+  font-weight: 500 !important;
+  opacity: 1 !important;
+}
+
+/* Forzar color en mat-dialog-content con MÁXIMA especificidad */
+mat-dialog-content.dialog-content p,
+mat-dialog-content.dialog-content {
+  color: #212121 !important;
+}
+
+.mat-mdc-dialog-content.dialog-content p,
+.mat-mdc-dialog-content.dialog-content {
+  color: #212121 !important;
+}
+
+/* Selector ultra-específico para Material Dialog Content */
+.mat-mdc-dialog-content.mat-mdc-dialog-content.mdc-dialog__content.dialog-content,
+.mat-mdc-dialog-content.mat-mdc-dialog-content.mdc-dialog__content.dialog-content p,
+.mat-mdc-dialog-content.mat-mdc-dialog-content.mdc-dialog__content.dialog-content * {
+  color: #212121 !important;
+  font-weight: 500 !important;
+  opacity: 1 !important;
+}
+
+/* Forzar en el contenedor del confirm dialog */
+app-confirm-dialog .mat-mdc-dialog-content p,
+app-confirm-dialog .mat-mdc-dialog-content,
+.confirm-dialog .mat-mdc-dialog-content p,
+.confirm-dialog .mat-mdc-dialog-content {
+  color: #212121 !important;
+  font-weight: 500 !important;
+}
+
+/* Deshabilitar gradiente/blur en confirm dialog */
+app-confirm-dialog .dialog-content::after,
+app-confirm-dialog .mat-mdc-dialog-content::after,
+.confirm-dialog .dialog-content::after,
+.confirm-dialog .mat-mdc-dialog-content::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Asegurar que no haya efectos de desvanecimiento */
+app-confirm-dialog *,
+.confirm-dialog * {
+  text-shadow: none !important;
+  filter: none !important;
+  opacity: 1 !important;
+}
+
+.confirm-dialog .dialog-icon {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 80px !important;
+  height: 80px !important;
+  margin: 24px auto 20px !important;
+  border-radius: 50% !important;
+  animation: scaleIn 0.3s ease-out !important;
+}
+
+.confirm-dialog .icon-danger {
+  background: linear-gradient(135deg, #ef5350 0%, #e53935 100%) !important;
+  box-shadow: 0 4px 20px rgba(244, 67, 54, 0.5) !important;
+  animation: shake 0.5s ease-in-out !important;
+}
+
+.confirm-dialog .cancel-button {
+  background-color: var(--primary-color, #0ea5e9) !important;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3) !important;
+}
+
+.confirm-dialog .confirm-button.danger-button {
+  background-color: #f44336 !important;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3) !important;
+}
+
+/* Campo de contraseña en diálogo de confirmación */
+.confirm-dialog .password-field,
+.cdk-overlay-pane .confirm-dialog .password-field {
+  width: 100% !important;
+  margin-top: 16px !important;
+}
+
+.confirm-dialog .password-field .mat-mdc-form-field-flex,
+.cdk-overlay-pane .confirm-dialog .password-field .mat-mdc-form-field-flex {
+  text-align: left !important;
+}
+
+.confirm-dialog .password-field input,
+.cdk-overlay-pane .confirm-dialog .password-field input {
+  text-align: left !important;
+}
+
+/* ========================================
+   TIMESTAMP PARA FORZAR RECARGA
+======================================== */
+/* Última actualización: Thu Nov  6 15:15:00 -05 2025 */
+/* Build: 20251106-1515 */
+
+/* ========================================
+   VALIDATION SNACKBAR - ESTILOS GLOBALES
+======================================== */
+.validation-snackbar-container {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 16px !important;
+  scroll-margin: 0 !important; /* ✅ Prevenir scroll automático */
+}
+
+.validation-snackbar-container .mat-mdc-snack-bar-surface {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* Sobrescribir estilos de Material para que no interfieran */
+.validation-snackbar-container .mat-mdc-snack-bar-label {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* ✅ Prevenir scroll automático cuando se muestra cualquier snackbar */
+.cdk-overlay-container .mat-mdc-snack-bar-container,
+.cdk-overlay-container .mat-mdc-snack-bar-surface {
+  scroll-margin: 0 !important;
+  scroll-padding: 0 !important;
+}
+
+/* ========================================
+   ERROR SNACKBAR - DISEÑO MODERNO (LOGIN)
+======================================== */
+/* Aplicar estilos con máxima especificidad global */
+.cdk-overlay-container .error-snackbar .mat-mdc-snack-bar-container,
+.cdk-overlay-container .error-snackbar .mat-mdc-snack-bar-surface {
+  background: linear-gradient(135deg, #f44336 0%, #e57373 100%) !important;
+  background-color: #f44336 !important;
+  --mdc-snackbar-container-color: #f44336 !important;
+}
+
+.cdk-overlay-container .error-snackbar .mat-mdc-snack-bar-container {
+  background: linear-gradient(135deg, #f44336 0%, #e57373 100%) !important;
+  background-color: #f44336 !important;
+  --mdc-snackbar-container-color: #f44336 !important;
+  color: #ffffff !important;
+  --mdc-snackbar-supporting-text-color: #ffffff !important;
+  border-left: 4px solid #d32f2f !important;
+  border-radius: 8px !important;
+  box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4) !important;
+  min-width: 320px !important;
+  max-width: 90vw !important;
+  padding: 0 !important;
+}
+
+.cdk-overlay-container .error-snackbar .mat-mdc-snack-bar-surface {
+  padding: 0 !important;
+  background: linear-gradient(135deg, #f44336 0%, #e57373 100%) !important;
+  background-color: #f44336 !important;
+  --mdc-snackbar-container-color: #f44336 !important;
+  box-shadow: none !important;
+}
+
+.cdk-overlay-container .error-snackbar .mdc-snackbar__surface {
+  background: linear-gradient(135deg, #f44336 0%, #e57373 100%) !important;
+  background-color: #f44336 !important;
+  --mdc-snackbar-container-color: #f44336 !important;
+}
+
+.cdk-overlay-container .error-snackbar .mat-mdc-snack-bar-label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 16px 20px !important;
+  margin: 0 !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  line-height: 1.5 !important;
+  color: #ffffff !important;
+  --mdc-snackbar-supporting-text-color: #ffffff !important;
+  flex: 1 !important;
+  background: transparent !important;
+}
+
+.cdk-overlay-container .error-snackbar .mdc-snackbar__label {
+  color: #ffffff !important;
+  --mdc-snackbar-supporting-text-color: #ffffff !important;
+}
+
+.cdk-overlay-container .error-snackbar .mat-mdc-button {
+  color: #ffffff !important;
+  --mdc-text-button-label-text-color: #ffffff !important;
+  font-weight: 700 !important;
+  text-transform: none !important;
+  font-size: 14px !important;
+  letter-spacing: normal !important;
+  padding: 6px 12px !important;
+  border-radius: 6px !important;
+  background-color: transparent !important;
+  min-width: auto !important;
+  margin-left: auto !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.cdk-overlay-container .error-snackbar .mat-mdc-button:hover {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+}
+
+.cdk-overlay-container .error-snackbar .mat-mdc-button:focus {
+  background-color: rgba(255, 255, 255, 0.3) !important;
+  outline: none !important;
+}
+
+.cdk-overlay-container .error-snackbar-login {
+  margin-top: 20px !important;
+}
+
+@media (max-width: 767px) {
+  .cdk-overlay-container .error-snackbar-login {
+    margin-top: 16px !important;
+    margin-left: 16px !important;
+    margin-right: 16px !important;
+    max-width: calc(100vw - 32px) !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .cdk-overlay-container .error-snackbar-login {
+    max-width: 500px !important;
+  }
+}
+
+/* Animación para snackbar de error */
+@keyframes slideInDownModern {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.cdk-overlay-container .error-snackbar .mat-mdc-snack-bar-container {
+  animation: slideInDownModern 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* ========================================
+   BACKDROP PARA MODALES DE WELCOME PAGE
+   Asegurar que el fondo esté oscurecido
+======================================== */
+/* Backdrop oscuro para diálogo de compañías */
+.company-dialog-backdrop {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Backdrop oscuro para diálogo de puntos de emisión */
+.invoice-point-dialog-backdrop {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Asegurar que el backdrop cubra toda la pantalla */
+.cdk-overlay-backdrop {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Panel del diálogo con mejor elevación */
+.company-dialog-panel,
+.invoice-point-dialog-panel {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Asegurar que el contenido de fondo no sea interactivo cuando el modal está abierto */
+.cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* ========================================
+   ESTILOS COMUNES GLOBALES
+   Utilidades y clases reutilizables
+======================================== */
+/* Utilidades comunes */
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.ml-8 { margin-left: 8px; }
+.m-0 { margin: 0 !important; }
+.full-width { width: 100%; }
+.flex1 { width: 100%; }
+.text-center { text-align: center; }
+.flex-parent { display: flex; }
+.jc-center { justify-content: center; }
+
+/* Contenedor de página común */
+.page-container {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  background-color: var(--background-color, #f9fafb);
+  min-height: calc(100vh - 64px);
+}
+
+/* Cards comunes */
+.card-padding {
+  padding: 16px;
+  border-radius: 8px;
+  background-color: #ffffff;
+}
+
+/* Input labels */
+.input-label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: #37474f;
+  white-space: nowrap;
+}
+
+/* Required field */
+.required::after {
+  content: ' *';
+  color: #d32f2f;
+}
+
+/* ===== SNACKBARS/TOASTS GLOBALES ===== */
+
+/* Success Snackbar - Verde */
+.success-snackbar {
+  --mdc-snackbar-container-color: #4caf50 !important;
+}
+
+.success-snackbar .mdc-snackbar__surface {
+  background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4) !important;
+  animation: slideInRight 0.3s ease-out !important;
+}
+
+.success-snackbar .mdc-snackbar__label {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  font-size: 15px !important;
+}
+
+.success-snackbar .mat-mdc-button,
+.success-snackbar .mdc-snackbar__action {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+/* Error Snackbar - Rojo */
+.error-snackbar {
+  --mdc-snackbar-container-color: #f44336 !important;
+}
+
+.error-snackbar .mdc-snackbar__surface {
+  background: linear-gradient(135deg, #f44336 0%, #e57373 100%) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4) !important;
+  animation: shake 0.4s ease-in-out !important;
+}
+
+.error-snackbar .mdc-snackbar__label {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  font-size: 15px !important;
+}
+
+.error-snackbar .mat-mdc-button,
+.error-snackbar .mdc-snackbar__action {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+/* Warning Snackbar - Naranja */
+.warning-snackbar {
+  --mdc-snackbar-container-color: #ff9800 !important;
+}
+
+.warning-snackbar .mdc-snackbar__surface {
+  background: linear-gradient(135deg, #ff9800 0%, #ffb74d 100%) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4) !important;
+  animation: slideInRight 0.3s ease-out !important;
+}
+
+.warning-snackbar .mdc-snackbar__label {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  font-size: 15px !important;
+}
+
+.warning-snackbar .mat-mdc-button,
+.warning-snackbar .mdc-snackbar__action {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+/* Animaciones para toasts */
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+

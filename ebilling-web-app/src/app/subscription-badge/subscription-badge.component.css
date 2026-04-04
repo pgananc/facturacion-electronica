@@ -1,0 +1,184 @@
+.subscription-badge-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-width: 200px;
+}
+
+/* Badge del Plan */
+.plan-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.plan-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.plan-name {
+  flex: 1;
+}
+
+/* Contenedor de Uso */
+.usage-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Layout horizontal para modo compacto */
+.usage-container.compact-layout {
+  gap: 4px;
+}
+
+.usage-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.usage-footer-inline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 9px;
+  gap: 6px;
+}
+
+.usage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.usage-label {
+  color: #666;
+  font-weight: 500;
+}
+
+.usage-value {
+  font-weight: 600;
+  color: #333;
+}
+
+.usage-value.near-limit {
+  color: #ff9800;
+}
+
+.usage-value.at-limit {
+  color: #f44336;
+}
+
+/* Barra de Progreso */
+.usage-progress-bar {
+  height: 8px;
+  border-radius: 4px;
+}
+
+/* Footer de Uso */
+.usage-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+
+.usage-percent {
+  color: #666;
+  font-weight: 500;
+}
+
+.usage-percent.near-limit {
+  color: #ff9800;
+  font-weight: 600;
+}
+
+.usage-percent.at-limit {
+  color: #f44336;
+  font-weight: 700;
+}
+
+.usage-remaining {
+  color: #4caf50;
+  font-weight: 500;
+}
+
+.usage-limit-reached {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #f44336;
+  font-weight: 600;
+}
+
+.usage-limit-reached mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+/* Badge Ilimitado */
+.unlimited-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #e8f5e9;
+  border-radius: 20px;
+  color: #2e7d32;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.unlimited-badge mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+/* Modo Compacto (para toolbar) */
+.subscription-badge-container.compact-mode {
+  padding: 6px 14px;
+  gap: 4px;
+  min-width: 140px;
+  max-width: 180px;
+}
+
+.compact-mode .usage-header {
+  font-size: 10px;
+  margin-bottom: 2px;
+}
+
+.compact-mode .usage-footer {
+  font-size: 9px;
+  margin-top: 2px;
+}
+
+.compact-mode .usage-progress-bar {
+  height: 4px;
+  margin: 2px 0;
+}
+
+/* Responsive */
+@media (max-width: 959px) {
+  .subscription-badge-container {
+    min-width: 100%;
+    padding: 12px;
+  }
+}
+

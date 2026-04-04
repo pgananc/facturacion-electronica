@@ -1,0 +1,277 @@
+<div class="invoice-page">
+  <mat-toolbar class="toolbar-primary toolbar-with-action">
+    <button
+      mat-icon-button
+      (click)="goBackToConsultation()"
+      class="back-button"
+    >
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span>Consulta de Comprobantes</span>
+    <span class="spacer"></span>
+  </mat-toolbar>
+
+  <mat-card class="card-padding mt-24 search-card">
+    <mat-card-content>
+      <form [formGroup]="searchForm" (ngSubmit)="applyFilter()">
+        <div class="search-grid">
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Tipo de comprobante</mat-label>
+            <mat-icon matPrefix>description</mat-icon>
+            <mat-select formControlName="documentType" required>
+              <mat-option value="0">Todos</mat-option>
+              <mat-option value="1">Factura</mat-option>
+              <mat-option value="2">Nota de crédito</mat-option>
+            </mat-select>
+            <mat-error
+              *ngIf="searchForm.get('documentType')?.hasError('required')"
+            >
+              El tipo de comprobante es obligatorio
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Fecha Desde</mat-label>
+            <mat-icon matPrefix>event</mat-icon>
+            <input
+              matInput
+              [matDatepicker]="pickerFrom"
+              formControlName="creationDateFrom"
+              required
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="pickerFrom"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #pickerFrom></mat-datepicker>
+            <mat-error
+              *ngIf="searchForm.get('creationDateFrom')?.hasError('required')"
+            >
+              La fecha desde es obligatoria
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Fecha Hasta</mat-label>
+            <mat-icon matPrefix>event</mat-icon>
+            <input
+              matInput
+              [matDatepicker]="pickerTo"
+              formControlName="creationDateTo"
+              required
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="pickerTo"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #pickerTo></mat-datepicker>
+            <mat-error
+              *ngIf="searchForm.get('creationDateTo')?.hasError('required')"
+            >
+              La fecha hasta es obligatoria
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Número de Comprobante</mat-label>
+            <mat-icon matPrefix>confirmation_number</mat-icon>
+            <input
+              matInput
+              formControlName="invoiceNumber"
+              placeholder="Ingrese número de comprobante"
+            />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Identificación del comprador</mat-label>
+            <mat-icon matPrefix>badge</mat-icon>
+            <input
+              matInput
+              formControlName="buyerIdentification"
+              placeholder="Cédula/RUC del comprador"
+              type="text"
+            />
+          </mat-form-field>
+        </div>
+
+        <div class="search-actions">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            class="search-btn"
+            [disabled]="searchForm.invalid"
+          >
+            <mat-icon>search</mat-icon>
+            <span>Buscar</span>
+          </button>
+          <button
+            mat-raised-button
+            type="button"
+            (click)="clearFilters()"
+            class="clear-btn"
+          >
+            <mat-icon>clear</mat-icon>
+            <span>Limpiar</span>
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="card-padding mt-24">
+    <mat-card-content>
+      <div class="table-wrapper">
+        <mat-toolbar class="toolbar-primary-sm"
+          >Listado de Comprobantes</mat-toolbar
+        >
+        <mat-table
+          [dataSource]="dataSource"
+          matSort
+          class="mat-elevation-z1 bordered-table"
+        >
+          <ng-container matColumnDef="documentType">
+            <mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              class="text-color-bold header-dark"
+            >
+              Tipo de Comprobante
+            </mat-header-cell>
+            <mat-cell class="celda-ajustable" *matCellDef="let row">
+              {{
+                row.documentTypeNumber === 1
+                  ? "Factura"
+                  : row.documentTypeNumber === 2
+                  ? "Nota de Crédito"
+                  : "-"
+              }}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="number">
+            <mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              class="text-color-bold header-dark"
+            >
+              Número de comprobante
+            </mat-header-cell>
+            <mat-cell class="celda-ajustable" *matCellDef="let row">{{
+              row.number
+            }}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="date">
+            <mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              class="text-color-bold header-dark"
+            >
+              Fecha
+            </mat-header-cell>
+            <mat-cell class="celda-ajustable" *matCellDef="let row">
+              {{ row.date | date : "dd/MM/yyyy" }}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="nameClient">
+            <mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              class="text-color-bold header-dark"
+            >
+              Cliente
+            </mat-header-cell>
+            <mat-cell class="celda-ajustable" *matCellDef="let row">{{
+              row.nameClient
+            }}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="total">
+            <mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              class="text-color-bold header-dark"
+            >
+              Total
+            </mat-header-cell>
+            <mat-cell class="celda-ajustable" *matCellDef="let row">
+              {{ row.total | currency : "USD" : "symbol" : "1.2-2" }}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="authorizationStatusSri">
+            <mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              class="text-color-bold header-dark"
+            >
+              Estado
+            </mat-header-cell>
+            <mat-cell class="celda-ajustable" *matCellDef="let row">{{
+              row.authorizationStatusSri
+            }}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <mat-header-cell
+              *matHeaderCellDef
+              class="text-color-bold header-dark"
+            >
+              Acciones
+            </mat-header-cell>
+            <mat-cell class="celda-ajustable" *matCellDef="let row">
+              <button
+                mat-icon-button
+                color="primary"
+                (click)="
+                  downloadPdf(
+                    row.idInvoice || row.idCreditNote || 0,
+                    row.number,
+                    row.documentTypeNumber
+                  )
+                "
+                matTooltip="Descargar PDF"
+                aria-label="Descargar PDF"
+              >
+                <mat-icon>picture_as_pdf</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                color="accent"
+                (click)="
+                  downloadXml(
+                    row.idInvoice || row.idCreditNote || 0,
+                    row.authorizationNumber,
+                    row.documentTypeNumber
+                  )
+                "
+                matTooltip="Descargar XML"
+                aria-label="Descargar XML"
+              >
+                <mat-icon>code</mat-icon>
+              </button>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+              No existen comprobantes.
+            </td>
+          </tr>
+        </mat-table>
+
+        <mat-paginator
+          [pageSize]="pageSize"
+          [pageSizeOptions]="[5, 10, 25, 100]"
+          [length]="quantity"
+          (page)="showMore($event)"
+        ></mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

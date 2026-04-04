@@ -1,6 +1,389 @@
-<router-outlet></router-outlet>
-<div [hidden]="isWait" class="loading">
-  <mat-progress-spinner mode="indeterminate"> </mat-progress-spinner>
+<!-- Loading State -->
+<div *ngIf="isLoading || isWait" class="loading-container">
+  <mat-progress-spinner
+    mode="indeterminate"
+    diameter="50"
+    aria-label="Cargando información"
+  >
+  </mat-progress-spinner>
+  <p class="loading-text">Cargando información...</p>
 </div>
 
-<h1 class="text-welcome">Bienvenido</h1>
+<!-- Welcome Content -->
+<div *ngIf="!isLoading && !isWait" class="welcome-container">
+  <!-- Welcome Header -->
+  <div class="welcome-header">
+    <h1 class="welcome-title">
+      Bienvenido{{ userName ? ", " + userName : "" }}
+    </h1>
+    <p *ngIf="companyName" class="welcome-subtitle">
+      <mat-icon>business</mat-icon>
+      {{ companyName }}
+    </p>
+  </div>
+
+  <!-- Sin suscripción activa: mensaje informativo, no se muestran dashboards ni menús -->
+  <mat-card *ngIf="!hasActiveSubscription" class="no-subscription-card">
+    <mat-card-content>
+      <mat-icon class="no-subscription-icon">info</mat-icon>
+      <h2 class="no-subscription-title">No tiene suscripción activa</h2>
+      <p class="no-subscription-message">
+        Esta compañía no tiene una suscripción activa. Contacte al administrador para que asigne un plan.
+      </p>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Quick Actions, KPIs y dashboards solo con suscripción activa -->
+  <ng-container *ngIf="hasActiveSubscription">
+  <!-- Quick Actions Grid (6 cards) -->
+  <h2 class="section-title">
+    <mat-icon>bolt</mat-icon>
+    Acciones Rápidas
+  </h2>
+
+  <div class="quick-actions-grid">
+    <!-- Card 1: Nueva Factura -->
+    <mat-card
+      *appHasPermission="'INVOICE_CREATE'"
+      class="action-card"
+      routerLink="/invoices"
+      matRipple
+    >
+      <mat-card-content>
+        <div class="card-icon-wrapper card-icon-primary">
+          <mat-icon class="card-icon">receipt</mat-icon>
+        </div>
+        <h3 class="card-title">Nueva Factura</h3>
+        <p class="card-description">Crear factura electrónica</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Card 2: Nueva Nota de Crédito -->
+    <mat-card
+      *appHasPermission="'CREDIT_NOTE_CREATE'"
+      class="action-card"
+      routerLink="/credit-notes/create"
+      matRipple
+    >
+      <mat-card-content>
+        <div class="card-icon-wrapper card-icon-secondary">
+          <mat-icon class="card-icon">receipt_long</mat-icon>
+        </div>
+        <h3 class="card-title">Nota de Crédito</h3>
+        <p class="card-description">Emitir nota de crédito</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Card 3: Nuevo Cliente -->
+    <mat-card
+      *appHasPermission="'CLIENT_CREATE'"
+      class="action-card"
+      routerLink="/clients"
+      matRipple
+    >
+      <mat-card-content>
+        <div class="card-icon-wrapper card-icon-success">
+          <mat-icon class="card-icon">person_add</mat-icon>
+        </div>
+        <h3 class="card-title">Nuevo Cliente</h3>
+        <p class="card-description">Registrar cliente</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Card 4: Dashboard Completo -->
+    <mat-card
+      *appHasPermission="'REPORT_ADVANCED'"
+      class="action-card"
+      routerLink="/reports/sales-dashboard"
+      matRipple
+    >
+      <mat-card-content>
+        <div class="card-icon-wrapper card-icon-warning">
+          <mat-icon class="card-icon">dashboard</mat-icon>
+        </div>
+        <h3 class="card-title">Dashboard</h3>
+        <p class="card-description">Análisis completo</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Card 5: Pendientes de Cobro -->
+    <mat-card
+      *appHasPermission="'REPORT_OPERATIONAL'"
+      class="action-card"
+      routerLink="/reports/pending-invoices"
+      matRipple
+    >
+      <mat-card-content>
+        <div class="card-icon-wrapper card-icon-error">
+          <mat-icon class="card-icon">pending_actions</mat-icon>
+        </div>
+        <h3 class="card-title">Pendientes</h3>
+        <p class="card-description">Por cobrar</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Card 6: Productos -->
+    <mat-card
+      *appHasPermission="'PRODUCT_MANAGEMENT'"
+      class="action-card"
+      routerLink="/products"
+      matRipple
+    >
+      <mat-card-content>
+        <div class="card-icon-wrapper card-icon-info">
+          <mat-icon class="card-icon">inventory_2</mat-icon>
+        </div>
+        <h3 class="card-title">Productos</h3>
+        <p class="card-description">Catálogo</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- KPIs Section -->
+  <h2 class="section-title">
+    <mat-icon>insights</mat-icon>
+    Métricas del Negocio
+  </h2>
+
+  <div *ngIf="isLoadingMetrics" class="metrics-loading">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Cargando métricas...</p>
+  </div>
+
+  <div *ngIf="!isLoadingMetrics" class="kpi-grid">
+    <!-- KPI 1: Ventas HOY -->
+    <mat-card
+      class="kpi-card kpi-today"
+      [routerLink]="['/reports/sales-by-period']"
+      matRipple
+    >
+      <div class="kpi-background">
+        <mat-icon class="kpi-bg-icon">today</mat-icon>
+      </div>
+      <mat-card-content>
+        <div class="kpi-header">
+          <mat-icon class="kpi-icon">today</mat-icon>
+          <span class="kpi-label">Ventas Hoy</span>
+        </div>
+        <p class="kpi-value">{{ formatCurrency(metrics.today) }}</p>
+        <span class="kpi-subtitle">Actualizado hoy</span>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- KPI 2: Ventas SEMANA -->
+    <mat-card
+      class="kpi-card kpi-week"
+      [routerLink]="['/reports/sales-by-period']"
+      matRipple
+    >
+      <div class="kpi-background">
+        <mat-icon class="kpi-bg-icon">date_range</mat-icon>
+      </div>
+      <mat-card-content>
+        <div class="kpi-header">
+          <mat-icon class="kpi-icon">date_range</mat-icon>
+          <span class="kpi-label">Ventas Esta Semana</span>
+        </div>
+        <p class="kpi-value">{{ formatCurrency(metrics.week) }}</p>
+        <span class="kpi-subtitle">Últimos 7 días</span>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- KPI 3: Ventas MES -->
+    <mat-card
+      class="kpi-card kpi-month"
+      [routerLink]="['/reports/sales-by-period']"
+      matRipple
+    >
+      <div class="kpi-background">
+        <mat-icon class="kpi-bg-icon">calendar_month</mat-icon>
+      </div>
+      <mat-card-content>
+        <div class="kpi-header">
+          <mat-icon class="kpi-icon">calendar_month</mat-icon>
+          <span class="kpi-label">Ventas Este Mes</span>
+        </div>
+        <p class="kpi-value">{{ formatCurrency(metrics.month) }}</p>
+        <span class="kpi-subtitle">Mes actual</span>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- KPI 4: Pendientes de Cobro -->
+    <mat-card
+      class="kpi-card kpi-pending"
+      [routerLink]="['/reports/pending-invoices']"
+      matRipple
+    >
+      <div class="kpi-background">
+        <mat-icon class="kpi-bg-icon">pending_actions</mat-icon>
+      </div>
+      <mat-card-content>
+        <div class="kpi-header">
+          <mat-icon class="kpi-icon">pending_actions</mat-icon>
+          <span class="kpi-label">Pendientes</span>
+        </div>
+        <p class="kpi-value">{{ formatCurrency(metrics.pending) }}</p>
+        <span class="kpi-subtitle" *ngIf="metrics.pendingCount > 0">
+          {{ metrics.pendingCount }}
+          {{ metrics.pendingCount === 1 ? "factura" : "facturas" }}
+        </span>
+        <span class="kpi-subtitle" *ngIf="metrics.pendingCount === 0"
+          >Sin pendientes</span
+        >
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- ⭐ FASE 2: Gráfico de Ventas y Últimas Facturas -->
+  <div
+    *ngIf="salesTrendData.length > 0 || recentInvoices.length > 0"
+    class="phase2-section"
+  >
+    <!-- Gráfico de Ventas -->
+    <div *ngIf="salesTrendData.length > 0" class="chart-section">
+      <h2 class="section-title">
+        <mat-icon>show_chart</mat-icon>
+        Tendencia de Ventas
+      </h2>
+
+      <mat-card class="chart-card">
+        <mat-card-content>
+          <div class="chart-header">
+            <span class="chart-subtitle">Últimos 7 días</span>
+          </div>
+          <div class="chart-wrapper">
+            <canvas #salesChart></canvas>
+          </div>
+          <div class="chart-footer">
+            <mat-icon class="info-icon">info</mat-icon>
+            <span class="chart-hint"
+              >Haz click en un punto para ver detalles</span
+            >
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Mensaje cuando no hay datos de tendencia -->
+    <div
+      *ngIf="salesTrendData.length === 0 && !isLoadingMetrics"
+      class="chart-section"
+    >
+      <h2 class="section-title">
+        <mat-icon>show_chart</mat-icon>
+        Tendencia de Ventas
+      </h2>
+
+      <mat-card class="chart-card no-data-card">
+        <mat-card-content>
+          <div class="no-data-message">
+            <mat-icon class="no-data-icon">bar_chart</mat-icon>
+            <p class="no-data-text">No hay datos de ventas disponibles</p>
+            <p class="no-data-hint">
+              Los datos aparecerán una vez que haya facturas autorizadas
+            </p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Tabla de Últimas Facturas -->
+    <div *ngIf="recentInvoices.length > 0" class="invoices-section">
+      <h2 class="section-title">
+        <mat-icon>receipt</mat-icon>
+        Últimas Facturas
+      </h2>
+
+      <mat-card class="invoices-card">
+        <mat-card-content>
+          <div class="invoice-list">
+            <div
+              *ngFor="let invoice of recentInvoices"
+              class="invoice-item"
+              (click)="viewInvoiceDetail(invoice)"
+              matRipple
+            >
+              <div class="invoice-header">
+                <div class="invoice-number">
+                  <mat-icon class="invoice-icon">receipt</mat-icon>
+                  <span class="invoice-num">{{
+                    invoice.invoiceNumber || "N/A"
+                  }}</span>
+                </div>
+                <span
+                  class="invoice-status"
+                  [ngClass]="getAuthorizationClass(invoice.authorizationStatus)"
+                >
+                  {{ getAuthorizationLabel(invoice.authorizationStatus) }}
+                </span>
+              </div>
+
+              <div class="invoice-body">
+                <div class="invoice-client">
+                  <mat-icon class="client-icon">person</mat-icon>
+                  <div class="client-info">
+                    <span class="client-name">{{
+                      invoice.clientName || "Cliente"
+                    }}</span>
+                    <span class="client-id">{{
+                      invoice.clientIdentification || ""
+                    }}</span>
+                  </div>
+                </div>
+
+                <div class="invoice-details">
+                  <div class="invoice-amount">
+                    <span class="amount-label">Total:</span>
+                    <span class="amount-value">{{
+                      formatCurrency(invoice.totalAmount || 0)
+                    }}</span>
+                  </div>
+                  <div class="invoice-date">
+                    <mat-icon class="date-icon">event</mat-icon>
+                    <span>{{ formatDate(invoice.issueDate) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="invoices-footer">
+            <button mat-stroked-button color="primary" routerLink="/invoices">
+              <mat-icon>list</mat-icon>
+              Ver todas las facturas
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+  </ng-container>
+
+  <!-- Company Info Card (mantener al final) -->
+  <mat-card *ngIf="company" class="company-info-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>business</mat-icon>
+        Información de la Compañía
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="company-info-grid">
+        <div class="info-item" *ngIf="company.name">
+          <mat-icon>label</mat-icon>
+          <div>
+            <span class="info-label">Nombre:</span>
+            <span class="info-value">{{ company.name }}</span>
+          </div>
+        </div>
+        <div class="info-item" *ngIf="company.identification">
+          <mat-icon>badge</mat-icon>
+          <div>
+            <span class="info-label">Identificación:</span>
+            <span class="info-value">{{ company.identification }}</span>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

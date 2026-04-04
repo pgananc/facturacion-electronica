@@ -1,0 +1,131 @@
+/* ======================
+   TOOLBAR STYLES UNIFICADOS
+   Sistema de toolbars consistente para toda la aplicación
+   Usa el tema fintech (cyan #0EA5E9)
+   NOTA: Los estilos mejorados están en shared-styles.css
+====================== */
+
+/* Toolbar principal - Para headers de página */
+.toolbar-primary {
+  background: linear-gradient(135deg, var(--primary-color, #0ea5e9) 0%, var(--primary-dark, #0a82bb) 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.5px;
+  margin-bottom: 24px;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+  transition: box-shadow 0.3s ease;
+  padding: 16px 24px;
+  height: auto;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toolbar-primary:hover {
+  box-shadow: 0 6px 16px rgba(14, 165, 233, 0.4);
+}
+
+/* Toolbar pequeño - Para headers de cards/tablas */
+.toolbar-primary-sm {
+  background: linear-gradient(135deg, var(--primary-color, #0ea5e9) 0%, var(--primary-dark, #0a82bb) 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.3px;
+  margin-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  padding: 14px 20px;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.25);
+  width: 100%;
+  box-sizing: border-box;
+  border-bottom: 2px solid var(--primary-dark, #0a82bb);
+  transition: box-shadow 0.3s ease;
+  display: flex;
+  align-items: center;
+  height: 56px;
+  min-height: 56px;
+}
+
+.toolbar-primary-sm:hover {
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.35);
+}
+
+/* Toolbar con acción (botón a la derecha) */
+.toolbar-with-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+}
+
+.toolbar-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+/* Responsive: ajustar toolbar en mobile */
+@media screen and (max-width: 959px) {
+  .toolbar-primary {
+    font-size: 16px;
+    padding: 12px 16px;
+    height: auto;
+    min-height: 56px;
+  }
+
+  .toolbar-primary-sm {
+    padding: 10px 14px;
+    font-size: 14px;
+    height: auto;
+    min-height: 48px;
+  }
+
+  .toolbar-with-action {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+/* Compatibilidad: mantener .toolbar-blue como alias (deprecated) */
+.toolbar-blue {
+  /* Usar las mismas propiedades que toolbar-primary */
+  background-color: var(--primary-color, #0ea5e9);
+  color: #fff;
+  font-weight: 600;
+  font-size: 18px;
+  margin-bottom: 16px;
+  border-radius: 4px 4px 0 0;
+  box-shadow: 0 2px 4px rgba(14, 165, 233, 0.2);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  min-height: 64px;
+}
+
+.toolbar-blue-sm {
+  /* Usar las mismas propiedades que toolbar-primary-sm */
+  background-color: var(--primary-color, #0ea5e9);
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  padding: 12px 16px;
+  box-shadow: 0 2px 4px rgba(14, 165, 233, 0.2);
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  height: 56px;
+  min-height: 56px;
+}
+

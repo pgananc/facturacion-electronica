@@ -1,0 +1,152 @@
+<div class="dialog-container">
+  <div class="dialog-header">
+    <h2 mat-dialog-title>
+      {{
+        data.point ? "Actualizar Punto de Emisión" : "Nuevo Punto de Emisión"
+      }}
+    </h2>
+  </div>
+
+  <div class="dialog-content" mat-dialog-content>
+    <form [formGroup]="form">
+      <!-- ✅ Compañía (SOLO PARA SUPER ADMIN EN CREACIÓN) -->
+      <mat-form-field
+        *ngIf="isSuperAdmin && !data.point"
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Compañía</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >business</mat-icon
+        >
+        <mat-select
+          placeholder="Seleccione una compañía"
+          formControlName="companyId"
+          required
+        >
+          <mat-option
+            *ngFor="let company of companies"
+            [value]="company.idCompany"
+          >
+            {{ company.name }}
+          </mat-option>
+        </mat-select>
+        <mat-hint>Primero seleccione la compañía</mat-hint>
+        <mat-error>La compañía es requerida</mat-error>
+      </mat-form-field>
+
+      <!-- Sucursal -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Sucursal</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >business</mat-icon
+        >
+        <mat-select
+          placeholder="Seleccione sucursal"
+          formControlName="establishmentId"
+          required
+        >
+          <mat-option
+            *ngFor="let est of establishments"
+            [value]="est.idEstablishment"
+          >
+            {{ est.code }} - {{ est.name }}
+          </mat-option>
+        </mat-select>
+        <mat-hint
+          >Seleccione la sucursal a la que pertenece este punto</mat-hint
+        >
+        <mat-error> La sucursal es requerida </mat-error>
+      </mat-form-field>
+
+      <!-- Código -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Código</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >qr_code</mat-icon
+        >
+        <input
+          matInput
+          type="text"
+          placeholder="Ingrese código (3 dígitos, ej: 001)"
+          formControlName="code"
+          maxlength="3"
+          required
+        />
+        <mat-hint>Exactamente 3 dígitos numéricos (001-999)</mat-hint>
+        <mat-error *ngIf="form.get('code')?.hasError('required')">
+          El código es requerido
+        </mat-error>
+        <mat-error *ngIf="form.get('code')?.hasError('pattern')">
+          El código debe ser un número de 3 dígitos
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Secuencial de factura -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Secuencial de factura</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >format_list_numbered</mat-icon
+        >
+        <input
+          matInput
+          type="number"
+          placeholder="Ingrese número secuencial"
+          formControlName="sequentialInvoice"
+          min="1"
+          required
+        />
+        <mat-hint
+          >Número secuencial inicial (mínimo 1, solo puede
+          incrementar)</mat-hint
+        >
+        <mat-error *ngIf="form.get('sequentialInvoice')?.hasError('required')">
+          El secuencial es requerido
+        </mat-error>
+        <mat-error *ngIf="form.get('sequentialInvoice')?.hasError('min')">
+          El secuencial debe ser mayor o igual a 1
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Checkbox Estado Activo - NATIVO HTML -->
+      <div style="margin-top: 16px; margin-bottom: 8px">
+        <label class="custom-checkbox-container">
+          <input
+            type="checkbox"
+            formControlName="status"
+            class="custom-checkbox-input"
+          />
+          <span class="custom-checkbox-box"></span>
+          <span class="custom-checkbox-label">Punto de Emisión Activo</span>
+        </label>
+        <div
+          style="
+            margin-left: 32px;
+            margin-top: 4px;
+            font-size: 12px;
+            color: #666;
+          "
+        >
+          Los puntos activos podrán emitir facturas
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="dialog-actions" mat-dialog-actions>
+    <button
+      mat-raised-button
+      color="primary"
+      type="button"
+      [disabled]="form.invalid"
+      (click)="save()"
+    >
+      <mat-icon>save</mat-icon>
+      <span>Guardar</span>
+    </button>
+    <button mat-raised-button type="button" (click)="cancel()">
+      <mat-icon>close</mat-icon>
+      <span>Cancelar</span>
+    </button>
+  </div>
+</div>

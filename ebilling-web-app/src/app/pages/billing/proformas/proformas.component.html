@@ -1,0 +1,316 @@
+<div class="proformas-page">
+  <div class="proformas-container">
+    <mat-toolbar class="toolbar-primary toolbar-with-action">
+      <span>Proformas</span>
+      <span class="spacer"></span>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="createProforma()"
+        class="btn-new-proforma"
+      >
+        <mat-icon>add_circle</mat-icon>
+        Nueva Proforma
+      </button>
+    </mat-toolbar>
+
+    <mat-card class="info-card">
+      <mat-card-content>
+        <div class="info-content">
+          <mat-icon class="info-icon">info</mat-icon>
+          <div>
+            <p class="info-text">
+              Las proformas son cotizaciones previas a la facturación. Puede
+              <strong>convertir</strong> una proforma en borrador a factura para
+              continuar el proceso de emisión.
+            </p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="card-padding mt-16 search-card">
+      <div *ngIf="isLoading" class="loading-overlay">
+        <mat-spinner diameter="60"></mat-spinner>
+        <p class="loading-text">Buscando proformas...</p>
+      </div>
+
+      <mat-card-content>
+        <form [formGroup]="searchForm" (ngSubmit)="search()">
+          <div class="search-grid-horizontal">
+            <mat-form-field appearance="outline" class="search-field-compact">
+              <mat-label>Fecha desde</mat-label>
+              <mat-icon matPrefix>event</mat-icon>
+              <input
+                matInput
+                [matDatepicker]="pickerFrom"
+                formControlName="issueDateFrom"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="pickerFrom"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #pickerFrom></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="search-field-compact">
+              <mat-label>Fecha hasta</mat-label>
+              <mat-icon matPrefix>event</mat-icon>
+              <input
+                matInput
+                [matDatepicker]="pickerTo"
+                formControlName="issueDateTo"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="pickerTo"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #pickerTo></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="search-field-compact">
+              <mat-label>Estado</mat-label>
+              <mat-select formControlName="status">
+                <mat-option value="">Todos</mat-option>
+                <mat-option
+                  *ngFor="let opt of statusOptions"
+                  [value]="opt.value"
+                >
+                  {{ opt.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="search-field-compact">
+              <mat-label>Identificación</mat-label>
+              <mat-icon matPrefix>person</mat-icon>
+              <input
+                matInput
+                placeholder="Ingrese identificación"
+                formControlName="identification"
+              />
+            </mat-form-field>
+          </div>
+
+          <div class="search-actions-row">
+            <div class="search-actions">
+              <button
+                mat-raised-button
+                color="primary"
+                type="submit"
+                [disabled]="isLoading"
+                class="btn-search-compact"
+              >
+                <mat-icon>search</mat-icon>
+                Buscar
+              </button>
+              <button
+                mat-stroked-button
+                color="primary"
+                type="button"
+                (click)="clearFilters()"
+                class="btn-clear-compact"
+              >
+                <mat-icon>clear</mat-icon>
+                Limpiar
+              </button>
+            </div>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="card-padding mt-24">
+      <mat-card-content>
+        <div class="table-wrapper">
+          <mat-toolbar class="toolbar-primary-sm"
+            >Listado de Proformas</mat-toolbar
+          >
+
+          <div
+            class="table-container"
+            style="position: relative; min-height: 300px"
+          >
+            <div
+              *ngIf="dataSource.data.length === 0 && !isLoading"
+              class="empty-state-overlay"
+            >
+              <mat-icon class="empty-icon">description</mat-icon>
+              <p class="empty-title">No se encontraron proformas</p>
+              <p class="empty-subtitle">
+                Ajuste los filtros o cree una nueva proforma.
+              </p>
+            </div>
+
+            <mat-table
+              [dataSource]="dataSource"
+              matSort
+              class="mat-elevation-z1 bordered-table"
+            >
+              <ng-container matColumnDef="proformaNumber">
+                <mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="text-color-bold header-dark"
+                  >N° Proforma</mat-header-cell
+                >
+                <mat-cell class="celda-ajustable" *matCellDef="let row">{{
+                  row.proformaNumber
+                }}</mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="issueDate">
+                <mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="text-color-bold header-dark"
+                  >Fecha Emisión</mat-header-cell
+                >
+                <mat-cell class="celda-ajustable" *matCellDef="let row">{{
+                  formatDate(row.issueDate)
+                }}</mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="validUntil">
+                <mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="text-color-bold header-dark"
+                  >Válida hasta</mat-header-cell
+                >
+                <mat-cell class="celda-ajustable" *matCellDef="let row">{{
+                  formatDate(row.validUntil)
+                }}</mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="clientIdentification">
+                <mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="text-color-bold header-dark"
+                  >Identificación</mat-header-cell
+                >
+                <mat-cell class="celda-ajustable" *matCellDef="let row">{{
+                  row.clientIdentification
+                }}</mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="clientName">
+                <mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="text-color-bold header-dark"
+                  >Cliente</mat-header-cell
+                >
+                <mat-cell
+                  class="celda-ajustable"
+                  *matCellDef="let row"
+                  [matTooltip]="row.clientName"
+                  matTooltipPosition="above"
+                >
+                  {{ row.clientName }}
+                </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="totalAmount">
+                <mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="text-color-bold header-dark"
+                  >Total</mat-header-cell
+                >
+                <mat-cell class="celda-ajustable" *matCellDef="let row">{{
+                  formatCurrency(row.totalAmount)
+                }}</mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="status">
+                <mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="text-color-bold header-dark"
+                  >Estado</mat-header-cell
+                >
+                <mat-cell class="celda-ajustable" *matCellDef="let row">
+                  <span class="status-badge" [ngClass]="getStatusClass(row)">
+                    {{ getStatusText(row) }}
+                  </span>
+                </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="actions">
+                <mat-header-cell
+                  *matHeaderCellDef
+                  class="text-color-bold header-dark"
+                  >Acciones</mat-header-cell
+                >
+                <mat-cell class="actions-cell" *matCellDef="let row">
+                  <button
+                    *ngIf="isDraft(row)"
+                    mat-icon-button
+                    color="primary"
+                    matTooltip="Editar"
+                    matTooltipPosition="above"
+                    (click)="editProforma(row)"
+                    class="action-btn edit-btn"
+                    [disabled]="isLoading"
+                  >
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button
+                    *ngIf="isDraft(row)"
+                    mat-icon-button
+                    matTooltip="Convertir a factura"
+                    matTooltipPosition="above"
+                    (click)="convertToInvoice(row)"
+                    class="action-btn convert-btn"
+                    [disabled]="isLoading"
+                  >
+                    <mat-icon>receipt_long</mat-icon>
+                  </button>
+                  <button
+                    *ngIf="isDraft(row)"
+                    mat-icon-button
+                    color="warn"
+                    matTooltip="Eliminar"
+                    matTooltipPosition="above"
+                    (click)="deleteProforma(row)"
+                    class="action-btn delete-btn"
+                    [disabled]="isLoading"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    matTooltip="Imprimir"
+                    matTooltipPosition="above"
+                    (click)="printProforma(row)"
+                    class="action-btn"
+                    [disabled]="isLoading"
+                  >
+                    <mat-icon>picture_as_pdf</mat-icon>
+                  </button>
+                </mat-cell>
+              </ng-container>
+
+              <mat-header-row
+                *matHeaderRowDef="displayedColumns"
+              ></mat-header-row>
+              <mat-row
+                *matRowDef="let row; columns: displayedColumns"
+              ></mat-row>
+            </mat-table>
+          </div>
+
+          <mat-paginator
+            [pageSizeOptions]="[5, 10, 25, 50]"
+            [pageSize]="pageSize"
+            [length]="totalElements"
+            [pageIndex]="currentPage"
+            showFirstLastButtons
+          ></mat-paginator>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

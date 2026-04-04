@@ -1,0 +1,251 @@
+<div class="carrier-page">
+  <!-- Contenedor principal centrado -->
+  <div class="carrier-container">
+    <!-- Título con acción -->
+    <mat-toolbar class="toolbar-primary toolbar-with-action">
+      <span>Consulta Transportista</span>
+      <span class="spacer"></span>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="openCreateDialog()"
+        class="btn-new-carrier"
+      >
+        <mat-icon>add_circle</mat-icon>
+        Nuevo Transportista
+      </button>
+    </mat-toolbar>
+
+    <!-- Filtro de búsqueda -->
+    <mat-card class="card-padding mt-16 search-card">
+      <!-- Loading spinner durante búsqueda -->
+      <div *ngIf="isLoading" class="loading-overlay">
+        <mat-spinner diameter="60"></mat-spinner>
+        <p class="loading-text">Buscando transportistas...</p>
+      </div>
+
+      <mat-card-content>
+        <form [formGroup]="form" (ngSubmit)="search()" #frmCarrier="ngForm">
+          <!-- Layout horizontal compacto: 4 columnas en una sola línea -->
+          <div class="search-grid-horizontal">
+            <mat-form-field appearance="outline" class="search-field-compact">
+              <mat-label>Identificación</mat-label>
+              <mat-icon matPrefix>badge</mat-icon>
+              <input
+                matInput
+                placeholder="Ingrese identificación"
+                maxlength="20"
+                formControlName="identification"
+              />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="search-field-compact">
+              <mat-label>Nombre</mat-label>
+              <mat-icon matPrefix>person</mat-icon>
+              <input
+                matInput
+                placeholder="Ingrese nombre del transportista"
+                formControlName="name"
+              />
+            </mat-form-field>
+
+            <div class="search-actions">
+              <button
+                mat-raised-button
+                color="primary"
+                type="submit"
+                [disabled]="frmCarrier.invalid"
+                class="btn-search-compact"
+              >
+                <mat-icon>search</mat-icon>
+                Buscar
+              </button>
+
+              <button
+                mat-stroked-button
+                color="primary"
+                type="button"
+                (click)="limpiar()"
+                class="btn-clear-compact"
+              >
+                <mat-icon>clear</mat-icon>
+                Limpiar
+              </button>
+            </div>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Tabla -->
+    <mat-card class="card-padding mt-24">
+      <mat-card-content>
+        <div class="table-wrapper">
+          <mat-toolbar class="toolbar-primary-sm"
+            >Listado de Transportistas</mat-toolbar
+          >
+          <div
+            class="table-container"
+            style="position: relative; min-height: 300px"
+          >
+            <!-- Overlay para empty state -->
+            <div
+              *ngIf="dataSourceCarriers.data.length === 0 && !isLoading"
+              class="empty-state-overlay"
+            >
+              <mat-icon class="empty-icon">local_shipping</mat-icon>
+              <p class="empty-title">No se encontraron transportistas</p>
+              <p class="empty-subtitle">
+                Intenta con otros criterios de búsqueda o crea un nuevo
+                transportista.
+              </p>
+            </div>
+
+            <mat-table
+              [dataSource]="dataSourceCarriers"
+              matSort
+              class="mat-elevation-z1 bordered-table"
+              *ngIf="!isLoading"
+            >
+              <ng-container matColumnDef="identification">
+                <mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="text-color-bold header-dark"
+                  >Identificación</mat-header-cell
+                >
+                <mat-cell class="celda-ajustable" *matCellDef="let rowCarrier">{{
+                  rowCarrier.identification
+                }}</mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="name">
+                <mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="text-color-bold header-dark"
+                  >Nombre</mat-header-cell
+                >
+                <mat-cell
+                  class="celda-ajustable"
+                  *matCellDef="let rowCarrier"
+                  [matTooltip]="rowCarrier.name || ''"
+                  matTooltipPosition="above"
+                >
+                  {{ rowCarrier.name }}
+                </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="address">
+                <mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="text-color-bold header-dark"
+                  >Dirección</mat-header-cell
+                >
+                <mat-cell
+                  class="celda-ajustable"
+                  *matCellDef="let rowCarrier"
+                  [matTooltip]="rowCarrier.address || ''"
+                  matTooltipPosition="above"
+                >
+                  {{ rowCarrier.address }}
+                </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="phone">
+                <mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="text-color-bold header-dark"
+                  >Teléfono</mat-header-cell
+                >
+                <mat-cell class="celda-ajustable" *matCellDef="let rowCarrier">{{
+                  rowCarrier.phone
+                }}</mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="email">
+                <mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="text-color-bold header-dark"
+                  >Correo</mat-header-cell
+                >
+                <mat-cell
+                  class="celda-ajustable"
+                  *matCellDef="let rowCarrier"
+                  [matTooltip]="rowCarrier.email || ''"
+                  matTooltipPosition="above"
+                >
+                  {{ rowCarrier.email }}
+                </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="status">
+                <mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="text-color-bold header-dark"
+                  >Estado</mat-header-cell
+                >
+                <mat-cell class="celda-ajustable" *matCellDef="let rowCarrier">
+                  <span [ngClass]="getStatusClass(rowCarrier.status)">{{
+                    getStatusLabel(rowCarrier.status)
+                  }}</span>
+                </mat-cell>
+              </ng-container>
+
+              <!-- Acciones -->
+              <ng-container matColumnDef="actions">
+                <mat-header-cell
+                  *matHeaderCellDef
+                  class="text-color-bold header-dark"
+                  >Acciones</mat-header-cell
+                >
+                <mat-cell *matCellDef="let rowCarrier" class="actions-cell">
+                  <!-- Editar -->
+                  <button
+                    mat-icon-button
+                    color="accent"
+                    matTooltip="Editar transportista"
+                    [attr.aria-label]="'Editar transportista ' + rowCarrier.name"
+                    (click)="openEditDialog(rowCarrier.idCarrier!)"
+                    class="action-btn edit-btn"
+                  >
+                    <mat-icon>edit</mat-icon>
+                  </button>
+
+                  <!-- Eliminar -->
+                  <button
+                    mat-icon-button
+                    color="warn"
+                    matTooltip="Eliminar transportista"
+                    [attr.aria-label]="'Eliminar transportista ' + rowCarrier.name"
+                    (click)="delete(rowCarrier.idCarrier!)"
+                    class="action-btn delete-btn"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </mat-cell>
+              </ng-container>
+
+              <mat-header-row
+                *matHeaderRowDef="displayedColumns"
+              ></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            </mat-table>
+          </div>
+
+          <mat-paginator
+            [pageSize]="pageSize"
+            [pageSizeOptions]="[5, 10, 25, 100]"
+            [length]="quantity"
+            (page)="showMore($event)"
+          ></mat-paginator>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+

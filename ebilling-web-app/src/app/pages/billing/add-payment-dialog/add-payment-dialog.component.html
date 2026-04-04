@@ -1,0 +1,101 @@
+<div class="dialog-container">
+  <!-- Cabecera -->
+  <mat-toolbar class="toolbar-primary-sm">
+    <span>Detalle forma de pago</span>
+    <span class="spacer"></span>
+    <button
+      type="button"
+      mat-icon-button
+      (click)="onCancel()"
+      aria-label="Cerrar"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <mat-dialog-content class="dialog-content">
+    <!-- Spinner mientras carga -->
+    <div *ngIf="isLoading" class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Cargando formas de pago...</p>
+    </div>
+
+    <!-- Formulario -->
+    <form [formGroup]="paymentForm" *ngIf="!isLoading">
+      <!-- Forma de Pago -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Forma de Pago</mat-label>
+        <mat-select formControlName="paymentMethodId" required>
+          <mat-option value="">Seleccione</mat-option>
+          <mat-option
+            *ngFor="let method of paymentMethods"
+            [value]="method.idPaymentMethod"
+          >
+            {{ getDisplayName(method) }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="paymentForm.get('paymentMethodId')?.hasError('required')"
+        >
+          Seleccione una forma de pago
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Valor -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Valor</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="value"
+          step="0.01"
+          min="0"
+          required
+        />
+        <span matPrefix>$&nbsp;</span>
+        <mat-error *ngIf="paymentForm.get('value')?.hasError('required')">
+          El valor es requerido
+        </mat-error>
+        <mat-error *ngIf="paymentForm.get('value')?.hasError('min')">
+          El valor debe ser mayor o igual a 0
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Plazo -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Plazo</mat-label>
+        <input matInput type="number" formControlName="term" min="0" />
+        <mat-hint>Opcional - Número de períodos</mat-hint>
+      </mat-form-field>
+
+      <!-- Tiempo (unidad) -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Tiempo</mat-label>
+        <mat-select formControlName="timeUnit">
+          <mat-option value="">Seleccione</mat-option>
+          <mat-option *ngFor="let unit of timeUnits" [value]="unit">
+            {{ unit }}
+          </mat-option>
+        </mat-select>
+        <mat-hint>Opcional - Unidad de tiempo</mat-hint>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="dialog-actions">
+    <button type="button" mat-stroked-button (click)="onCancel()">
+      <mat-icon>close</mat-icon>
+      Cancelar
+    </button>
+    <button
+      type="button"
+      mat-raised-button
+      color="primary"
+      (click)="onSave()"
+      [disabled]="paymentForm.invalid || isLoading"
+    >
+      <mat-icon>save</mat-icon>
+      Guardar
+    </button>
+  </mat-dialog-actions>
+</div>

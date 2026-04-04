@@ -1,0 +1,207 @@
+<div class="ticket-container" *ngIf="!isLoading && !error && guide">
+  <!-- ENCABEZADO: Datos de la empresa -->
+  <div class="ticket-header">
+    <div class="company-name">{{ companyName }}</div>
+    <div class="company-ruc">RUC: {{ companyRuc }}</div>
+    <div class="company-address" *ngIf="companyAddress">
+      {{ companyAddress }}
+    </div>
+    <div class="company-phone" *ngIf="companyPhone">
+      Tel: {{ companyPhone }}
+    </div>
+  </div>
+
+  <div class="separator">----------------------------------------</div>
+  <div class="legal-text legal-text-centered">
+    <strong>**GUÍA DE REMISIÓN**</strong>
+  </div>
+
+  <!-- DATOS DE LA GUÍA -->
+  <div class="guide-info" *ngIf="hasGuideNumber() && guide">
+    <div class="guide-line">
+      <strong>FECHA EMISIÓN:</strong> {{ formatDate(guide.issueDate) }}
+    </div>
+    <div class="guide-line" *ngIf="guide.guideNumber">
+      <strong>GUÍA N°:</strong> {{ guide.guideNumber }}
+    </div>
+    <div class="guide-line access-key-line" *ngIf="guide.accessKey">
+      <strong>Clave Acceso:</strong> {{ guide.accessKey }}
+    </div>
+    <div class="guide-line" *ngIf="guide.authorizationNumber">
+      <strong>N° Autorización:</strong> {{ guide.authorizationNumber }}
+    </div>
+  </div>
+
+  <!-- Si no hay guideNumber, mostrar solo fecha -->
+  <div class="guide-info" *ngIf="!hasGuideNumber() && guide">
+    <div class="guide-line">
+      <strong>FECHA EMISIÓN:</strong> {{ formatDate(guide.issueDate) }}
+    </div>
+  </div>
+
+  <div class="separator">----------------------------------------</div>
+
+  <!-- DATOS DEL DESTINATARIO -->
+  <div class="recipient-info" *ngIf="guide?.clientDto">
+    <div class="info-section-title"><strong>DESTINATARIO:</strong></div>
+    <div class="info-line">
+      <strong>Nombre:</strong> {{ getRecipientName() }}
+    </div>
+    <div class="info-line">
+      <strong>Identificación:</strong>
+      {{ getRecipientIdentification() }}
+      ({{ getIdentificationTypeName(guide.clientDto.idType) }})
+    </div>
+  </div>
+
+  <div class="separator">----------------------------------------</div>
+
+  <!-- DATOS DEL TRANSPORTISTA -->
+  <div class="carrier-info" *ngIf="guide?.carrierDto">
+    <div class="info-section-title"><strong>TRANSPORTISTA:</strong></div>
+    <div class="info-line">
+      <strong>Nombre:</strong> {{ getCarrierName() }}
+    </div>
+    <div class="info-line">
+      <strong>Identificación:</strong>
+      {{ getCarrierIdentification() }}
+    </div>
+    <div class="info-line" *ngIf="guide.carrierDto.email">
+      <strong>Email:</strong> {{ guide.carrierDto.email }}
+    </div>
+    <div class="info-line" *ngIf="guide.carrierDto.phone">
+      <strong>Tel:</strong> {{ guide.carrierDto.phone }}
+    </div>
+  </div>
+
+  <div class="separator">----------------------------------------</div>
+
+  <!-- DATOS DEL TRASLADO -->
+  <div class="transfer-info" *ngIf="guide">
+    <div class="info-section-title"><strong>DATOS DEL TRASLADO:</strong></div>
+    <div class="info-line">
+      <strong>Fecha Inicio:</strong> {{ formatDate(guide.startDate) }}
+    </div>
+    <div class="info-line">
+      <strong>Fecha Fin:</strong> {{ formatDate(guide.endDate) }}
+    </div>
+    <div class="info-line">
+      <strong>Origen:</strong> {{ guide.originAddress }}
+    </div>
+    <div class="info-line">
+      <strong>Destino:</strong> {{ guide.destinationAddress }}
+    </div>
+    <div class="info-line" *ngIf="guide.transportType">
+      <strong>Tipo Transporte:</strong> {{ getTransportType() }}
+    </div>
+    <div class="info-line" *ngIf="guide.transportPlate">
+      <strong>Placa:</strong> {{ guide.transportPlate }}
+    </div>
+    <div class="info-line" *ngIf="guide.reasonForTransfer">
+      <strong>Motivo:</strong> {{ getReasonForTransfer() }}
+    </div>
+    <div class="info-line" *ngIf="guide.route">
+      <strong>Ruta:</strong> {{ guide.route }}
+    </div>
+  </div>
+
+  <div class="separator">----------------------------------------</div>
+
+  <!-- DETALLE DE PRODUCTOS -->
+  <div class="products-header">
+    <div class="products-row header">
+      <span class="col-qty">CANT</span>
+      <span class="col-desc">DESCRIPCIÓN</span>
+    </div>
+  </div>
+
+  <div class="products-list">
+    <div class="products-row" *ngFor="let item of getGuideDetails()">
+      <span class="col-qty">{{ item.quantity || 1 }}</span>
+      <span class="col-desc">
+        {{ item.description || item.productDto?.name || item.productDto?.description || 'Producto' }}
+        <span *ngIf="item.productDto?.mainCode" class="product-code">
+          ({{ item.productDto?.mainCode }})
+        </span>
+      </span>
+    </div>
+  </div>
+
+  <div class="separator">----------------------------------------</div>
+
+  <!-- INFORMACIÓN ADICIONAL -->
+  <div class="additional-info" *ngIf="guide?.additionalInformation">
+    <div class="info-section-title"><strong>INFORMACIÓN ADICIONAL:</strong></div>
+    <div class="info-line">{{ guide.additionalInformation }}</div>
+  </div>
+
+  <!-- REFERENCIAS A DOCUMENTOS -->
+  <div class="document-references" *ngIf="hasDocumentReferences()">
+    <div class="separator">----------------------------------------</div>
+    <div class="info-section-title"><strong>DOCUMENTOS REFERENCIADOS:</strong></div>
+    <div class="info-line" *ngFor="let ref of guide.documentReferences">
+      <strong>{{ ref.documentType === '01' ? 'Factura' : ref.documentType === '04' ? 'Nota Crédito' : ref.documentType === '05' ? 'Nota Débito' : 'Documento' }}:</strong>
+      {{ ref.documentNumber }}
+      <span *ngIf="ref.accessKey"> ({{ formatAccessKey(ref.accessKey) }})</span>
+    </div>
+  </div>
+
+  <div class="separator">----------------------------------------</div>
+
+  <!-- LEYENDA LEGAL -->
+  <div class="legal-notice">
+    <div class="legal-subtext">
+      Consulte su guía de remisión electrónica en el portal del SRI
+    </div>
+    <div class="legal-subtext" *ngIf="guide?.environment">
+      Ambiente:
+      {{ guide.environment === "1" ? "PRODUCCIÓN" : "PRUEBAS" }}
+    </div>
+  </div>
+
+  <div class="separator">----------------------------------------</div>
+
+  <!-- PIE DE PÁGINA -->
+  <div class="footer">
+    <div class="footer-text">¡Gracias por su preferencia!</div>
+  </div>
+</div>
+
+<!-- Botones de control (ocultos al imprimir y cuando hay error) -->
+<div class="print-controls" *ngIf="!error && !isLoading">
+  <button mat-raised-button color="primary" (click)="printTicket()">
+    <mat-icon>print</mat-icon>
+    Imprimir
+  </button>
+  <button mat-stroked-button (click)="closeWindow()">
+    <mat-icon>close</mat-icon>
+    Cerrar
+  </button>
+</div>
+
+<!-- Estado de carga -->
+<div class="loading" *ngIf="isLoading">
+  <mat-spinner diameter="50"></mat-spinner>
+  <p class="loading-message">Cargando guía...</p>
+  <p class="loading-submessage">
+    Por favor espere mientras se obtienen los datos.
+  </p>
+</div>
+
+<!-- Estado de error -->
+<div class="error" *ngIf="error">
+  <mat-icon class="error-icon">error_outline</mat-icon>
+  <p class="error-title">{{ error }}</p>
+  <p
+    class="error-message"
+    *ngIf="!error.includes('No tiene permisos') && !error.includes('no existe')"
+  >
+    No se pudo cargar la guía. Verifique que la URL sea correcta o intente
+    nuevamente.
+  </p>
+  <button mat-raised-button color="warn" (click)="closeWindow()">
+    <mat-icon>close</mat-icon>
+    Cerrar ventana
+  </button>
+</div>
+

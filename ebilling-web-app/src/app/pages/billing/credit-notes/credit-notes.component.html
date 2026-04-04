@@ -1,0 +1,298 @@
+<div class="credit-notes-page">
+  <!-- Contenedor principal centrado -->
+  <div class="credit-notes-container">
+    <!-- Título con acción -->
+    <mat-toolbar class="toolbar-primary toolbar-with-action">
+      <span>Consulta Notas de Crédito</span>
+      <span class="spacer"></span>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="openCreateDialog()"
+        class="btn-new-credit-note"
+      >
+        <mat-icon>add_circle</mat-icon>
+        Nueva Nota de Crédito
+      </button>
+    </mat-toolbar>
+
+    <!-- Filtro de búsqueda -->
+    <mat-card class="card-padding mt-16 search-card">
+      <!-- Loading spinner durante búsqueda -->
+      <div *ngIf="isLoading" class="loading-overlay">
+        <mat-spinner diameter="60"></mat-spinner>
+        <p class="loading-text">Buscando notas de crédito...</p>
+      </div>
+
+      <mat-card-content>
+        <form [formGroup]="searchForm" (ngSubmit)="search()">
+          <!-- Layout horizontal compacto -->
+          <div class="search-grid-horizontal">
+            <mat-form-field appearance="outline" class="search-field-compact">
+              <mat-label>N° Nota de Crédito</mat-label>
+              <mat-icon matPrefix>receipt_long</mat-icon>
+              <input
+                matInput
+                placeholder="Ej: 001-001-000000001"
+                formControlName="creditNoteNumber"
+              />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="search-field-compact">
+              <mat-label>Factura Original</mat-label>
+              <mat-icon matPrefix>description</mat-icon>
+              <input
+                matInput
+                placeholder="Ej: 001-001-000000001"
+                formControlName="originalInvoiceNumber"
+              />
+            </mat-form-field>
+
+            <div class="search-actions">
+              <button
+                mat-raised-button
+                color="primary"
+                type="submit"
+                [disabled]="isLoading"
+                class="btn-search-compact"
+              >
+                <mat-icon>search</mat-icon>
+                Buscar
+              </button>
+
+              <button
+                mat-stroked-button
+                color="primary"
+                type="button"
+                (click)="clearFilters()"
+                class="btn-clear-compact"
+              >
+                <mat-icon>clear</mat-icon>
+                Limpiar
+              </button>
+            </div>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Tabla -->
+    <mat-card class="card-padding mt-24">
+      <mat-card-content>
+        <div class="table-wrapper">
+          <mat-toolbar class="toolbar-primary-sm"
+            >Listado de Notas de Crédito</mat-toolbar
+          >
+          <mat-table
+            [dataSource]="dataSource"
+            matSort
+            class="mat-elevation-z1 bordered-table"
+          >
+            <!-- Número de Nota de Crédito -->
+            <ng-container matColumnDef="creditNoteNumber">
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="text-color-bold header-dark"
+                >N° Nota Crédito</mat-header-cell
+              >
+              <mat-cell class="celda-ajustable" *matCellDef="let row">{{
+                getCreditNoteNumber(row)
+              }}</mat-cell>
+            </ng-container>
+
+            <!-- Factura Original -->
+            <ng-container matColumnDef="originalInvoiceNumber">
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="text-color-bold header-dark"
+                >Factura Original</mat-header-cell
+              >
+              <mat-cell class="celda-ajustable" *matCellDef="let row">{{
+                getOriginalInvoiceNumber(row)
+              }}</mat-cell>
+            </ng-container>
+
+            <!-- Identificación del Cliente -->
+            <ng-container matColumnDef="clientIdentification">
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="text-color-bold header-dark"
+                >Identificación</mat-header-cell
+              >
+              <mat-cell class="celda-ajustable" *matCellDef="let row">{{
+                getClientIdentification(row)
+              }}</mat-cell>
+            </ng-container>
+
+            <!-- Nombre del Cliente -->
+            <ng-container matColumnDef="clientName">
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="text-color-bold header-dark"
+                >Cliente</mat-header-cell
+              >
+              <mat-cell
+                class="celda-ajustable"
+                *matCellDef="let row"
+                [matTooltip]="getClientName(row)"
+                matTooltipPosition="above"
+              >
+                {{ getClientName(row) }}
+              </mat-cell>
+            </ng-container>
+
+            <!-- Total -->
+            <ng-container matColumnDef="totalAmount">
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="text-color-bold header-dark"
+                >Total</mat-header-cell
+              >
+              <mat-cell class="celda-ajustable" *matCellDef="let row">{{
+                formatCurrency(getTotal(row))
+              }}</mat-cell>
+            </ng-container>
+
+            <!-- Estado -->
+            <ng-container matColumnDef="status">
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="text-color-bold header-dark"
+                >Estado</mat-header-cell
+              >
+              <mat-cell class="celda-ajustable" *matCellDef="let row">
+                <span
+                  class="status-badge"
+                  [ngClass]="getStatusClass(row)"
+                >
+                  {{ getStatusText(row) }}
+                </span>
+              </mat-cell>
+            </ng-container>
+
+            <!-- Fecha de Creación -->
+            <ng-container matColumnDef="creationDate">
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="text-color-bold header-dark"
+                >Fecha</mat-header-cell
+              >
+              <mat-cell class="celda-ajustable" *matCellDef="let row">{{
+                formatDate(row.creationDate)
+              }}</mat-cell>
+            </ng-container>
+
+            <!-- Acciones -->
+            <ng-container matColumnDef="actions">
+              <mat-header-cell
+                *matHeaderCellDef
+                class="text-color-bold header-dark"
+                >Acciones</mat-header-cell
+              >
+              <mat-cell *matCellDef="let row" class="actions-cell">
+                <!-- Botón Descargar PDF (solo si está autorizado) -->
+                <button
+                  mat-icon-button
+                  color="warn"
+                  matTooltip="Descargar PDF"
+                  [attr.aria-label]="
+                    'Descargar PDF de nota de crédito ' + row.creditNoteNumber
+                  "
+                  (click)="downloadPdf(row)"
+                  class="action-btn pdf-btn"
+                  [disabled]="isLoading"
+                  *ngIf="isAuthorized(row)"
+                >
+                  <mat-icon>picture_as_pdf</mat-icon>
+                </button>
+
+                <!-- Botón Descargar XML (solo si está autorizado) -->
+                <button
+                  mat-icon-button
+                  color="primary"
+                  matTooltip="Descargar XML"
+                  [attr.aria-label]="
+                    'Descargar XML de nota de crédito ' + row.creditNoteNumber
+                  "
+                  (click)="downloadXml(row)"
+                  class="action-btn xml-btn"
+                  [disabled]="isLoading"
+                  *ngIf="isAuthorized(row)"
+                >
+                  <mat-icon>code</mat-icon>
+                </button>
+
+                <!-- Botón Editar (solo borradores) -->
+                <button
+                  mat-icon-button
+                  color="primary"
+                  matTooltip="Editar borrador"
+                  [attr.aria-label]="
+                    'Editar nota de crédito ' + row.creditNoteNumber
+                  "
+                  (click)="editDraft(row)"
+                  class="action-btn edit-btn"
+                  [disabled]="isLoading"
+                  *ngIf="isDraft(row)"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+
+                <!-- Botón Eliminar (solo borradores) -->
+                <button
+                  mat-icon-button
+                  color="warn"
+                  matTooltip="Eliminar borrador"
+                  [attr.aria-label]="
+                    'Eliminar nota de crédito ' + row.creditNoteNumber
+                  "
+                  (click)="deleteCreditNote(row)"
+                  class="action-btn delete-btn"
+                  [disabled]="isLoading"
+                  *ngIf="isDraft(row)"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </mat-cell>
+            </ng-container>
+
+            <mat-header-row
+              *matHeaderRowDef="displayedColumns"
+            ></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+          </mat-table>
+
+          <!-- Mensaje cuando no hay datos -->
+          <div
+            class="empty-state-container"
+            *ngIf="dataSource.data.length === 0 && !isLoading"
+          >
+            <div class="empty-state">
+              <mat-icon class="empty-icon">receipt_long</mat-icon>
+              <p class="empty-title">No se encontraron notas de crédito</p>
+              <p class="empty-subtitle">
+                Intenta con otros criterios de búsqueda o las notas de crédito
+                se generan desde el módulo de facturación.
+              </p>
+            </div>
+          </div>
+
+          <mat-paginator
+            [pageSize]="pageSize"
+            [pageSizeOptions]="[5, 10, 25, 100]"
+            [length]="totalElements"
+            [pageIndex]="currentPage"
+            showFirstLastButtons
+          ></mat-paginator>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

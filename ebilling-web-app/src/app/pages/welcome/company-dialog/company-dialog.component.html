@@ -1,50 +1,76 @@
 <div class="text-center">
-  <mat-toolbar style="background-color: #673ab7">
-    <mat-panel-title style="color: #fff"> Compañías</mat-panel-title>
+  <mat-toolbar color="primary">
+    <mat-panel-title style="color: #fff">Compañías</mat-panel-title>
   </mat-toolbar>
 </div>
+
 <div class="principal-container mat-elevation-z8">
-  <mat-table [dataSource]="dataSource" matSort>
-    <ng-container matColumnDef="name">
-      <mat-header-cell
-        *matHeaderCellDef
-        mat-sort-header
-        class="text-color-bold"
-      >
-        Nombre
-      </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{ row.name }} </mat-cell>
-    </ng-container>
+  <!-- Mensaje de advertencia si existe -->
+  <mat-card *ngIf="warningMessage" class="warning-card">
+    <mat-card-content>
+      <div class="warning-content">
+        <mat-icon class="warning-icon">warning</mat-icon>
+        <span class="warning-text">{{ warningMessage }}</span>
+      </div>
+    </mat-card-content>
+  </mat-card>
 
-    <ng-container matColumnDef="branchOfficeCode">
-      <mat-header-cell
-        *matHeaderCellDef
-        mat-sort-header
-        class="text-color-bold"
-      >
-        Sucursal
-      </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{ row.branchOfficeCode }} </mat-cell>
-    </ng-container>
+  <p class="subtitle">
+    Seleccione la compañía y sucursal con la que desea trabajar
+  </p>
 
-    <ng-container matColumnDef="actions">
-      <mat-header-cell *matHeaderCellDef class="text-color-bold"
-        >Acciones</mat-header-cell
-      >
-      <mat-cell *matCellDef="let row">
-        <button mat-button color="primary" (click)="selectCompany(row)">
+  <!-- Vista de cards para mejor responsive -->
+  <div class="companies-list">
+    <div *ngFor="let company of companyDataSource.data" class="company-card">
+      <!-- Header de la card -->
+      <div class="card-header">
+        <mat-icon class="company-icon">business</mat-icon>
+        <h3 class="company-name">{{ company.name }}</h3>
+      </div>
+
+      <!-- Body de la card -->
+      <div class="card-body">
+        <mat-form-field appearance="outline" class="establishment-field">
+          <mat-label>Seleccione una sucursal</mat-label>
+          <mat-icon matPrefix class="field-icon">store</mat-icon>
+          <mat-select
+            [(value)]="selectedEstablishmentIds[company.idCompany]"
+            (selectionChange)="onEstablishmentChange(company.idCompany, $event.value)"
+          >
+            <mat-option
+              *ngFor="let e of getActiveEstablishments(company.establishments)"
+              [value]="e.idEstablishment"
+            >
+              <div class="establishment-option">
+                <span class="establishment-name">{{ company.name }} - {{ e.code }} - {{ e.address }}</span>
+              </div>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Footer de la card -->
+      <div class="card-footer">
+        <button
+          mat-raised-button
+          color="primary"
+          [disabled]="!selectedEstablishmentIds[company.idCompany]"
+          (click)="selectCompany(company)"
+          class="select-button"
+        >
+          <mat-icon>check_circle</mat-icon>
           Seleccionar
         </button>
-      </mat-cell>
-    </ng-container>
+      </div>
+    </div>
 
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns"> </mat-row>
-  </mat-table>
-
-  <mat-paginator
-    [pageSize]="5"
-    [pageSizeOptions]="[5, 10, 25, 100]"
-    [length]="1"
-  ></mat-paginator>
+    <!-- Empty state -->
+    <div
+      class="empty-state"
+      *ngIf="!companyDataSource.data || companyDataSource.data.length === 0"
+    >
+      <mat-icon>business_center</mat-icon>
+      <p>No hay compañías disponibles</p>
+    </div>
+  </div>
 </div>

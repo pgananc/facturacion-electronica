@@ -1,0 +1,410 @@
+@import '../../../_shared/shared-styles.css';
+@import '../../../_shared/table-styles.css';
+@import '../../../_shared/responsive-styles.css';
+@import '../../../_shared/toolbar-styles.css';
+
+/* ===== UTILIDADES DE ESPACIADO ===== */
+.mt-24 { margin-top: 12px; }
+.mt-16 { margin-top: 12px; }
+.mb-16 { margin-bottom: 12px; }
+
+/* ===== LAYOUT PRINCIPAL ===== */
+.admin-establishment-page { 
+  min-height: 100%; 
+  background-color: var(--background-color, #f9fafb); 
+  padding: 12px 0 0 0;
+}
+
+@media screen and (max-width: 959px) { 
+  .admin-establishment-page { padding: 0; } 
+}
+
+.admin-establishment-container { 
+  max-width: 1320px; 
+  margin: 0 auto; 
+  padding: 0 20px 20px 20px;
+  box-sizing: border-box; 
+  width: 100%; 
+}
+
+@media screen and (max-width: 959px) { 
+  .admin-establishment-container { padding: 0 16px 16px 16px; } 
+}
+
+/* ===== SPACER ===== */
+.spacer {
+  flex: 1 1 auto;
+}
+
+/* ===== BOTÓN NUEVA SUCURSAL ===== */
+/* Los estilos están en shared-styles.css para mantener consistencia */
+
+/* ===== CARD DE BÚSQUEDA ===== */
+.search-card {
+  margin-top: 12px !important;
+  position: relative;
+  border-radius: 12px !important;
+  border-top: 4px solid #003a75 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  transition: box-shadow 0.3s ease;
+}
+
+.search-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+}
+
+.search-card mat-card-content {
+  padding: 16px !important;
+  position: relative;
+}
+
+/* ===== GRID DE BÚSQUEDA (2 columnas) ===== */
+.search-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-md, 16px);
+  max-width: 1000px;
+  margin: 0 auto var(--spacing-lg, 24px) auto;
+}
+
+.search-field {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Mejorar apariencia de los campos de formulario */
+::ng-deep .search-card .mat-mdc-form-field {
+  width: 100%;
+}
+
+::ng-deep .search-card .mat-mdc-form-field-icon-prefix {
+  color: #666;
+  margin-right: 8px;
+}
+
+::ng-deep .search-card .mat-mdc-text-field-wrapper {
+  padding-bottom: 0;
+}
+
+::ng-deep .search-card .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+/* ===== BOTONES DE BÚSQUEDA ===== */
+.search-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 8px;
+  align-items: center;
+}
+
+.btn-search-compact,
+.btn-clear-compact {
+  height: 44px;
+  min-width: 140px;
+  flex-shrink: 0;
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 24px;
+  border-radius: 8px;
+  letter-spacing: 0.5px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  text-transform: none;
+}
+
+.btn-search-compact {
+  background-color: #003a75 !important;
+  color: white !important;
+  box-shadow: 0 3px 10px rgba(0, 58, 117, 0.3);
+}
+
+.btn-search-compact:hover:not([disabled]) {
+  background-color: #0056a8 !important;
+  box-shadow: 0 5px 15px rgba(0, 58, 117, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn-search-compact:active:not([disabled]) {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 58, 117, 0.3);
+}
+
+.btn-search-compact:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #9e9e9e !important;
+  box-shadow: none;
+}
+
+.btn-clear-compact {
+  border: 2px solid #e0e0e0;
+  color: #666;
+  background-color: white !important;
+}
+
+.btn-clear-compact:hover:not([disabled]) {
+  background-color: #f5f5f5 !important;
+  border-color: #003a75;
+  color: #003a75;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-clear-compact:active:not([disabled]) {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.btn-search-compact mat-icon,
+.btn-clear-compact mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  margin-right: 0;
+  line-height: 1;
+}
+
+/* ===== LOADING STATE ===== */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  border-radius: 12px;
+}
+
+.loading-text {
+  margin-top: 16px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--primary-color, #0ea5e9);
+}
+
+/* ===== TABLE WRAPPER ===== */
+.table-wrapper {
+  margin-top: var(--spacing-sm, 12px) !important;
+}
+
+/* ===== TABLE CONTAINER ===== */
+.table-container {
+  position: relative;
+  overflow-x: auto;
+  min-height: 300px;
+}
+
+/* ===== EMPTY STATE OVERLAY ===== */
+.empty-state-overlay {
+  position: absolute;
+  top: 52%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 5;
+  padding: 48px 24px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  margin-top: 20px;
+}
+
+.empty-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: #b0bec5;
+  margin-bottom: 16px;
+}
+
+.empty-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #424242;
+  margin: 0 0 8px 0;
+}
+
+.empty-subtitle {
+  font-size: 14px;
+  color: #757575;
+  margin: 0;
+  max-width: 400px;
+}
+
+/* ===== ANCHOS DE COLUMNAS ===== */
+.mat-column-companyName { width: 20%; min-width: 150px; }
+.mat-column-code { width: 8%; min-width: 70px; }
+.mat-column-name { width: 18%; min-width: 130px; }
+.mat-column-address { width: 25%; min-width: 180px; }
+.mat-column-type { width: 10%; min-width: 90px; }
+.mat-column-status { width: 9%; min-width: 80px; }
+.mat-column-actions { width: 10%; min-width: 100px; }
+
+/* ===== CELDAS AJUSTABLES ===== */
+.mat-column-companyName .celda-ajustable,
+.mat-column-name .celda-ajustable {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block !important;
+}
+
+.mat-column-address .celda-ajustable {
+  display: block !important;
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  line-height: 1.5;
+}
+
+.mat-column-code .celda-ajustable {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+/* ===== CENTRADO DE COLUMNAS ===== */
+.mat-column-code.mat-cell,
+.mat-column-type.mat-cell,
+.mat-column-status.mat-cell,
+.mat-column-actions.mat-cell {
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+::ng-deep .admin-establishment-page .mat-mdc-table .mat-mdc-cell.mat-column-code,
+::ng-deep .admin-establishment-page .mat-mdc-table .mat-mdc-cell.mat-column-type,
+::ng-deep .admin-establishment-page .mat-mdc-table .mat-mdc-cell.mat-column-status,
+::ng-deep .admin-establishment-page .mat-mdc-table .mat-mdc-cell.mat-column-actions {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center !important;
+}
+
+/* ===== ACCIONES ===== */
+.actions-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.action-spacer {
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+}
+
+/* ===== BADGES ===== */
+.badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.badge-matriz {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.badge-sucursal {
+  background-color: #fff3e0;
+  color: #f57c00;
+}
+
+.badge-active {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.badge-inactive {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+/* ===== GRID RESPONSIVE PARA FORMULARIO DE BÚSQUEDA ===== */
+/* Mobile (< 960px): 1 columna */
+@media screen and (max-width: 959px) {
+  .search-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm, 12px);
+  }
+  
+  .search-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: var(--spacing-sm, 12px);
+  }
+  
+  .btn-search-compact,
+  .btn-clear-compact {
+    width: 100%;
+    min-width: 100%;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .search-card mat-card-content {
+    padding: 16px !important;
+  }
+  
+  .btn-search-compact,
+  .btn-clear-compact {
+    height: 48px;
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  /* Ocultar columnas menos importantes en mobile */
+  .mat-column-address,
+  .mat-column-type {
+    display: none !important;
+  }
+  
+  /* Ajustar ancho de columnas visibles */
+  .mat-column-companyName {
+    width: 30% !important;
+    min-width: 120px !important;
+  }
+  
+  .mat-column-code {
+    width: 15% !important;
+    min-width: 70px !important;
+  }
+  
+  .mat-column-name {
+    width: 30% !important;
+    min-width: 120px !important;
+  }
+  
+  .mat-column-status {
+    width: 10% !important;
+    min-width: 80px !important;
+  }
+  
+  .mat-column-actions {
+    width: 15% !important;
+    min-width: 100px !important;
+  }
+}

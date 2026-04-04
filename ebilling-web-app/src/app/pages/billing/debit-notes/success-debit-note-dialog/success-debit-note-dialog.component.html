@@ -1,0 +1,89 @@
+<div class="dialog-container">
+  <!-- Cabecera -->
+  <mat-toolbar class="toolbar-primary-sm">
+    <span>✅ Nota de Débito Guardada</span>
+    <span class="spacer"></span>
+    <button
+      type="button"
+      mat-icon-button
+      (click)="onClose()"
+      aria-label="Cerrar"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <mat-dialog-content class="dialog-content">
+    <div class="success-content">
+      <!-- Icono de éxito -->
+      <div class="success-icon">
+        <mat-icon class="success-icon-large">check_circle</mat-icon>
+      </div>
+
+      <!-- Mensaje principal -->
+      <h2 class="success-title">¡Nota de débito guardada correctamente!</h2>
+      <p class="success-message">
+        La nota de débito ha sido guardada y enviada al SRI exitosamente.
+      </p>
+
+      <!-- Información de la nota de débito -->
+      <!-- Si hay número de nota de débito, mostrar toda la información -->
+      <div *ngIf="data.debitNoteNumber">
+        <div class="invoice-info">
+          <div class="info-row">
+            <span class="info-label">Número de nota de débito:</span>
+            <span class="info-value">{{ data.debitNoteNumber }}</span>
+          </div>
+        </div>
+
+        <div class="invoice-info" *ngIf="data.clientName">
+          <div class="info-row">
+            <span class="info-label">Cliente:</span>
+            <span class="info-value">{{ data.clientName }}</span>
+          </div>
+        </div>
+
+        <div class="invoice-info" *ngIf="data.total !== undefined">
+          <div class="info-row">
+            <span class="info-label">Total:</span>
+            <span class="info-value">${{ (Math.round(data.total * 100) / 100).toFixed(2) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Si NO hay número de nota de débito, solo mostrar el nombre del cliente -->
+      <div class="invoice-info" *ngIf="!data.debitNoteNumber && data.clientName">
+        <div class="info-row">
+          <span class="info-label">Cliente:</span>
+          <span class="info-value">{{ data.clientName }}</span>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="dialog-actions">
+    <button
+      type="button"
+      mat-raised-button
+      color="primary"
+      (click)="printTicket()"
+      class="print-button"
+    >
+      <mat-icon>print</mat-icon>
+      Recibo
+    </button>
+    <button
+      *ngIf="data.debitNoteNumber && data.authorizationStatusSri === 'AUTORIZADO'"
+      type="button"
+      mat-raised-button
+      color="accent"
+      (click)="printRide()"
+      class="print-invoice-button"
+    >
+      <mat-icon>description</mat-icon>
+      RIDE
+    </button>
+  </mat-dialog-actions>
+</div>
+
+

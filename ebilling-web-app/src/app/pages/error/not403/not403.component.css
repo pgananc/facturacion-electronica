@@ -1,269 +1,177 @@
-html {
-    font-family: sans-serif;
-    line-height: 1.15;
-    -ms-text-size-adjust: 100%;
-    -webkit-text-size-adjust: 100%
+@import '../../../_shared/toolbar-styles.css';
+@import '../../../_shared/shared-styles.css';
+
+/* ======================
+   CONTENEDOR PRINCIPAL
+====================== */
+.invoice-page {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  background-color: var(--background-color, #f9fafb);
+  min-height: calc(100vh - 64px);
 }
 
-body {
-    margin: 0
+.card-padding {
+  padding: 16px;
 }
 
-article, aside, footer, header, nav, section {
-    display: block
+.mt-24 {
+  margin-top: 24px;
 }
 
-h1 {
-    font-size: 2em;
-    margin: .67em 0
+/* ======================
+   CARD DE ERROR
+====================== */
+.search-card {
+  margin-bottom: 24px;
+  border-radius: 8px;
+  border-top: 4px solid var(--primary-color, #0ea5e9);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+  background-color: #ffffff;
 }
 
-figcaption, figure, main {
-    display: block
+.search-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
-figure {
-    margin: 1em 40px
+.search-card mat-card-content {
+  padding: 24px;
 }
 
-hr {
-    box-sizing: content-box;
-    height: 0;
-    overflow: visible
+/* ======================
+   CONTENIDO DE ERROR
+====================== */
+.error-content {
+  text-align: center;
+  padding: 40px 20px;
 }
 
-pre {
-    font-family: monospace, monospace;
-    font-size: 1em
+.error-title {
+  font-size: 36px;
+  font-weight: 500;
+  color: var(--primary-color, #0ea5e9);
+  margin: 0 0 24px 0;
+  line-height: 1.2;
 }
 
-a {
-    background-color: transparent;
-    -webkit-text-decoration-skip: objects
+.error-message {
+  font-size: 18px;
+  color: #495057;
+  margin: 0 0 32px 0;
+  line-height: 1.5;
 }
 
-a:active, a:hover {
-    outline-width: 0
+/* ======================
+   BOTONES DE ACCIÓN
+====================== */
+.actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 24px;
 }
 
-abbr[title] {
-    border-bottom: none;
-    text-decoration: underline;
-    text-decoration: underline dotted
+.actions button {
+  background-color: var(--primary-color, #0ea5e9) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  padding: 0 32px !important;
+  height: 44px !important;
+  border-radius: 6px !important;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3) !important;
+  transition: all 0.3s ease !important;
+  min-width: 140px;
 }
 
-b, strong {
-    font-weight: inherit
+.actions button:hover:not(:disabled) {
+  background-color: var(--primary-dark, #0a82bb) !important;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4) !important;
+  transform: translateY(-2px);
 }
 
-b, strong {
-    font-weight: bolder
+.actions button mat-icon {
+  margin-right: 8px;
 }
 
-code, kbd, samp {
-    font-family: monospace, monospace;
-    font-size: 1em
-}
+/* ======================
+   RESPONSIVE DESIGN
+====================== */
 
-dfn {
-    font-style: italic
-}
+/* iPhone SE / Mini (≤375px) */
+@media screen and (max-width: 375px) {
+  .invoice-page {
+    padding: 12px;
+  }
 
-mark {
-    background-color: #ff0;
-    color: #000
-}
+  .toolbar-primary {
+    flex-direction: column;
+    height: auto;
+    padding: 12px;
+    gap: 12px;
+  }
 
-small {
-    font-size: 80%
-}
+  .error-content {
+    padding: 24px 12px;
+  }
 
-sub, sup {
-    font-size: 75%;
-    line-height: 0;
-    position: relative;
-    vertical-align: baseline
-}
+  .error-title {
+    font-size: 28px;
+  }
 
-sub {
-    bottom: -.25em
-}
+  .error-message {
+    font-size: 16px;
+  }
 
-sup {
-    top: -.5em
-}
+  .actions {
+    flex-direction: column;
+    gap: 12px;
+  }
 
-audio, video {
-    display: inline-block
-}
-
-audio:not([controls]) {
-    display: none;
-    height: 0
-}
-
-img {
-    border-style: none
-}
-
-svg:not(:root) {
-    overflow: hidden
-}
-
-button, input, optgroup, select, textarea {
-    font-family: sans-serif;
-    font-size: 100%;
-    line-height: 1.15;
-    margin: 0
-}
-
-button, input {
-    overflow: visible
-}
-
-button, select {
-    text-transform: none
-}
-
-[type=reset], [type=submit], button, html [type=button] {
-    -webkit-appearance: button
-}
-
-[type=button]::-moz-focus-inner, [type=reset]::-moz-focus-inner, [type=submit]::-moz-focus-inner, button::-moz-focus-inner {
-    border-style: none;
-    padding: 0
-}
-
-[type=button]:-moz-focusring, [type=reset]:-moz-focusring, [type=submit]:-moz-focusring, button:-moz-focusring {
-    outline: 1px dotted ButtonText
-}
-
-fieldset {
-    border: 1px solid silver;
-    margin: 0 2px;
-    padding: .35em .625em .75em
-}
-
-legend {
-    box-sizing: border-box;
-    color: inherit;
-    display: table;
-    max-width: 100%;
-    padding: 0;
-    white-space: normal
-}
-
-progress {
-    display: inline-block;
-    vertical-align: baseline
-}
-
-textarea {
-    overflow: auto
-}
-
-[type=checkbox], [type=radio] {
-    box-sizing: border-box;
-    padding: 0
-}
-
-[type=number]::-webkit-inner-spin-button, [type=number]::-webkit-outer-spin-button {
-    height: auto
-}
-
-[type=search] {
-    -webkit-appearance: textfield;
-    outline-offset: -2px
-}
-
-[type=search]::-webkit-search-cancel-button, [type=search]::-webkit-search-decoration {
-    -webkit-appearance: none
-}
-
-::-webkit-file-upload-button {
-    -webkit-appearance: button;
-    font: inherit
-}
-
-details, menu {
-    display: block
-}
-
-summary {
-    display: list-item
-}
-
-canvas {
-    display: inline-block
-}
-
-template {
-    display: none
-}
-
-[hidden] {
-    display: none
-}
-
-/*! Simple HttpErrorPages | MIT X11 License | https://github.com/AndiDittrich/HttpErrorPages */
-body, html {
+  .actions button {
     width: 100%;
-    height: 100%;
-    background-color: #21232a
+    justify-content: center;
+  }
 }
 
-body {
-    color: #fff;
-    text-align: center;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, .5);
-    padding: 0;
-    min-height: 100%;
-    -webkit-box-shadow: inset 0 0 75pt rgba(0, 0, 0, .8);
-    box-shadow: inset 0 0 75pt rgba(0, 0, 0, .8);
-    display: table;
-    font-family: "Open Sans", Arial, sans-serif
+/* iPhone 12-15 (376px - 430px) */
+@media screen and (min-width: 376px) and (max-width: 430px) {
+  .invoice-page {
+    padding: 16px;
+  }
+
+  .toolbar-primary {
+    flex-direction: column;
+    height: auto;
+    gap: 12px;
+  }
+
+  .error-content {
+    padding: 32px 16px;
+  }
+
+  .error-title {
+    font-size: 32px;
+  }
+
+  .error-message {
+    font-size: 17px;
+  }
 }
 
-h1 {
-    font-family: inherit;
-    font-weight: 500;
-    line-height: 1.1;
-    color: inherit;
-    font-size: 36px
+/* iPhone Pro Max / Samsung S23-S25 Ultra (431px - 667px) */
+@media screen and (min-width: 431px) and (max-width: 667px) {
+  .error-content {
+    padding: 36px 20px;
+  }
 }
 
-h1 small {
-    font-size: 68%;
-    font-weight: 400;
-    line-height: 1;
-    color: #777
-}
-
-a {
-    text-decoration: none;
-    color: #fff;
-    font-size: inherit;
-    border-bottom: dotted 1px #707070
-}
-
-.lead {
-    color: silver;
-    font-size: 21px;
-    line-height: 1.4
-}
-
-.cover {
-    display: table-cell;
-    vertical-align: middle;
-    padding: 0 20px
-}
-
-footer {
-    position: fixed;
-    width: 100%;
-    height: 40px;
-    left: 0;
-    bottom: 0;
-    color: #a0a0a0;
-    font-size: 14px
+/* Desktop (>1024px) */
+@media screen and (min-width: 1025px) {
+  .error-content {
+    max-width: 800px;
+    margin: 0 auto;
+  }
 }

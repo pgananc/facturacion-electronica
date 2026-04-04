@@ -1,0 +1,132 @@
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <h2 mat-dialog-title>Extender Vigencia de Suscripción</h2>
+  </div>
+
+  <mat-dialog-content>
+  <!-- Información actual -->
+  <mat-card class="current-info-card">
+    <mat-card-content>
+      <div class="info-grid">
+        <div class="info-item">
+          <mat-icon class="info-icon">business</mat-icon>
+          <div class="info-content">
+            <strong>Empresa:</strong>
+            <span>{{ data.businessName }}</span>
+          </div>
+        </div>
+        <div class="info-item">
+          <mat-icon class="info-icon">workspace_premium</mat-icon>
+          <div class="info-content">
+            <strong>Plan:</strong>
+            <span
+              class="plan-badge"
+              [class]="'plan-' + data.plan.code.toLowerCase()"
+            >
+              {{ data.plan.name }}
+            </span>
+          </div>
+        </div>
+        <div class="info-item">
+          <mat-icon class="info-icon">play_circle</mat-icon>
+          <div class="info-content">
+            <strong>Fecha de Inicio:</strong>
+            <span>{{ data.startDate | date : "dd/MM/yyyy" }}</span>
+          </div>
+        </div>
+        <div class="info-item">
+          <mat-icon class="info-icon">event</mat-icon>
+          <div class="info-content">
+            <strong>Expira Actualmente:</strong>
+            <span class="expiration-date">{{
+              data.expiresAt | date : "dd/MM/yyyy"
+            }}</span>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Formulario -->
+  <form [formGroup]="form" class="extend-form">
+    <!-- Meses adicionales -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Meses adicionales</mat-label>
+      <mat-icon matPrefix style="color: #666; margin-right: 8px"
+        >schedule</mat-icon
+      >
+      <mat-select formControlName="extensionMonths" required>
+        <mat-option *ngFor="let months of monthOptions" [value]="months">
+          {{ months }} {{ months === 1 ? "mes" : "meses" }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('extensionMonths')?.hasError('required')">
+        Selecciona los meses adicionales
+      </mat-error>
+      <mat-hint *ngIf="form.get('extensionMonths')?.valid && getNewExpirationDate()">
+        <mat-icon class="hint-icon">event</mat-icon>
+        Nueva expiración: {{ getNewExpirationDate() | date : "dd/MM/yyyy" }}
+      </mat-hint>
+    </mat-form-field>
+
+    <!-- Nueva fecha de expiración -->
+    <mat-card class="new-expiration-card">
+      <mat-card-content>
+        <div class="expiration-info">
+          <mat-icon>event</mat-icon>
+          <div>
+            <strong>Nueva fecha de expiración:</strong>
+            <p class="new-date">
+              {{ getNewExpirationDate() | date : "dd/MM/yyyy" }}
+            </p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Razón -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Razón de la extensión (opcional)</mat-label>
+      <mat-icon matPrefix style="color: #666; margin-right: 8px"
+        >note</mat-icon
+      >
+      <textarea
+        matInput
+        formControlName="reason"
+        rows="3"
+        placeholder="Ej: Cliente renovó contrato, promoción especial..."
+      ></textarea>
+      <mat-hint>Opcional - Describe el motivo de la extensión</mat-hint>
+    </mat-form-field>
+  </form>
+  </mat-dialog-content>
+
+  <!-- Actions -->
+  <div class="dialog-actions" mat-dialog-actions>
+    <button
+      mat-raised-button
+      color="primary"
+      type="button"
+      [disabled]="form.invalid || isLoading"
+      (click)="onSubmit()"
+      class="btn-save"
+    >
+      <mat-icon *ngIf="!isLoading">save</mat-icon>
+      <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+      <span *ngIf="!isLoading">Guardar</span>
+      <span *ngIf="isLoading">Guardando...</span>
+    </button>
+
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="onCancel()"
+      [disabled]="isLoading"
+      class="btn-cancel"
+    >
+      <mat-icon>close</mat-icon>
+      <span>Cancelar</span>
+    </button>
+  </div>
+</div>

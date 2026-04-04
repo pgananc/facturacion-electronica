@@ -1,0 +1,22 @@
+<div class="permissions-container">
+  <!-- Tabs para alternar entre Roles y Planes -->
+  <mat-tab-group
+    [(selectedIndex)]="selectedTab"
+    (selectedIndexChange)="onTabChange($event)"
+    class="permissions-tabs"
+  >
+    <!-- Tab: Permisos de Roles -->
+    <mat-tab label="Permisos de Roles">
+      <div class="tab-content">
+        <app-permission-matrix></app-permission-matrix>
+      </div>
+    </mat-tab>
+
+    <!-- Tab: Permisos de Planes -->
+    <mat-tab label="Permisos de Planes">
+      <div class="tab-content">
+        <app-plan-permission-matrix></app-plan-permission-matrix>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

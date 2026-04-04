@@ -1,35 +1,41 @@
 package com.wallparisoft.ebillbilling.entity;
 
-import java.time.LocalDateTime;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
+import com.wallparisoft.ebill.commons.model.BaseEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name = "payment_method")
 @Data
-public class PaymentMethod {
+@SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class PaymentMethod extends BaseEntity {
 
-	@Id
-	@SequenceGenerator(name = "payment_method_seq", sequenceName = "payment_method_seq", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payment_method_seq")
-	@Column(name = "id_payment_method")
-	private Long idPaymentMethod;
+  @Id
+  @SequenceGenerator(
+      name = "payment_method_seq",
+      sequenceName = "payment_method_seq",
+      allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payment_method_seq")
+  @Column(name = "id_payment_method")
+  private Long idPaymentMethod;
 
-	@Column(name = "creation_date", nullable = false)
-	private LocalDateTime creationDate;
+  @Column(name = "payment_method_type")
+  private String paymentMethodType;
 
-	@Column(name = "payment_method_type")
-	private String paymentMethodType;
-
-	@Column(name = "status", nullable = false)
-	private boolean status;
-
+  @Column(name = "payment_method_code")
+  private String paymentMethodCode;
 }

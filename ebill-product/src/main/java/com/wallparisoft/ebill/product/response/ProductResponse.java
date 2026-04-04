@@ -1,23 +1,20 @@
 package com.wallparisoft.ebill.product.response;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import com.wallparisoft.ebill.product.dto.ProductDto;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-@FieldDefaults(level = PRIVATE)
 public class ProductResponse extends BasicResponse {
 
-  List<ProductDto> productDtos;
-  ProductDto productDto;
-
+  private List<ProductDto> productDtos;
+  private ProductDto productDto;
 }

@@ -1,0 +1,109 @@
+{
+	"additionalInformation": "WALLPARISOFT",
+	"buyerAddress": "Pio 12",
+	"buyerIdentification": "1718529934",
+	"buyerIdType": 1,
+	"buyerMail": "pablos.ganan@gmail.com",
+	"buyerName": "Ana Ceron",
+	"buyerPhone": "0998169929",
+	"clientDto": {
+		"address": "Pio 12",
+		"email": "pablos.ganan@gmail.com",
+		"idClient": 3,
+		"identification": "1718529934",
+		"idType": 1,
+		"name": "Ana Ceron",
+		"phone": "0998169929"
+	},
+	"companyDto": {
+		"contacts": [
+			{
+				"contactType": "MAI",
+				"status": true,
+				"value": "info@empresa.com"
+			},
+			{
+				"contactType": "TEL",
+				"status": true,
+				"value": "0999999999"
+			},
+			{
+				"contactType": "DIR",
+				"status": true,
+				"value": "Av. Napo y Pedro Pinto s13"
+			}
+		],
+		"forcedToAccounting": "S",
+		"idCompany": 1,
+		"identification": "1722633961001",
+		"idType": 2,
+		"logoPath": "C:\\Users\\PABI1\\companies\\1\\logo.jpg",
+		"name": "WALLPARISOFT",
+		"nameCommercial": "WALLPARISOFT",
+		"regime": "SPECIAL",
+		"specialTaxpayerResolution": "1344",
+		"status": true
+	},
+	"discount": 0,
+	"environment": "1",
+	"establishment": {
+		"address": "Av. Napo y Pedro Pinto s13",
+		"code": "001",
+		"idEstablishment": 1,
+		"issuancePoint": {
+			"code": "001",
+			"idIssuancePoint": 1
+		},
+		"name": "WALLPARISOFT",
+		"type": "MATRIZ"
+	},
+	"idClient": 3,
+	"creditNoteDetails": [
+		{
+			"discount": 0,
+			"idProduct": 1,
+			"productDto": {
+				"auxiliarCode": null,
+				"description": "M4, 512 SSD, 16GB Ram, Año 2024",
+				"discount": 0,
+				"idCompany": 1,
+				"idProduct": 1,
+				"mainCode": "001",
+				"name": "M4, 512 SSD, 16GB Ram, Año 2024",
+				"productType": 1,
+				"rate": 15,
+				"status": true,
+				"taxCode": "2",
+				"taxCodPercentage": "4",
+				"unitPrice": 2500
+			},
+			"quantity": 1,
+			"subtotal": 2500,
+			"unitPrice": 2500
+		}
+	],
+	"issueDate": "2025-12-05T03:40:37.913Z",
+	"status": "AUTHORIZED",
+	"subtotalDiscount": 0,
+	"subtotalIce": 0,
+	"subtotalIva": 2500,
+	"subtotalZero": 0,
+	"totalAmount": 2875,
+	"valorModificacion": 2875,
+	"originalInvoiceId": 114,
+	"originalAccessKey": "0412202501172263396100110010010000003231234567814",
+	"originalInvoiceNumber": "001-001-000000323",
+	"originalIssueDate": "2025-12-05T03:40:37.913Z",
+	"documentTypeModified": "01",
+	"reason": "REVERSO DETALLE : Producto 001 - M4, 512 SSD, 16GB Ram, Año 2024"
+}
+
+
+
+
+
+
+
+
+
+

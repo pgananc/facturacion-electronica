@@ -1,0 +1,159 @@
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <h2 mat-dialog-title>
+      {{ data.establishment ? "Actualizar Sucursal" : "Nueva Sucursal" }}
+    </h2>
+  </div>
+
+  <!-- Content -->
+  <div class="dialog-content" mat-dialog-content>
+    <form [formGroup]="form">
+      <!-- ✅ NUEVO: Compañía (SOLO PARA SUPER ADMIN) -->
+      <mat-form-field
+        *ngIf="isSuperAdmin"
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Compañía</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >business</mat-icon
+        >
+        <mat-select
+          placeholder="Seleccione una compañía"
+          formControlName="companyId"
+          [compareWith]="compareCompanies"
+          required
+        >
+          <mat-option
+            *ngFor="let company of companies"
+            [value]="company.idCompany"
+          >
+            {{ company.name }}
+          </mat-option>
+        </mat-select>
+        <mat-error>La compañía es requerida</mat-error>
+      </mat-form-field>
+
+      <!-- Código -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Código</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >qr_code</mat-icon
+        >
+        <input
+          matInput
+          type="text"
+          placeholder="Ingrese código (3 dígitos, ej: 001)"
+          formControlName="code"
+          maxlength="3"
+          required
+        />
+        <mat-hint>Exactamente 3 dígitos numéricos (001-999)</mat-hint>
+        <mat-error *ngIf="form.get('code')?.hasError('required')">
+          El código es requerido
+        </mat-error>
+        <mat-error *ngIf="form.get('code')?.hasError('pattern')">
+          El código debe ser un número de 3 dígitos
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Nombre -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nombre</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px">{{
+          isSuperAdmin ? "location_city" : "business"
+        }}</mat-icon>
+        <input
+          matInput
+          placeholder="Ingrese nombre de la sucursal"
+          formControlName="name"
+          required
+        />
+        <mat-error *ngIf="form.get('name')?.hasError('required')">
+          El nombre es requerido
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Dirección -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Dirección</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >location_on</mat-icon
+        >
+        <textarea
+          matInput
+          placeholder="Ingrese dirección completa"
+          formControlName="address"
+          rows="2"
+          required
+        ></textarea>
+        <mat-error *ngIf="form.get('address')?.hasError('required')">
+          La dirección es requerida
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Tipo -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Tipo</mat-label>
+        <mat-icon matPrefix style="color: #666; margin-right: 8px"
+          >category</mat-icon
+        >
+        <mat-select
+          placeholder="Seleccione tipo"
+          formControlName="type"
+          required
+        >
+          <mat-option value="MATRIZ">Matriz</mat-option>
+          <mat-option value="SUCURSAL">Sucursal</mat-option>
+        </mat-select>
+        <mat-hint>Matriz es el establecimiento principal</mat-hint>
+        <mat-error> El tipo es requerido </mat-error>
+      </mat-form-field>
+
+      <!-- Checkbox Estado Activo -->
+      <div class="checkbox-item">
+        <label class="custom-checkbox-container">
+          <input
+            type="checkbox"
+            formControlName="status"
+            class="custom-checkbox-input"
+            (change)="onStatusChange($event)"
+            #statusCheckbox
+          />
+          <span class="custom-checkbox-box"></span>
+          <span
+            class="custom-checkbox-label"
+            (click)="
+              $event.preventDefault();
+              statusCheckbox.click();
+              $event.stopPropagation()
+            "
+            >Sucursal Activa</span
+          >
+        </label>
+        <div class="checkbox-hint">
+          Las sucursales activas podrán emitir facturas
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Actions -->
+  <div class="dialog-actions" mat-dialog-actions>
+    <button
+      mat-raised-button
+      color="primary"
+      type="button"
+      [disabled]="form.invalid"
+      (click)="save()"
+    >
+      <mat-icon>save</mat-icon>
+      <span>Guardar</span>
+    </button>
+    <button mat-raised-button type="button" (click)="cancel()">
+      <mat-icon>close</mat-icon>
+      <span>Cancelar</span>
+    </button>
+  </div>
+</div>

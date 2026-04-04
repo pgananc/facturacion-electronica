@@ -1,0 +1,384 @@
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <mat-icon class="header-icon">note_add</mat-icon>
+    <h2>Nueva Nota de Crédito</h2>
+  </div>
+
+  <!-- Stepper visual -->
+  <div class="stepper-header">
+    <div
+      class="step"
+      [class.active]="currentStep >= 1"
+      [class.completed]="currentStep > 1"
+    >
+      <div class="step-number">1</div>
+      <span class="step-label">Motivo</span>
+    </div>
+    <div class="step-line" [class.active]="currentStep > 1"></div>
+    <div
+      class="step"
+      [class.active]="currentStep >= 2"
+      [class.completed]="currentStep > 2"
+    >
+      <div class="step-number">2</div>
+      <span class="step-label">Items</span>
+    </div>
+    <div class="step-line" [class.active]="currentStep > 2"></div>
+    <div class="step" [class.active]="currentStep >= 3">
+      <div class="step-number">3</div>
+      <span class="step-label">Confirmar</span>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="dialog-content">
+    <!-- Loading -->
+    <div *ngIf="isLoadingReasons || isLoadingInvoice" class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Cargando datos...</p>
+    </div>
+
+    <!-- Datos de la factura (siempre visible) -->
+    <div class="invoice-summary" *ngIf="invoiceData && !isLoadingInvoice">
+      <div class="summary-title">
+        <mat-icon>receipt</mat-icon>
+        <span>Factura: {{ invoiceData.invoiceNumber }}</span>
+      </div>
+      <div class="summary-details">
+        <div class="detail-item">
+          <span class="label">Cliente:</span>
+          <span class="value">{{ invoiceData.client.name }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="label">RUC/CI:</span>
+          <span class="value">{{ invoiceData.client.identification }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Total Factura:</span>
+          <span class="value">{{
+            formatCurrency(invoiceData.totalInvoice)
+          }}</span>
+        </div>
+        <div class="detail-item" *ngIf="invoiceData.tip && invoiceData.tip > 0">
+          <span class="label">Propina:</span>
+          <span class="value tip-value">
+            {{ formatCurrency(invoiceData.tip) }}
+            <span class="tip-hint">(no reembolsable)</span>
+          </span>
+        </div>
+        <div
+          class="detail-item"
+          *ngIf="invoiceData.totalCreditNotesApplied > 0"
+        >
+          <span class="label">NC Aplicadas:</span>
+          <span class="value nc-applied">
+            -{{ formatCurrency(invoiceData.totalCreditNotesApplied) }}
+          </span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Saldo Disponible:</span>
+          <span class="value available">{{
+            formatCurrency(invoiceData.availableAmount)
+          }}</span>
+        </div>
+      </div>
+    </div>
+
+    <form [formGroup]="form" *ngIf="!isLoadingReasons && !isLoadingInvoice">
+      <!-- PASO 1: Motivo -->
+      <div class="step-content" *ngIf="currentStep === 1">
+        <h3 class="step-title">Seleccione el motivo de la Nota de Crédito</h3>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Motivo</mat-label>
+          <mat-select
+            formControlName="idReason"
+            placeholder="Seleccione un motivo"
+          >
+            <mat-option
+              *ngFor="let reason of reasons"
+              [value]="reason.idReason"
+            >
+              {{ reason.code }} - {{ reason.description }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="form.get('idReason')?.hasError('required')">
+            El motivo es obligatorio
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Observación adicional (opcional)</mat-label>
+          <textarea
+            matInput
+            formControlName="observation"
+            rows="3"
+            placeholder="Ingrese una descripción adicional si lo desea..."
+          ></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Fecha de emisión NC</mat-label>
+          <input
+            matInput
+            type="date"
+            formControlName="issueDate"
+            [min]="minDate"
+            [max]="maxDate"
+          />
+          <mat-hint>Entre {{ minDateDisplay }} y {{ maxDateDisplay }}</mat-hint>
+          <mat-error *ngIf="form.get('issueDate')?.hasError('required')">
+            La fecha es obligatoria
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- PASO 2: Items -->
+      <div class="step-content" *ngIf="currentStep === 2">
+        <h3 class="step-title">
+          Seleccione los items a incluir en la Nota de Crédito
+        </h3>
+
+        <div class="select-all-row">
+          <mat-checkbox
+            [checked]="allSelected"
+            (change)="toggleSelectAll($event.checked)"
+          >
+            Seleccionar todos
+          </mat-checkbox>
+        </div>
+
+        <div class="items-list" formArrayName="details">
+          <div
+            *ngFor="let detail of detailsArray.controls; let i = index"
+            [formGroupName]="i"
+            class="item-card"
+            [class.selected]="detail.get('selected')?.value"
+            [class.unavailable]="detail.get('quantityAvailable')?.value <= 0"
+          >
+            <div class="item-header">
+              <mat-checkbox
+                formControlName="selected"
+                [disabled]="detail.get('quantityAvailable')?.value <= 0"
+              ></mat-checkbox>
+              <span class="item-code">{{ detail.get("mainCode")?.value }}</span>
+              <span class="item-description">{{
+                detail.get("description")?.value
+              }}</span>
+              <!-- Indicador de no disponible -->
+              <span
+                class="unavailable-badge"
+                *ngIf="detail.get('quantityAvailable')?.value <= 0"
+                matTooltip="Este producto ya fue devuelto completamente en una Nota de Crédito"
+              >
+                <mat-icon>check_circle</mat-icon>
+                Devuelto
+              </span>
+            </div>
+
+            <!-- Mensaje cuando no hay cantidad disponible -->
+            <div
+              class="unavailable-message"
+              *ngIf="detail.get('quantityAvailable')?.value <= 0"
+            >
+              <mat-icon>check_circle</mat-icon>
+              <span
+                >* Este producto ya fue devuelto en una Nota de Crédito</span
+              >
+            </div>
+
+            <div
+              class="item-details"
+              *ngIf="
+                detail.get('selected')?.value &&
+                detail.get('quantityAvailable')?.value > 0
+              "
+            >
+              <div class="item-field">
+                <label>Cantidad disponible:</label>
+                <span>{{ detail.get("quantityAvailable")?.value }}</span>
+              </div>
+              <div class="item-field">
+                <label>Cantidad a devolver:</label>
+                <input
+                  type="number"
+                  formControlName="quantity"
+                  [max]="detail.get('quantityAvailable')?.value"
+                  min="0"
+                  step="1"
+                />
+              </div>
+              <div class="item-field">
+                <label>Precio unitario:</label>
+                <span>{{
+                  formatCurrency(detail.get("unitPrice")?.value)
+                }}</span>
+              </div>
+              <div class="item-field" *ngIf="detail.get('discount')?.value > 0">
+                <label>Descuento:</label>
+                <span class="discount"
+                  >-{{ formatCurrency(detail.get("discount")?.value) }}</span
+                >
+              </div>
+              <div class="item-field">
+                <label>Subtotal:</label>
+                <span class="subtotal">{{ getItemSubtotal(detail) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Totales -->
+        <div class="totals-section">
+          <div class="total-row">
+            <span>Subtotal 0%:</span>
+            <span>{{ formatCurrency(subtotalZero) }}</span>
+          </div>
+          <div class="total-row">
+            <span>Subtotal IVA:</span>
+            <span>{{ formatCurrency(subtotalIva) }}</span>
+          </div>
+          <div class="total-row">
+            <span>IVA:</span>
+            <span>{{ formatCurrency(totalIva) }}</span>
+          </div>
+          <div class="total-row total-final">
+            <span>TOTAL:</span>
+            <span>{{ formatCurrency(totalAmount) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PASO 3: Confirmar -->
+      <div class="step-content" *ngIf="currentStep === 3">
+        <h3 class="step-title">Confirme los datos de la Nota de Crédito</h3>
+
+        <div class="confirmation-summary">
+          <div class="confirm-section">
+            <h4>Motivo</h4>
+            <p>{{ getSelectedReasonName() }}</p>
+            <p class="observation" *ngIf="form.get('observation')?.value">
+              {{ form.get("observation")?.value }}
+            </p>
+          </div>
+
+          <div class="confirm-section">
+            <h4>Items seleccionados</h4>
+            <table class="confirm-table">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Descripción</th>
+                  <th>Cant.</th>
+                  <th>P. Unit.</th>
+                  <th>Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let detail of detailsArray.controls">
+                  <tr
+                    *ngIf="
+                      detail.get('selected')?.value &&
+                      detail.get('quantity')?.value > 0
+                    "
+                  >
+                    <td>{{ detail.get("mainCode")?.value }}</td>
+                    <td>{{ detail.get("description")?.value }}</td>
+                    <td>{{ detail.get("quantity")?.value }}</td>
+                    <td>
+                      {{ formatCurrency(detail.get("unitPrice")?.value) }}
+                    </td>
+                    <td>
+                      {{ formatCurrency(detail.get("subtotal")?.value || 0) }}
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="confirm-totals">
+            <div class="total-row">
+              <span>Subtotal 0%:</span>
+              <span>{{ formatCurrency(subtotalZero) }}</span>
+            </div>
+            <div class="total-row">
+              <span>Subtotal IVA:</span>
+              <span>{{ formatCurrency(subtotalIva) }}</span>
+            </div>
+            <div class="total-row">
+              <span>IVA:</span>
+              <span>{{ formatCurrency(totalIva) }}</span>
+            </div>
+            <div class="total-row total-final">
+              <span>TOTAL NOTA DE CRÉDITO:</span>
+              <span>{{ formatCurrency(totalAmount) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Actions -->
+  <div class="dialog-actions">
+    <button
+      mat-stroked-button
+      color="primary"
+      (click)="cancel()"
+      [disabled]="isSavingDraft || isSendingToSri"
+    >
+      Cancelar
+    </button>
+
+    <div class="action-buttons">
+      <button
+        mat-stroked-button
+        *ngIf="currentStep > 1"
+        (click)="previousStep()"
+        [disabled]="isSavingDraft || isSendingToSri"
+      >
+        <mat-icon>arrow_back</mat-icon>
+        Anterior
+      </button>
+
+      <button
+        mat-raised-button
+        color="primary"
+        *ngIf="currentStep < 3"
+        (click)="nextStep()"
+        [disabled]="!canProceed()"
+      >
+        Siguiente
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+
+      <button
+        mat-stroked-button
+        color="accent"
+        *ngIf="currentStep === 3"
+        (click)="saveDraft()"
+        [disabled]="isSavingDraft || isSendingToSri"
+        matTooltip="Guardar sin enviar al SRI"
+      >
+        <mat-spinner *ngIf="isSavingDraft" diameter="20"></mat-spinner>
+        <mat-icon *ngIf="!isSavingDraft">save</mat-icon>
+        Guardar Borrador
+      </button>
+
+      <button
+        mat-raised-button
+        color="primary"
+        *ngIf="currentStep === 3"
+        (click)="submit()"
+        [disabled]="isSavingDraft || isSendingToSri"
+        matTooltip="Firmar y enviar al SRI"
+      >
+        <mat-spinner *ngIf="isSendingToSri" diameter="20"></mat-spinner>
+        <mat-icon *ngIf="!isSendingToSri">send</mat-icon>
+        Enviar al SRI
+      </button>
+    </div>
+  </div>
+</div>

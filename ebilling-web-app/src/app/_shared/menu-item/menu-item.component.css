@@ -1,0 +1,114 @@
+.menu-expansion-panel {
+  box-shadow: none;
+  border-radius: 0;
+  margin: 0;
+}
+
+.menu-expansion-panel-level-1 {
+  border-left: 3px solid transparent;
+}
+
+.menu-expansion-panel-level-2 {
+  border-left: 3px solid rgba(0, 0, 0, 0.1);
+  margin-left: 16px;
+}
+
+.menu-expansion-header {
+  padding: 8px 16px;
+  height: auto;
+  min-height: 48px;
+}
+
+.menu-item-link {
+  padding: 8px 16px;
+  height: auto;
+  min-height: 48px;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+
+.menu-item-link:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.menu-item-link-level-1 {
+  padding-left: 16px;
+}
+
+.menu-item-link-level-2 {
+  padding-left: 32px;
+  border-left: 3px solid rgba(0, 0, 0, 0.1);
+}
+
+.menu-item-link-level-3 {
+  padding-left: 48px;
+  border-left: 3px solid rgba(0, 0, 0, 0.1);
+  font-size: 0.9em;
+}
+
+.menu-item-text {
+  padding: 8px 16px;
+  height: auto;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  color: rgba(0, 0, 0, 0.6);
+  cursor: default;
+}
+
+.menu-item-text-level-1 {
+  padding-left: 16px;
+}
+
+.menu-item-text-level-2 {
+  padding-left: 32px;
+}
+
+.menu-item-recursive {
+  display: block;
+}
+
+.menu-subitems-container {
+  padding: 0;
+}
+
+.menu-icon {
+  margin-right: 12px;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.menu-title {
+  flex: 1;
+  font-size: 14px;
+}
+
+.menu-item-active {
+  background-color: rgba(63, 81, 181, 0.1);
+  color: #3f51b5;
+  font-weight: 500;
+}
+
+.menu-item-active .menu-icon {
+  color: #3f51b5;
+}
+
+/* Estilos para niveles más profundos */
+.menu-expansion-panel-level-2 .menu-expansion-header {
+  padding-left: 32px;
+}
+
+.menu-expansion-panel-level-2 .menu-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.menu-expansion-panel-level-2 .menu-title {
+  font-size: 13px;
+}
+

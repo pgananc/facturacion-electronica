@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<autorizacion>
+    <estado>AUTORIZADO</estado>
+    <numeroAutorizacion>1912202505179000000000120010010000001231234567810</numeroAutorizacion>
+    <fechaAutorizacion>2025-12-19 10:30:45</fechaAutorizacion>
+    <ambiente>2</ambiente>
+    <comprobante><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<notaDebito id="comprobante" version="1.0.0">
+    <infoTributaria>
+        <ambiente>2</ambiente>
+        <tipoEmision>1</tipoEmision>
+        <razonSocial>EMPRESA DE PRUEBA S.A.</razonSocial>
+        <nombreComercial>EMPRESA PRUEBA</nombreComercial>
+        <ruc>1790000000001</ruc>
+        <claveAcceso>1912202505179000000000120010010000001231234567810</claveAcceso>
+        <codDoc>05</codDoc>
+        <estab>001</estab>
+        <ptoEmi>001</ptoEmi>
+        <secuencial>000000123</secuencial>
+        <dirMatriz>AV. AMAZONAS Y COREA, QUITO</dirMatriz>
+    </infoTributaria>
+    <infoNotaDebito>
+        <fechaEmision>19/12/2025</fechaEmision>
+        <dirEstablecimiento>CALLE PRINCIPAL 123, QUITO</dirEstablecimiento>
+        <tipoIdentificacionComprador>04</tipoIdentificacionComprador>
+        <razonSocialComprador>JUAN PEREZ CLIENTE</razonSocialComprador>
+        <identificacionComprador>1712345678001</identificacionComprador>
+        <obligadoContabilidad>SI</obligadoContabilidad>
+        <codDocModificado>01</codDocModificado>
+        <numDocModificado>001-001-000000500</numDocModificado>
+        <fechaEmisionDocSustento>10/12/2025</fechaEmisionDocSustento>
+        <totalSinImpuestos>150.00</totalSinImpuestos>
+        <impuestos>
+            <impuesto>
+                <codigo>2</codigo>
+                <codigoRetencion>4</codigoRetencion>
+                <baseImponible>150.00</baseImponible>
+                <tarifa>15.00</tarifa>
+                <valor>22.50</valor>
+            </impuesto>
+        </impuestos>
+        <valorTotal>172.50</valorTotal>
+        <pagos>
+            <pago>
+                <formaPago>01</formaPago>
+                <total>172.50</total>
+            </pago>
+        </pagos>
+    </infoNotaDebito>
+    <motivos>
+        <motivo>
+            <razon>Intereses por mora en factura 500</razon>
+            <valor>100.00</valor>
+        </motivo>
+        <motivo>
+            <razon>Recargos adicionales no contemplados</razon>
+            <valor>50.00</valor>
+        </motivo>
+    </motivos>
+    <infoAdicional>
+        <campoAdicional nombre="Email">cliente@correo.com</campoAdicional>
+        <campoAdicional nombre="Telefono">0987654321</campoAdicional>
+    </infoAdicional>
+</notaDebito>]]></comprobante>
+</autorizacion>
+
+
+
+
+
+

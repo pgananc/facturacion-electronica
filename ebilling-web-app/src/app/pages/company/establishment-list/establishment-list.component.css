@@ -1,0 +1,161 @@
+@import '../../../_shared/toolbar-styles.css';
+@import '../../../_shared/shared-styles.css';
+@import '../../../_shared/table-styles.css';
+@import '../../../_shared/responsive-styles.css';
+
+.establishment-page { padding: 24px; max-width: 1400px; margin: 0 auto; background-color: var(--background-color, #f9fafb); min-height: calc(100vh - 64px); }
+.new-establishment-btn mat-icon { margin-right: 8px; }
+
+/* ===== LAYOUT HORIZONTAL: INPUTS + BOTONES EN UNA LÍNEA ===== */
+.search-grid-horizontal {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 12px);
+  max-width: 100%;
+}
+
+.search-field-compact {
+  flex: 1;
+  margin: 0 !important;
+}
+
+.search-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 12px);
+  margin-left: auto;
+  flex-shrink: 0;
+  padding-bottom: 22px;
+}
+
+@media screen and (max-width: 599px) {
+  .search-grid-horizontal {
+    flex-wrap: wrap;
+  }
+
+  .search-field-compact {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .search-actions {
+    flex-direction: column;
+    width: 100%;
+    padding-bottom: 0;
+  }
+
+  .search-btn,
+  .clear-btn {
+    width: 100%;
+  }
+}
+
+.mat-column-code { width: 10%; min-width: 80px; }
+.mat-column-name { width: 22%; min-width: 150px; }
+.mat-column-address { width: 30%; min-width: 200px; }
+.mat-column-type { width: 13%; min-width: 100px; }
+.mat-column-status { width: 10%; min-width: 90px; }
+.mat-column-actions { width: 15%; min-width: 120px; }
+
+.mat-column-name .celda-ajustable { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block !important; }
+.mat-column-address .celda-ajustable { display: block !important; white-space: normal !important; word-wrap: break-word !important; overflow-wrap: break-word !important; line-height: 1.5; text-align: center !important; }
+.mat-column-code .celda-ajustable { white-space: nowrap; overflow: hidden; text-overflow: clip; }
+
+::ng-deep .establishment-page .mat-mdc-table .mat-mdc-cell.mat-column-address {
+  height: auto !important; min-height: 52px !important; padding-top: 8px !important; padding-bottom: 8px !important;
+}
+
+/* ===== CENTRAR TODAS LAS COLUMNAS ===== */
+/* Headers centrados */
+::ng-deep .establishment-page .mat-mdc-header-cell {
+  text-align: center !important;
+  justify-content: center !important;
+}
+
+/* Celdas centradas */
+::ng-deep .establishment-page .mat-mdc-cell {
+  text-align: center !important;
+  justify-content: center !important;
+}
+
+/* Asegurar que el contenido flex esté centrado en todas las columnas */
+::ng-deep .establishment-page .mat-mdc-table .mat-mdc-cell.mat-column-code,
+::ng-deep .establishment-page .mat-mdc-table .mat-mdc-cell.mat-column-name,
+::ng-deep .establishment-page .mat-mdc-table .mat-mdc-cell.mat-column-address,
+::ng-deep .establishment-page .mat-mdc-table .mat-mdc-cell.mat-column-type,
+::ng-deep .establishment-page .mat-mdc-table .mat-mdc-cell.mat-column-status,
+::ng-deep .establishment-page .mat-mdc-table .mat-mdc-cell.mat-column-actions {
+  display: flex !important; 
+  justify-content: center !important; 
+  align-items: center !important; 
+  text-align: center !important;
+}
+
+/* Headers también centrados */
+::ng-deep .establishment-page .mat-mdc-table .mat-mdc-header-cell.mat-column-code,
+::ng-deep .establishment-page .mat-mdc-table .mat-mdc-header-cell.mat-column-name,
+::ng-deep .establishment-page .mat-mdc-table .mat-mdc-header-cell.mat-column-address,
+::ng-deep .establishment-page .mat-mdc-table .mat-mdc-header-cell.mat-column-type,
+::ng-deep .establishment-page .mat-mdc-table .mat-mdc-header-cell.mat-column-status,
+::ng-deep .establishment-page .mat-mdc-table .mat-mdc-header-cell.mat-column-actions {
+  text-align: center !important;
+  justify-content: center !important;
+}
+
+/* Contenedor de acciones para mantener alineación consistente */
+.actions-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Espacio reservado invisible para mantener alineación cuando falta el botón de eliminar */
+.action-spacer {
+  width: 40px; /* Ancho aproximado de un botón de icono */
+  height: 40px;
+  display: inline-block;
+}
+
+/* ===== TABLE CONTAINER CON SCROLL HORIZONTAL ===== */
+.table-wrapper {
+  margin-top: var(--spacing-sm, 12px) !important;
+}
+
+.table-container {
+  position: relative;
+  overflow-x: auto;
+  min-height: 300px;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ===== TABLA RESPONSIVE - OCULTAR COLUMNAS EN MOBILE ===== */
+@media screen and (max-width: 600px) {
+  /* Ocultar columnas menos importantes en mobile */
+  .mat-column-address,
+  .mat-column-type {
+    display: none !important;
+  }
+  
+  /* Ajustar ancho de columnas visibles */
+  .mat-column-code {
+    width: 20% !important;
+    min-width: 80px !important;
+  }
+  
+  .mat-column-name {
+    width: 40% !important;
+    min-width: 120px !important;
+  }
+  
+  .mat-column-status {
+    width: 20% !important;
+    min-width: 80px !important;
+  }
+  
+  .mat-column-actions {
+    width: 20% !important;
+    min-width: 100px !important;
+  }
+}
